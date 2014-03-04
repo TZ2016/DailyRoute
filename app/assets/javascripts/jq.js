@@ -18,10 +18,10 @@ $(function() {
     var address = $( "#newloc" ).val().toString();
     codeAddress(address, function (location) {
       // called after the user endered address is validated for geocoding
-      var tmpelem = $( "#loc-tmp" ).clone().attr("id", "loc-temp");
+      var $tmpelem = $( "#loc-tmp" ).clone().attr("id", "loc-temp");
       var markerid = addMarker(location);
 
-      $( "#locs" ).append(tmpelem);
+      $( "#locs" ).append($tmpelem);
       $( "#loc-temp > .loc-tag" ).text(address);
       $( "#loc-temp" ).data("markerid", markerid);
       $( "#loc-temp" ).removeAttr("id style");
@@ -30,10 +30,11 @@ $(function() {
 
   // remove loc
   $( '#locs' ).on("click", ".removeloc-btn", function () {
-    var entry = $( this ).parent().parent();
-    console.log(entry.data());
-    console.log(entry.data("markerid"));
-    entry.remove();
+    var $entry = $( this ).parent().parent();
+    var markerid = $entry.data("markerid");
+
+    $entry.remove();
+    deleteMarker(markerid);
   });
 
   // sortable
