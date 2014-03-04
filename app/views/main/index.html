@@ -26,29 +26,54 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-sm-6 col-md-4 sidebar">
+    <!-- Sidebar Level 1 -->
+    <div class="col-md-4 sidebar">
       <!-- Title -->
-      <h4>Start your route now!</h4>
+      <h4 title="start by adding locations! all the added locations will be displayed under 'Selected Locations' portal">
+        Start your route now!</h4>
 
       <!-- To add new location -->
-      <div id="addloc" class="ui-widget">
-        <button type="button" id="addloc-btn" class="btn btn-primary btn-xs">
-          Add Location
-        </button>
-        <input id="newloc">
+      <div id="addloc" class="row">
+        <div class="col-md-3">
+          <button type="button" id="addloc-btn" class="btn btn-success btn-xs">
+            Add Location
+          </button>
+        </div>
+        <div class="col-md-6">
+          <input id="newloc">
+        </div>
       </div>
       <hr>
 
       <!-- Locations added so far -->
-      <ul id="locs">
-        <li id="loc-tmp" class="ui-state-default" style="display:none">
-          <span class="ui-icon"></span>New Location
-        </li>
-      </ul>
+      <h4 title="the list is sortable! click and drag it!">
+        Selected Locations</h4>
+      <div id="locs" class="row">
+        <!-- example entry -->
+        <div id="loc-tmp" class="row loc-entry" style="display:none">
+          <div class="col-md-1">
+            <span class="glyphicon glyphicon-minus"></span>
+          </div>
+          <div class="col-md-5 loc-tag">
+            New Location
+          </div>
+          <div class="col-md-2">
+            <button type="button" class="btn btn-warning btn-xs removeloc-btn">
+              Remove
+            </button>            
+          </div>
+        </div>
+        <!-- end of example entry -->
+      </div>
+      <hr>
+
+      <!-- Location constraint -->
+      <h4>Constraints for the selected location</h4>
 
     </div>
+    <!-- end of sidebar -->
 
-    <div class="col-sm-6 col-sm-offset-6 col-md-8 col-md-offset-4 main">
+    <div class="col-md-8 col-md-offset-4 main">
       <div id="map-canvas" class="map-container">
       </div>
     </div>
