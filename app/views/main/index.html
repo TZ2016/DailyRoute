@@ -27,13 +27,25 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-6 col-md-4 sidebar">
-      <div class="ui-widget">
-        <label for="newloc">New Location: </label>
-        <input id="newloc">
-        <button type="button" id="addloc-btn" class="btn btn-primary">
+      <!-- Title -->
+      <h4>Start your route now!</h4>
+
+      <!-- To add new location -->
+      <div id="addloc" class="ui-widget">
+        <button type="button" id="addloc-btn" class="btn btn-primary btn-xs">
           Add Location
         </button>
+        <input id="newloc">
       </div>
+      <hr>
+
+      <!-- Locations added so far -->
+      <ul id="locs">
+        <li id="loc-tmp" class="ui-state-default" style="display:none">
+          <span class="ui-icon"></span>New Location
+        </li>
+      </ul>
+
     </div>
 
     <div class="col-sm-6 col-sm-offset-6 col-md-8 col-md-offset-4 main">

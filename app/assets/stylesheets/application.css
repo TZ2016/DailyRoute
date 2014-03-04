@@ -15,5 +15,6 @@
  /* Warning: replace require_tree due to dependency order issues; */
  /*
  *= require my_bootstrap
- *= require custom
+ *= require structure
+ *= require specific
  */
