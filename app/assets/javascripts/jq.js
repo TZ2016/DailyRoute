@@ -29,10 +29,12 @@ $(function() {
   });
 
   // remove loc
-  $( '.removeloc-btn' ).click( function () {
-    $( this ).parent(".loc-entry").hide();
+  $( '#locs' ).on("click", ".removeloc-btn", function () {
+    var entry = $( this ).parent().parent();
+    console.log(entry.data());
+    console.log(entry.data("markerid"));
+    entry.remove();
   });
-
 
   // sortable
   $( "#locs" ).sortable();
