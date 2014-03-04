@@ -11,7 +11,7 @@ $(function() {
   });
 
   // tooltip
-  $( document ).tooltip();
+  // $( document ).tooltip();
 
   // add loc
   $( '#addloc-btn' ).click( function () {
@@ -29,9 +29,9 @@ $(function() {
   });
 
   // remove loc
-  // $( '.removeloc-btn' ).click( function () {
-  //   $( this ).parent(".loc-entry").hide();
-  // });
+  $( '.removeloc-btn' ).click( function () {
+    $( this ).parent(".loc-entry").hide();
+  });
 
 
   // sortable
