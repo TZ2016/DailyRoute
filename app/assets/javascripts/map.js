@@ -27,7 +27,7 @@ function addMarker(location, msg) {
     title: msg
   });
   markers.push(marker);
-  return markers.length
+  return markers.length - 1
 }
 
 function deleteMarker(index) {
