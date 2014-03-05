@@ -1,3 +1,6 @@
+// global temporary variables
+var _locToRefine = [];
+
 $(function() {
 
   // auto complete
@@ -33,7 +36,22 @@ $(function() {
 
   // refine locations
   $( "#refineloc-lst" ).selectable();
-  
+
+  $( "#refineloc-none" ).click( function () {
+    alertMessage("none selected");
+    $( "#refineloc-dlg" ).modal("hide");
+  });
+
+  $( "#refineloc-select" ).click( function () {
+    var $selected = $( "#refineloc-lst > .ui-selected" );
+    if ($selected.length === 0) {
+      alertMessage("No location is selected!");
+    } else {
+      var index = $( "#refineloc-lst li" ).index($selected[0]);
+      addLocation(_locToRefine[index]);
+      $( "#refineloc-dlg" ).modal("hide");
+    }
+  });
 
 function addLocation (location) {
   // add to the list of locations
@@ -57,12 +75,17 @@ function refineLocations (locations) {
     addLocation(locations[0]);
   } else {
     // refineloc-lst refineloc-lst-tmp refineloc-dlg
-    var $temp = $( "#refineloc-lst-tmp" ).clone().removeAttr("id");
+    _locToRefine = [];
     $( "#refineloc-lst" ).empty();
+    
     locations.forEach(function (location) {
       var name = getNameOfAddress(location);
+      var $temp = $( "#refineloc-lst-tmp" ).clone().removeAttr("id");
+
+      _locToRefine.push(location);
       $( "#refineloc-lst" ).append( $temp.clone().text(name));
     });
+
     $( "#refineloc-dlg" ).modal({
       show: true,
       keyboard: false,

@@ -17,9 +17,10 @@ function initialize() {
   // });
 }
 
-function addMarker(location, msg) {
+function addMarker(loc, msg) {
   // return the index of the new marker
   if (msg === undefined) msg = 'marker ' + (markers.length + 1);
+  var location = loc.geometry.location;
   map.setCenter(location);
   var marker = new google.maps.Marker({
     position: location,
@@ -61,12 +62,16 @@ function getTagForAddress(geores) {
 }
 
 function getNameOfAddress(geores) {
-  // return the full name of the address backed by GeocoderResult object
-  var components = [];
-  geores.address_components.forEach(function (addrcomp) {
-    components.push(addrcomp.short_name);
-  });
-  return components.join(", ");
+  return geores.formatted_address;
 }
+
+// function getNameOfAddress(geores) {
+//   // return the full name of the address backed by GeocoderResult object
+//   var components = [];
+//   geores.address_components.forEach(function (addrcomp) {
+//     components.push(addrcomp.short_name);
+//   });
+//   return components.join(", ");
+// }
 
 google.maps.event.addDomListener(window, 'load', initialize);
