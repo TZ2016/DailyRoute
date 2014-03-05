@@ -53,6 +53,17 @@ $(function() {
     }
   });
 
+  // time picker
+  $( "#test" ).timepicker();
+
+
+
+
+
+
+
+
+
 function addLocation (location) {
   // add to the list of locations
 
