@@ -6,6 +6,9 @@ var rendererOptions = {
 var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 var directionsService = new google.maps.DirectionsService();
 var markers = [];
+var _tempmarker;
+var marker_geo;
+var infowindow = new google.maps.InfoWindow();
 
 function initialize() {
   geocoder = new google.maps.Geocoder();
@@ -17,6 +20,13 @@ function initialize() {
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
   directionsDisplay.setMap(map);
   directionsDisplay.setPanel(document.getElementById("directionsPanel"));
+
+  // listeners
+  google.maps.event.addListener(map, 'click', function(e) {
+    console.log(e);
+    revGeoAndMarker(e.latLng);
+  });
+
 }
 
 function addMarker(loc, msg) {
@@ -29,6 +39,8 @@ function addMarker(loc, msg) {
     map: map,
     title: msg
   });
+  infowindow.setContent(loc.formatted_address);
+  infowindow.open(map, marker);
   markers.push(marker);
   return markers.length - 1;
 }
@@ -57,7 +69,6 @@ function codeAddress(address, refineLocations) {
   });
 }
 
-// helpers
 
 function getTagForAddress(geores) {
   return geores.address_components[0].long_name;
@@ -77,12 +88,11 @@ function getNameOfAddress(geores) {
 // }
 
 
-// ==================================
+
 
 
 function calcRoute(data) {
-  console.log("++++++++++++");
-  var size = data.length
+  var size = data.length;
   var start = new google.maps.LatLng(data[0].Lat, data[0].Long);
   var end = new google.maps.LatLng(data[size-1].Lat, data[size-1].Long);
   // var selectedMode = document.getElementById("mode").value;
@@ -90,7 +100,7 @@ function calcRoute(data) {
   var waypts = [];
   var loc;
   for (var i = 1; i < size-1; i++) {
-    loc = new google.maps.LatLng(data[i].Lat, data[i].Long)
+    loc = new google.maps.LatLng(data[i].Lat, data[i].Long);
     waypts.push({
         location: loc,
         stopover: true
@@ -133,13 +143,49 @@ function computeTotalDistance(result) {
   for (i = 0; i < myroute.legs.length; i++) {
     total += myroute.legs[i].distance.value;
   }
-  total = total / 1000.
+  total = total / 1000.0;
   document.getElementById("total").innerHTML = total + " km";
 }
 
+function convertToLatLng(input) {
+  var latlngStr = input.split(',', 2);
+  var lat = parseFloat(latlngStr[0]);
+  var lng = parseFloat(latlngStr[1]);
+  var latlng = new google.maps.LatLng(lat, lng);
+  return latlng;
+}
 
+function revGeoAndMarker(latlng) {
+  geocoder.geocode({'latLng': latlng}, function (results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+      if (results[1]) {
+        revGeoAndMarkerHelper(latlng, results[1].formatted_address);
+      } else {
+        alert('No results found');
+      }
+    } else {
+      alert('Geocoder failed due to: ' + status);
+    }
+  });
+}
 
+function revGeoAndMarkerHelper(location, revGeoAddr) {
+  // location is a LatLng object
+  if (_tempmarker !== undefined) {
+    _tempmarker.setMap(null);
+  }
 
+  map.setCenter(location);
+  var marker = new google.maps.Marker({
+    position: location,
+    map: map
+  });
+  infowindow.setContent(revGeoAddr);
+  infowindow.open(map, marker);
+  _tempmarker = marker;
 
+  // FIXME
+  document.getElementById("newloc").value = revGeoAddr;
+}
 
 google.maps.event.addDomListener(window, 'load', initialize);

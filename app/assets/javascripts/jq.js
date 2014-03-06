@@ -14,10 +14,13 @@ $(function() {
   });
 
   // add loc
-  $( '#addloc-btn' ).click( function () {
-    var address = $( "#newloc" ).val().toString();
-    codeAddress(address, refineLocations);
+  $('#newloc').bind('keypress', function(e) {
+    if(e.keyCode==13){
+      handleAddLocation();
+    }
   });
+
+  $( '#addloc-btn' ).click( handleAddLocation );
 
   // remove loc
   $( '#loc-acc' ).on("click", ".remove-btn", function () {
@@ -82,7 +85,18 @@ $(function() {
     });
   });
 
+  // reverse TEST
+  $( "#reversegeo-btn" ).click( function () {
+    var input = $( "#latlng" ).val().toString();
+    console.log(input);
+    var pair = convertToLatLng(input);
+    codeLatLng(pair);
+  });
 
+function handleAddLocation () {
+  var address = $( "#newloc" ).val().toString();
+  codeAddress(address, refineLocations);
+}
 
 function addLocation (location) {
   // add to the list of locations
