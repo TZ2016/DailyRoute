@@ -31,7 +31,7 @@ $(function() {
     deleteMarker(markerid);
   });
 
-  // accordion
+  // accordion main
   $( "#loc-acc" )
     .accordion({
       header: "> div > h3"
@@ -44,6 +44,11 @@ $(function() {
         // so trigger focusout handlers to remove .ui-state-focus
         ui.item.children( "h3" ).triggerHandler( "focusout" );
       }
+  });
+
+  // accordion instruction
+  $( "#loc-acc-ins" ).accordion({
+    header: "> div > h3"
   });
 
   // refine location dialog
@@ -85,16 +90,9 @@ $(function() {
     });
   });
 
-  // reverse TEST
-  $( "#reversegeo-btn" ).click( function () {
-    var input = $( "#latlng" ).val().toString();
-    console.log(input);
-    var pair = convertToLatLng(input);
-    codeLatLng(pair);
-  });
-
   function handleAddLocation () {
     var address = $( "#newloc" ).val().toString();
+    $( "#loc-acc-ins" ).attr("style", "display: none;");
     codeAddress(address, refineLocations);
   }
 

@@ -147,13 +147,13 @@ function computeTotalDistance(result) {
   document.getElementById("total").innerHTML = total + " km";
 }
 
-function convertToLatLng(input) {
-  var latlngStr = input.split(',', 2);
-  var lat = parseFloat(latlngStr[0]);
-  var lng = parseFloat(latlngStr[1]);
-  var latlng = new google.maps.LatLng(lat, lng);
-  return latlng;
-}
+// function convertToLatLng(input) {
+//   var latlngStr = input.split(',', 2);
+//   var lat = parseFloat(latlngStr[0]);
+//   var lng = parseFloat(latlngStr[1]);
+//   var latlng = new google.maps.LatLng(lat, lng);
+//   return latlng;
+// }
 
 function revGeoAndMarker(latlng) {
   geocoder.geocode({'latLng': latlng}, function (results, status) {

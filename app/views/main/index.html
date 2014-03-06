@@ -29,8 +29,7 @@
     <!-- Sidebar Level 1 -->
     <div class="col-md-4 sidebar">
       <!-- Title -->
-      <h4 title="start by adding locations! all the added locations will be displayed under 'Selected Locations' portal">
-        Start your route now!</h4>
+      <h4>Start your route now!</h4>
 
       <!-- To add new location -->
       <div id="addloc" class="row">
@@ -81,6 +80,21 @@
       <h4>Selected Locations</h4>
       <!-- sortable accordion -->
       <div class="row">
+        <!-- Instruction starts -->
+        <div id="loc-acc-ins" class="col-md-12">
+          <div class="group">
+            <h3>Your added location</h3>
+            <div>
+              <p>
+                The locations you add will appear in this accordion.
+              </p>
+              <p> 
+                You can sort your locations to your convenience.
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Instruction ends -->
         <div id="loc-acc" class="col-md-12">
           <!-- Sample group -->
           <div id="loc-acc-tmp" class="group" style="display: none;">
@@ -135,15 +149,8 @@
       <hr>
       <!-- location accordion ends -->
 
-      <!-- reverse geo begin -->
-      <div id="panel" class="row">
-        <input id="latlng" type="text" value="40.714224,-73.961452">
-        <input type="button" id="reversegeo-btn" value="Reverse Geocode">
-      </div>
-      <!-- reverse geo end -->
-
       <button id="testcalc" type="button" class="btn btn-warning">
-        Calculate Route
+        Show Demo Route
       </button>
       <!-- NOTE: register mode of transportation -->
 
