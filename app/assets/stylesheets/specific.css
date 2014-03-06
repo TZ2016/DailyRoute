@@ -5,14 +5,14 @@
 	padding: 0; 
 }
 
-#locs > div { 
+/*#locs > div { 
 	margin: 0 3px 3px 3px; 
 	padding: 0.4em; 
 	padding-left: 0; 
 	height: 30px; 
-}
+}*/
 
-/* refine loc selection */
+/* selectable */
 .selectable .ui-selecting { 
 	background: #FECA40; 
 }
@@ -26,11 +26,23 @@
 	list-style-type: none; 
 	margin: 0; 
 	padding: 0; 
-	width: 60%; 
+	/*width: 60%; */
 }
 
-.selectable li { 
+/* location list */
+#locs li { 
+	margin: 0 15px 3px 0; 
+	padding: 0.4em; 
+	height: 35px; 
+}
+
+/* refineloc */
+.modal-body > .selectable {
+	width: 60%;
+}
+
+.modal-body > .selectable li {
 	margin: 3px; 
 	padding: 0.4em; 
-	height: 40px; 
+	height: 40px; 	
 }

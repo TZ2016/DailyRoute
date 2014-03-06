@@ -14,12 +14,13 @@ $(function() {
   });
 
   // sortable
+  $( "#locs" ).selectable();
   $( "#locs" ).sortable();
-  $( "#locs" ).disableSelection();
+  // $( "#locs" ).disableSelection();
 
   // remove loc
   $( '#locs' ).on("click", ".removeloc-btn", function () {
-    var $locentry = $( this ).parent().parent();
+    var $locentry = $( this ).parent().parent(); //ERRORPRONE
     var markerid = Number($locentry.attr("id").slice(4));
     var $cnstentry = $( "#cnst-" + markerid );
 
