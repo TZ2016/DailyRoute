@@ -159,7 +159,7 @@ function revGeoAndMarker(latlng) {
   geocoder.geocode({'latLng': latlng}, function (results, status) {
     if (status == google.maps.GeocoderStatus.OK) {
       if (results[1]) {
-        revGeoAndMarkerHelper(latlng, results[1].formatted_address);
+        revGeoAndMarkerHelper(results[1]);
       } else {
         alertMessage('No results found');
       }
@@ -169,23 +169,26 @@ function revGeoAndMarker(latlng) {
   });
 }
 
-function revGeoAndMarkerHelper(location, revGeoAddr) {
-  // location is a LatLng object
+function revGeoAndMarkerHelper(geocoderres) {
+  // geocoderres is a GeoCoderResult Object
   if (_tempmarker !== undefined) {
     _tempmarker.setMap(null);
   }
 
+  var location = geocoderres.geometry.location;
+  var fulladdr = getNameOfAddress(geocoderres);
+  var shortname = getTagForAddress(geocoderres);
   map.setCenter(location);
   var marker = new google.maps.Marker({
     position: location,
     map: map
   });
-  infowindow.setContent(revGeoAddr);
+  infowindow.setContent(fulladdr);
   infowindow.open(map, marker);
   _tempmarker = marker;
 
   // FIXME
-  document.getElementById("newloc").value = revGeoAddr;
+  document.getElementById("newloc").value = shortname;
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);

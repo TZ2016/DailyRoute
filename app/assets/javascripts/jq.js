@@ -22,6 +22,11 @@ $(function() {
 
   $( '#addloc-btn' ).click( handleAddLocation );
 
+  // dropdown
+  $( "#addloc-dp-clear" ).click( function() {
+    $( "#newloc" ).val("");
+  });
+
   // remove loc
   $( '#loc-acc' ).on("click", ".remove-btn", function () {
     var $accentry = $( this ).parent().parent().parent().parent().parent().parent(); //ERRORPRONE
@@ -145,6 +150,7 @@ $(function() {
   }
 
 });
+
 function alertMessage (msg) {
   alert(msg);
 }
