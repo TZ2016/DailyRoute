@@ -93,58 +93,57 @@ $(function() {
     codeLatLng(pair);
   });
 
-function handleAddLocation () {
-  var address = $( "#newloc" ).val().toString();
-  codeAddress(address, refineLocations);
-}
-
-function addLocation (location) {
-  // add to the list of locations
-  // add a constraint entry
-
-  var address = getTagForAddress(location);
-  var markerid = addMarker(location);
-  var newlocid = "#loc-acc-" + markerid;
-  var $newlocelem = $( "#loc-acc-tmp" ).clone().attr("id", newlocid.slice(1));
-
-  $( "#newloc" ).val("");
-
-  $( "#loc-acc" ).append($newlocelem);
-  $( newlocid + " > h3" ).text(address);
-  $( newlocid ).removeAttr("style");
-  $( "#loc-acc" ).accordion("refresh");
-}
-
-function refineLocations (locations) {
-  // called when more than one results are found
-
-  if (locations.length === 0) {
-    alertMessage("none was returned");
-  } else if (locations.length == 1) {
-    addLocation(locations[0]);
-  } else {
-    // refineloc-lst refineloc-lst-tmp refineloc-dlg
-    _locToRefine = [];
-    $( "#refineloc-lst" ).empty();
-    
-    locations.forEach(function (location) {
-      var name = getNameOfAddress(location);
-      var $temp = $( "#refineloc-lst-tmp" ).clone().removeAttr("id");
-
-      _locToRefine.push(location);
-      $( "#refineloc-lst" ).append( $temp.clone().text(name));
-    });
-
-    $( "#refineloc-dlg" ).modal({
-      show: true,
-      keyboard: false,
-      backdrop: "static"
-    });
+  function handleAddLocation () {
+    var address = $( "#newloc" ).val().toString();
+    codeAddress(address, refineLocations);
   }
-}
 
+  function addLocation (location) {
+    // add to the list of locations
+    // add a constraint entry
+
+    var address = getTagForAddress(location);
+    var markerid = addMarker(location);
+    var newlocid = "#loc-acc-" + markerid;
+    var $newlocelem = $( "#loc-acc-tmp" ).clone().attr("id", newlocid.slice(1));
+
+    $( "#newloc" ).val("");
+
+    $( "#loc-acc" ).append($newlocelem);
+    $( newlocid + " > h3" ).text(address);
+    $( newlocid ).removeAttr("style");
+    $( "#loc-acc" ).accordion("refresh");
+  }
+
+  function refineLocations (locations) {
+    // called when more than one results are found
+
+    if (locations.length === 0) {
+      alertMessage("none was returned");
+    } else if (locations.length == 1) {
+      addLocation(locations[0]);
+    } else {
+      // refineloc-lst refineloc-lst-tmp refineloc-dlg
+      _locToRefine = [];
+      $( "#refineloc-lst" ).empty();
+      
+      locations.forEach(function (location) {
+        var name = getNameOfAddress(location);
+        var $temp = $( "#refineloc-lst-tmp" ).clone().removeAttr("id");
+
+        _locToRefine.push(location);
+        $( "#refineloc-lst" ).append( $temp.clone().text(name));
+      });
+
+      $( "#refineloc-dlg" ).modal({
+        show: true,
+        keyboard: false,
+        backdrop: "static"
+      });
+    }
+  }
+
+});
 function alertMessage (msg) {
   alert(msg);
 }
-
-});

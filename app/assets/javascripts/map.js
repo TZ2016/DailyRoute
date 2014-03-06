@@ -64,7 +64,7 @@ function codeAddress(address, refineLocations) {
     } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
       refineLocations([]);
     } else{
-      alert('Geocode was not successful for the following reason: ' + status);
+      alertMessage('Geocode was not successful for the following reason: ' + status);
     }
   });
 }
@@ -161,10 +161,10 @@ function revGeoAndMarker(latlng) {
       if (results[1]) {
         revGeoAndMarkerHelper(latlng, results[1].formatted_address);
       } else {
-        alert('No results found');
+        alertMessage('No results found');
       }
     } else {
-      alert('Geocoder failed due to: ' + status);
+      alertMessage('Geocoder failed due to: ' + status);
     }
   });
 }
