@@ -58,7 +58,7 @@ function codeAddress(address, refineLocations) {
 // helpers
 
 function getTagForAddress(geores) {
-  return geores.address_components[0].short_name;
+  return geores.address_components[0].long_name;
 }
 
 function getNameOfAddress(geores) {

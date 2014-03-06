@@ -19,12 +19,12 @@ $(function() {
 
   // remove loc
   $( '#locs' ).on("click", ".removeloc-btn", function () {
-    var $entry = $( this ).parent().parent();
-    var markerid = Number($entry.attr("id").slice(4));
+    var $locentry = $( this ).parent().parent();
+    var markerid = Number($locentry.attr("id").slice(4));
+    var $cnstentry = $( "#cnst-" + markerid );
 
-    console.log($entry.attr("id"));
-    console.log(markerid);
-    $entry.remove();
+    $locentry.remove();
+    $cnstentry.remove();
     deleteMarker(markerid);
   });
 
@@ -38,14 +38,14 @@ $(function() {
   $( "#refineloc-lst" ).selectable();
 
   $( "#refineloc-none" ).click( function () {
-    alertMessage("none selected");
+    alertMessage("Oops! Please try with a different input.");
     $( "#refineloc-dlg" ).modal("hide");
   });
 
   $( "#refineloc-select" ).click( function () {
     var $selected = $( "#refineloc-lst > .ui-selected" );
     if ($selected.length === 0) {
-      alertMessage("No location is selected!");
+      alertMessage("No location is yet selected!");
     } else {
       var index = $( "#refineloc-lst li" ).index($selected[0]);
       addLocation(_locToRefine[index]);
@@ -54,7 +54,15 @@ $(function() {
   });
 
   // time picker
-  $( "#test" ).timepicker();
+  $( "#cnst-form" ).on("mousemove", ".starttime, .endtime", function() {
+    $( this ).timepicker({
+      'step': 30,
+      'forceRoundTime': true,
+      'scrollDefaultNow': true
+    });
+  });
+
+  $( ".duration" ).timepicker();
 
 
 
@@ -66,15 +74,21 @@ $(function() {
 
 function addLocation (location) {
   // add to the list of locations
+  // add a constraint entry
 
   var address = getTagForAddress(location);
   var markerid = addMarker(location);
-  var newid = "#loc-" + markerid;
-  var $newelem = $( "#loc-tmp" ).clone().attr("id", newid.slice(1));
+  var newlocid = "#loc-" + markerid;
+  var newcnstid = "#cnst-" + markerid;
+  var $newlocelem = $( "#loc-tmp" ).clone().attr("id", newlocid.slice(1));
+  var $newcnstelem = $( "#cnst-tmp" ).clone().attr("id", newcnstid.slice(1));
 
-  $( "#locs" ).append($newelem);
-  $( newid + " > .loc-tag" ).text(address);
-  $( newid ).removeAttr("style");
+  $( "#newloc" ).val("");
+  $( "#locs" ).append($newlocelem);
+  $( "#cnst-form" ).append($newcnstelem);
+  $( newlocid + " > .loc-tag" ).text(address);
+  $( newlocid ).removeAttr("style");
+  $( newcnstid ).removeAttr("style"); // remove this 
 }
 
 function refineLocations (locations) {

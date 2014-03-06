@@ -8,10 +8,11 @@
 #locs > div { 
 	margin: 0 3px 3px 3px; 
 	padding: 0.4em; 
-	padding-left: 1.5em; 
+	padding-left: 0; 
 	height: 30px; 
 }
 
+/* refine loc selection */
 .selectable .ui-selecting { 
 	background: #FECA40; 
 }
