@@ -34,7 +34,8 @@ $(function() {
   // accordion main
   $( "#loc-acc" )
     .accordion({
-      header: "> div > h3"
+      header: "> div > h3",
+      collapsible: true
     })
     .sortable({
       axis: "y",
@@ -48,7 +49,8 @@ $(function() {
 
   // accordion instruction
   $( "#loc-acc-ins" ).accordion({
-    header: "> div > h3"
+    header: "> div > h3",
+    collapsible: true
   });
 
   // refine location dialog
@@ -92,7 +94,7 @@ $(function() {
 
   function handleAddLocation () {
     var address = $( "#newloc" ).val().toString();
-    $( "#loc-acc-ins" ).attr("style", "display: none;");
+    $( "#loc-acc-ins" ).accordion({ active: false });
     codeAddress(address, refineLocations);
   }
 
@@ -111,6 +113,7 @@ $(function() {
     $( newlocid + " > h3" ).text(address);
     $( newlocid ).removeAttr("style");
     $( "#loc-acc" ).accordion("refresh");
+    $( "#loc-acc" ).accordion({ active: markerid });
   }
 
   function refineLocations (locations) {
