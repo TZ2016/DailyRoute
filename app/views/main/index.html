@@ -34,21 +34,28 @@
 
       <!-- To add new location -->
       <div id="addloc" class="row">
-        <div class="col-md-12" style="padding-left: 0;">
-          <form role="form-hotizontal" role="form">
-            <div class="form-group">
-              <div class="col-md-9">
-                <label for="newloc" class="sr-only">New Location</label>
-                <input class="form-control" id="newloc" type="text" placeholder="New Location">
-              </div>
-              <div class="col-md-3">
-                <button type="button" id="addloc-btn" class="btn btn-success">
-                  Add
-                </button>   
-              </div>
+
+        <div class="col-md-12">
+          <div class="input-group">
+            <label for="newloc" class="sr-only">New Location</label>
+            <input id="newloc" type="text" class="form-control" placeholder="New Location">
+            <div class="input-group-btn">
+              <button type="button" id="addloc-btn" class="btn btn-success" tabindex="-1">Add</button>
+              <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" tabindex="-1">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <ul class="dropdown-menu pull-right" role="menu">
+                <li><a href="#">Add</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Separated link</a></li>
+              </ul>
             </div>
-          </form>
+          </div><!-- /.input-group -->
         </div>
+
       </div>
       <hr>
 
