@@ -13,28 +13,37 @@ $(function() {
     source: availableTags
   });
 
-  // sortable
-  $( "#locs" ).sortable();
-  $( "#locs" ).disableSelection();
-
-  // remove loc
-  $( '#locs' ).on("click", ".removeloc-btn", function () {
-    var $locentry = $( this ).parent().parent();
-    var markerid = Number($locentry.attr("id").slice(4));
-    var $cnstentry = $( "#cnst-" + markerid );
-
-    $locentry.remove();
-    $cnstentry.remove();
-    deleteMarker(markerid);
-  });
-
   // add loc
   $( '#addloc-btn' ).click( function () {
     var address = $( "#newloc" ).val().toString();
     codeAddress(address, refineLocations);
   });
 
-  // refine locations
+  // remove loc
+  $( '#loc-acc' ).on("click", ".remove-btn", function () {
+    var $accentry = $( this ).parent().parent().parent().parent().parent().parent(); //ERRORPRONE
+    var markerid = Number($accentry.attr("id").split("-").pop());
+
+    $accentry.remove();
+    deleteMarker(markerid);
+  });
+
+  // accordion
+  $( "#loc-acc" )
+    .accordion({
+      header: "> div > h3"
+    })
+    .sortable({
+      axis: "y",
+      handle: "h3",
+      stop: function( event, ui ) {
+        // IE doesn't register the blur when sorting
+        // so trigger focusout handlers to remove .ui-state-focus
+        ui.item.children( "h3" ).triggerHandler( "focusout" );
+      }
+  });
+
+  // refine location dialog
   $( "#refineloc-lst" ).selectable();
 
   $( "#refineloc-none" ).click( function () {
@@ -54,15 +63,13 @@ $(function() {
   });
 
   // time picker
-  $( "#cnst-form" ).on("mousemove", ".starttime, .endtime", function() {
+  $( "#loc-acc" ).on("mousemove", ".time-start-A, .time-start-B, .time-end-A, .time-end-B", function() {
     $( this ).timepicker({
       'step': 30,
       'forceRoundTime': true,
       'scrollDefaultNow': true
     });
   });
-
-  $( ".duration" ).timepicker();
 
   // test calc route
   $( "#testcalc" ).click( function() {
@@ -77,27 +84,21 @@ $(function() {
 
 
 
-
-
-
-
 function addLocation (location) {
   // add to the list of locations
   // add a constraint entry
 
   var address = getTagForAddress(location);
   var markerid = addMarker(location);
-  var newlocid = "#loc-" + markerid;
-  var newcnstid = "#cnst-" + markerid;
-  var $newlocelem = $( "#loc-tmp" ).clone().attr("id", newlocid.slice(1));
-  var $newcnstelem = $( "#cnst-tmp" ).clone().attr("id", newcnstid.slice(1));
+  var newlocid = "#loc-acc-" + markerid;
+  var $newlocelem = $( "#loc-acc-tmp" ).clone().attr("id", newlocid.slice(1));
 
   $( "#newloc" ).val("");
-  $( "#locs" ).append($newlocelem);
-  $( "#cnst-form" ).append($newcnstelem);
-  $( newlocid + " > .loc-tag" ).text(address);
+
+  $( "#loc-acc" ).append($newlocelem);
+  $( newlocid + " > h3" ).text(address);
   $( newlocid ).removeAttr("style");
-  $( newcnstid ).removeAttr("style"); // remove this 
+  $( "#loc-acc" ).accordion("refresh");
 }
 
 function refineLocations (locations) {

@@ -34,7 +34,6 @@
 
       <!-- To add new location -->
       <div id="addloc" class="row">
-
         <div class="col-md-12">
           <div class="input-group">
             <label for="newloc" class="sr-only">New Location</label>
@@ -55,81 +54,91 @@
             </div>
           </div><!-- /.input-group -->
         </div>
-
+      </div>
+      <br>
+      <!-- mode of transportation -->
+      <div class="row">
+        <div class="col-md-12">
+          <div id="trans-mode" class="btn-group">
+            <button type="button" class="btn btn-default btn-xs">
+              Dri
+            </button>
+            <button type="button" class="btn btn-default btn-xs">
+              Wal
+            </button>
+            <button type="button" class="btn btn-default btn-xs">
+              Bic
+            </button>
+            <button type="button" class="btn btn-default btn-xs">
+              Tra
+            </button>
+          </div>
+        </div>
       </div>
       <hr>
 
       <!-- Locations added so far -->
-      <h4 title="the list is sortable! click and drag it!">
-        Selected Locations</h4>
-      <div id="locs" class="row">
-        <!-- example entry -->
-        <div id="loc-tmp" class="row loc-entry" style="display:none">
-          <div class="col-md-1">
-            <div class="button"> 
-              <span class="glyphicon glyphicon-minus"></span>
+      <h4>Selected Locations</h4>
+      <!-- sortable accordion -->
+      <div class="row">
+        <div id="loc-acc" class="col-md-12">
+          <!-- Sample group -->
+          <div id="loc-acc-tmp" class="group" style="display: none;">
+            <h3>New Location</h3>
+            <div>
+              <!-- time form starts -->
+              <form class="form-horizontal" role="form">
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">
+                    Start
+                  </label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control time-start-A" placeholder="00:00">
+                  </div>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control time-start-B" placeholder="00:00">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">
+                    End
+                  </label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control time-end-A" placeholder="00:00">
+                  </div>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control time-end-B" placeholder="00:00">
+                  </div>
+                </div>
+                <!-- Time range input ends -->
+                <div class="form-group">
+                  <div class="col-sm-12">
+                    <div class="col-sm-6">
+                      <button type="reset" class="btn btn-warning">
+                        Reset
+                      </button>
+                    </div>
+                    <div class="col-sm-6">
+                      <button type="button" class="btn btn-danger remove-btn">
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <!-- time form ends -->
             </div>
           </div>
-          <div class="col-md-7 loc-tag">
-            New Location
-          </div>
-          <div class="col-md-2">
-            <button type="button" class="btn btn-warning btn-xs removeloc-btn">
-              Remove
-            </button>            
-          </div>
+          <!-- sample ends -->
         </div>
-        <!-- end of example entry -->
       </div>
       <hr>
-
-      <!-- Constraint Panel -->
-      <h4>Location Constraints</h4>
-      <div class="row">
-        <div class="col-md-12" style="padding-left: 0;">
-          <form role="form-hotizontal" role="form" id="cnst-form">
-            <div class="form-group" id="cnst-title">
-              <label class="col-md-4 control-label text-center">
-                Start
-              </label>
-              <label class="col-md-4 control-label text-center">
-                Duration
-              </label>
-              <label class="col-md-4 control-label text-center">
-                End
-              </label>
-            </div>
-            <div class="form-group" id="cnst-tmp" style="display:none;">
-              <div class="col-md-4" style="padding-right: 0">
-                <input class="form-control col-md-4 starttime" type="text">
-              </div>
-              <div class="col-md-4">
-                <input class="form-control col-md-4 duration" type="text">
-              </div>
-              <div class="col-md-4" style="padding-left: 0">
-                <input class="form-control col-md-4 endtime" type="text">
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>  
-      <hr>    
-      <!-- Constraint Panel ends -->
-
-<!-- NOTE -->
-<!-- <div>
-      <strong>Mode of Travel: </strong>
-      <select id="mode">
-        <option value="DRIVING">Driving</option>
-        <option value="WALKING">Walking</option>
-        <option value="BICYCLING">Bicycling</option>
-        <option value="TRANSIT">Transit</option>
-      </select>
-    </div> -->
+      <!-- location accordion ends -->
 
       <button id="testcalc" type="button" class="btn btn-warning">
-        Calculate Pre-defined Route
-      </button> 
+        Calculate Route
+      </button>
+      <!-- NOTE: register mode of transportation -->
 
       <!-- Directions Panel starts -->
       <div class="row">

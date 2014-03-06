@@ -13,7 +13,7 @@ function initialize() {
   var mapOptions = {
     zoom: 8,
     center: latlng
-  }
+  };
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
   directionsDisplay.setMap(map);
   directionsDisplay.setPanel(document.getElementById("directionsPanel"));
