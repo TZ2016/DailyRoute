@@ -64,7 +64,16 @@ $(function() {
 
   $( ".duration" ).timepicker();
 
-
+  // test calc route
+  $( "#testcalc" ).click( function() {
+    geocoder.geocode( { 'address': "Berkeley" }, function(res, s) {
+      var result = res[0].geometry.location;
+      var result2 = res[1].geometry.location;
+      var loc1 = {'Lat': result.lat(), 'Long': result.lng()};
+      var loc2 = {'Lat': result2.lat(), 'Long': result2.lng()};
+      calcRoute([loc1, loc2, loc1, loc2]);
+    });
+  });
 
 
 
