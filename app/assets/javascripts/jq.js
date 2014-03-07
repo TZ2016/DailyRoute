@@ -99,7 +99,7 @@ $(function() {
 
   function handleAddLocation () {
     var address = $( "#newloc" ).val().toString();
-    $( "#loc-acc-ins" ).accordion({ active: false });
+    $( "#loc-acc-ins" ).attr("style", "display: none;");
     codeAddress(address, refineLocations);
   }
 
@@ -118,7 +118,7 @@ $(function() {
     $( newlocid + " > h3" ).text(address);
     $( newlocid ).removeAttr("style");
     $( "#loc-acc" ).accordion("refresh");
-    $( "#loc-acc" ).accordion({ active: markerid });
+    $( "#loc-acc" ).accordion({ active: markerid+1 });
   }
 
   function refineLocations (locations) {

@@ -178,7 +178,6 @@ function revGeoAndMarkerHelper(geocoderres) {
   var location = geocoderres.geometry.location;
   var fulladdr = getNameOfAddress(geocoderres);
   var shortname = getTagForAddress(geocoderres);
-  map.setCenter(location);
   var marker = new google.maps.Marker({
     position: location,
     map: map
