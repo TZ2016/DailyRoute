@@ -1,15 +1,12 @@
 /* sortable locations */
-#locs {
-	list-style-type: none; 
-	margin: 0; 
-	padding: 0; 
+#loc-acc label {
+	font-size: 80%;
+	padding-left: 0;
 }
 
-#locs > div { 
-	margin: 0 3px 3px 3px; 
-	padding: 0.4em; 
-	padding-left: 0; 
-	height: 30px; 
+#loc-acc .col-sm-5 {
+	padding-left: 18px;
+	padding-right: 0;
 }
 
 /* refine loc selection */
@@ -34,3 +31,4 @@
 	padding: 0.4em; 
 	height: 40px; 
 }
+
