@@ -22,6 +22,7 @@ class MainController < ApplicationController
 			@location.save
 		end
 	end
+	
 	def updateRoute
 		params[:locationList].each do |point|
 			if point.blacklist == true
@@ -44,6 +45,45 @@ class MainController < ApplicationController
 				Location.update(params[:locationid], :locationname => point.locationname)
 			end
 		end
-
     end
+	
+-	def exportRoute
+ 		outputFile = Prawn::Document.new
+ 		outputFile.image(getMap())
+ 		route = getRoute()
+ 		for loc in route do
+ 			outputFile.text("#{loc.locationname}")
+ 			outputFile.text("#{loc.address}")
+ 		end
+ 		outputFile.render_file "output.pdf"
+ 		send_file outputFile.path
+ 	end
+ 	
+ 	def getMap ()
+ 		#should return path to map image
+ 	end
+ 	
+	#returns array of location object in correct route order
+ 	def getRoute ()
+		id = @route.id
+		currRoute = Location.where(routeid: id).to_a
+		tempLoc = Array.new
+		tempOrder = Array.new
+		count = 0
+		for entry on currRoute do
+			pos = entry.positioninroute
+			if pos > 0
+				@tempOrder << entry
+				@tempLoc << pos
+				count += 1
+			end
+		end
+		routeArray = Array.new(count)
+		arrPos = 0
+		for num in tempOrder do
+			routeArray[num] = tempLoc[arrPos]
+			arrPos += 1
+		end
+		return routeArray
+ 	end
 end
