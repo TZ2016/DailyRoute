@@ -46,6 +46,9 @@ group :production do
   gem 'capybara', '1.1.2'
 end
 
+#gem for creating pdfs
+gem 'prawn'
+
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
