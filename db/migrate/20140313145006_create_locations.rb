@@ -1,9 +1,10 @@
 class CreateLocations < ActiveRecord::Migration
   def change
     create_table :locations do |t|
-      t.text :locationname
+      t.text :searchtext
       t.text :address
       t.integer :routeid
+      t.integer :positioninroute
       t.time :minduration
       t.time :maxduration
       t.datetime :arrivebefore
