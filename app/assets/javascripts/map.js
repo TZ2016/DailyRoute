@@ -78,18 +78,18 @@ function getNameOfAddress(geores) {
   return geores.formatted_address;
 }
 
-function drawRoute(data, panelid) {
+function drawRoute(num, panelid) {
   directionsDisplay.setPanel(document.getElementById(panelid));
 
+  data = _data['route']; // FIXME
   var size = data.length;
-  var start = new google.maps.LatLng(data[0].Lat, data[0].Long);
-  var end = new google.maps.LatLng(data[size-1].Lat, data[size-1].Long);
-  // var selectedMode = document.getElementById("mode").value;
+  var start = new google.maps.LatLng(data[0].lat, data[0].lng);
+  var end = new google.maps.LatLng(data[size-1].lat, data[size-1].lng);
   var selectedMode = "DRIVING";
   var waypts = [];
   var loc;
   for (var i = 1; i < size-1; i++) {
-    loc = new google.maps.LatLng(data[i].Lat, data[i].Long);
+    loc = new google.maps.LatLng(data[i].lat, data[i].lng);
     waypts.push({
         location: loc,
         stopover: true

@@ -74,7 +74,9 @@ $(function() {
   });
 
   // direction panel
-  $( "#dir-panel-temp" ).accordion();
+  $( "#dir-panel-temp" ).accordion({
+    heightStyle: "content"
+  });
   $( "#dir-panel" ).accordion({
     collapsible: true,
     active: false,
@@ -128,20 +130,6 @@ $(function() {
   $( "#calc-btn" ).click( function () {
     genSendData();
     $.sendQuery();
-  });
-
-  $( document ).ajaxComplete(function( event, request, settings ) {
-    if (settings.url === _url) {
-      $( "#dir-panel-temp > h3" ).text("Calculating...");
-      $( "#dir-panel-temp > div" ).text("Your query data was send.");
-    }
-  });
-
-  $( document ).ajaxSuccess(function( event, request, settings ) {
-    if (settings.url === _url) {
-      $( "#dir-panel-temp > h3" ).text("Instruction");
-      $( "#dir-panel-temp > div" ).text("Your routes are ready.");
-    }
   });
 
 });
@@ -224,7 +212,21 @@ jQuery.sendQuery = function () {
     url:  _url,
     data: JSON.stringify(_sendData),
     contentType: "application/json",
-    dataType: "json"
+    dataType: "json",
+    beforeSend: function (jqXHR, settings) {
+      $( "#dir-row" ).removeAttr("style");
+      $( "#dir-panel-temp > h3" ).text("Calculating...");
+      $( "#dir-panel-temp > div" ).text("Your query data was sent.");
+    },
+    success: function (data, status, jqXHR) {
+      _data = data;
+      $( "#dir-panel-temp > h3" ).text("Instruction");
+      $( "#dir-panel-temp > div" ).text("Your routes are ready.");
+    },
+    error: function (jqXHR, status, error) {
+      $( "#dir-row" ).attr("style", "display: none;");
+      $.alertMessage(error);
+    }
   });
 };
 
@@ -262,7 +264,7 @@ jQuery.displayRoute = function (ev, ui) {
   var pid = "route-" + num;
 
   $( "#" + pid + "> h3" ).text("Route " + num);
-  drawRoute(_data['route'], pid);
+  drawRoute(num, pid);
 };
 
 // utilities

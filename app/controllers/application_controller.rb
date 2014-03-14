@@ -3,6 +3,10 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
+  require 'rubygems'
+  require 'json'
+  require 'net/http'
+  
   SUCCESS = 1
   ERR_REQUEST_FAIL = -1
   ERR_INVALID_INPUT_TIME = -2
@@ -11,10 +15,18 @@ class ApplicationController < ActionController::Base
   def solve (id)
   	start, dest, locations = getLocations(id)
   	arranged,unarranged,invalid_input = classify_loc(start,locations, dest)
-  	if invalid_input
+  	require 'pp'
+    puts '==========inside solve================'
+    puts 'arranged'
+    pp arranged
+    puts 'unarranged'
+    pp unarranged
+    if invalid_input
   		render :json => {errCode: ERR_INVALID_INPUT_TIME}
   	elsif arranged == []
-  		shortest_path(start,locations, dest)
+  		puts '==============call shortset path=================='
+      shortest_path(start,locations, dest)
+
   	else
   		fit_schedule(arranged, unarranged)
   	end
@@ -22,21 +34,34 @@ class ApplicationController < ActionController::Base
 
   def getLocations(id)
   	currRoute = Location.where(routeid: id).to_a
-  	start = currRoute.find{|loc| loc.start}
-  	dest = currRoute.find{|loc| loc.dest}
-  	locations = currRoute.select{|loc| !loc.start and !loc.dest}
-  	return start, dest, locations
+  	start = currRoute.select{|loc| loc.start}
+  	dest = currRoute.select{|loc| loc.dest}
+  	locations = currRoute.select{|loc| (not loc.start) and (not loc.dest)}
+  	puts '======================letlocations==============='
+    pp start
+    pp dest
+    pp locations
+    return start, dest, locations
   end
 
   ## http://maps.googleapis.com/maps/api/directions/json?origin=Adelaide,SA&destination=Adelaide,SA&waypoints=optimize:true|Barossa+Valley,SA|Clare,SA|Connawarra,SA|McLaren+Vale,SA&sensor=false&key=API_KEY
   def shortest_path(start, locations, dest)
-  	result = request_route(start,locations, dest)
-  	if result[:status] != 'OK'
+  	result = JSON.parse(request_route(start,locations, dest))
+    puts '================ result =========================='
+    # puts result['status'] 
+  	puts result['status'] 
+    # pp result
+
+    if result.has_key? 'Error' or result['status'] != 'OK'
   		render :json => {errCode: ERR_REQUEST_FAIL}
   	else
-  		order = result[:routes][0][:waypoint_order]
-  		ordered_loc = order.map{|x| locations[x].geocode}
-  		ordered_loc = [start.geocode] + ordered_loc + [dest.geocode]
+      pp result
+  		order = result['routes'][0]['waypoint_order']
+  		ordered_loc = order.map{|x| locations[x]}
+  		ordered_loc = (start+ordered_loc+dest).map{|x| x.geocode}
+      puts '====================sendback================================'
+      require 'pp'
+      pp ordered_loc
   		render :json => {errCode: SUCCESS, route: ordered_loc}
   	end
   end
@@ -57,14 +82,13 @@ class ApplicationController < ActionController::Base
 
   def request_route(start, locations, dest)
   	addr = 'http://maps.googleapis.com/maps/api/directions/json?'
-  	origin = 'origin=%s' % geocode_to_s(start.geocode) 
-  	dest = 'destination=%s&' % geocode_to_s(dest.geocode)
+  	origin = 'origin=%s&' % geocode_to_s(start[0].geocode) 
+  	dest = 'destination=%s' % geocode_to_s(dest[0].geocode)
   	places = ''
   	locations.each do |point|
-  		places = geocode_to_s(point.geocode) + '|'
+  		places = '|' + geocode_to_s(point.geocode)
   	end
-  	places[places.length - 1] = '&'
-  	passby = 'waypoints=optimize:true|%ssensor=false' % places
+  	passby = '&waypoints=optimize:true%s&sensor=false' % places
   	addr = addr+origin+dest+passby
   	require 'net/http'
   	return Net::HTTP.get(URI.parse(addr))
@@ -72,8 +96,9 @@ class ApplicationController < ActionController::Base
 
   ## requires start.departafter and end.startbefore
   def classify_loc(start, locations, dest)
-  	all_loc = [start]+locations+[dest]
+  	all_loc = start+locations+dest
   	arranged,unarranged = [],[]
+
   	all_loc.each do |point|
   		preprocess(point)
       if point.arrivebefore
@@ -82,11 +107,15 @@ class ApplicationController < ActionController::Base
   			unarranged << point
   		end
   	end
+    require 'pp'
+    pp arranged
+    pp unarranged
+
   	arranged.sort_by do |a|
   		a.arrivebefore
   	end
   	invalid_input = false
-  	if arranged and (arranged.first != start or arranged.last != dest)
+  	if arranged != [] and (arranged.first != start or arranged.last != dest)
   		invalid_input = true
   	end
   	return arranged, unarranged, invalid_input
@@ -112,12 +141,12 @@ class ApplicationController < ActionController::Base
     puts '===========preprocess================='
     require 'pp'
     pp point
-    if point.arrivebefore and point.departafter
+    if (point.arrivebefore and point.departafter) or ((not point.arrivebefore) and (not point.departafter))
   		return
     end
   	if (not point.departafter) and point.arrivebefore
   		point.departafter = point.arrivebefore + point.minduration
-  	elsif (not point.arrivebefore) and point.departbefore
+  	elsif (not point.arrivebefore) and point.departafter
   		point.arrivebefore = point.departbefore - point.minduration
   	end
   	point.save

@@ -10,11 +10,15 @@ class MainController < ApplicationController
 	end
 
 	def master
+		puts '======================params====================='
+		require 'pp'
+		pp params
 		parseRoute
 		puts "================route saved=================="
 		require 'pp'
 		pp @route
 		pp Location.all
+		puts '================================================='
 		solve(@route.id)
 		# exportRoute
 	end
@@ -93,8 +97,26 @@ class MainController < ApplicationController
  		send_file outputFile.path
  	end
  	
+	#return path to image of map
+	require 'open-uri'
  	def getMap ()
- 		#should return path to map image
+		route = getRoute()
+		coordseq = ""
+		pathseq = ""
+		for loc in route
+			cordseq = cordseq + "%7C"
+			pathseq = pathseq + "|"
+			latlng = loc[:geocode]
+			lat = latlng[:lat].to_s
+			lng = latlng[:lng].to_s
+			coordseq = coordseq + lat + "," + lng
+			pathseq = pathseq + lat + "," + lng
+		end
+		url = "http://maps.googleapis.com/maps/api/staticmap?size=400x400\&markers=color:blue" + coordseq + "path=color:0xff0000ff|weight:5" + pathseq + "&sensor=false"
+		open('map.jpg', 'wb') do |file|
+			file << open(url).read
+			return file.path
+		end
  	end
  	
 	#returns array of location object in correct route order
