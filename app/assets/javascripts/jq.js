@@ -208,17 +208,24 @@ jQuery.sendQuery = function () {
       $( "#dir-panel-temp > div" ).text("Your query data was sent.");
     },
     success: function (data, status, jqXHR) {
-      _data = data;
+      handleResult(data);
       $( "#dir-panel-temp > h3" ).text("Instruction");
       $( "#dir-panel-temp > div" ).text("Your routes are ready.");
       $( "#dir-panel > h3" ).text("Route 1");
     },
     error: function (jqXHR, status, error) {
       $( "#dir-row" ).attr("style", "display: none;");
-      $.alertMessage(error);
+      $.alertMessage("Your query failed.");
     }
   });
 };
+
+function handleResult (data) {
+  _data = data;
+  if (data["errCode"] != 1) {
+    $.alertMessage("Google server denied your request!");
+  }
+}
 
 function genSendData () {
   // _sendData
