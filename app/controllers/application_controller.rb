@@ -75,7 +75,8 @@ class ApplicationController < ActionController::Base
   	all_loc = [start]+locations+[dest]
   	arranged,unarranged = [],[]
   	all_loc.each do |point|
-  		if preprocess(point).arrivebefore
+  		preprocess(point)
+      if point.arrivebefore
   			arranged << point
   		else
   			unarranged << point
@@ -108,12 +109,13 @@ class ApplicationController < ActionController::Base
   end
 
   def preprocess(point)
+    puts '===========preprocess================='
     require 'pp'
     pp point
     if point.arrivebefore and point.departafter
   		return
     end
-  	if (not point.departafter) and arrivebefore
+  	if (not point.departafter) and point.arrivebefore
   		point.departafter = point.arrivebefore + point.minduration
   	elsif (not point.arrivebefore) and point.departbefore
   		point.arrivebefore = point.departbefore - point.minduration
