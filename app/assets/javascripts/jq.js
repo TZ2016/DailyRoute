@@ -1,5 +1,5 @@
 // data communication
-var _url = "/main/parseRoute";
+var _url = "/main/master";
 var _sendGeo = [];
 var _result = {};
 var _sendData = {'travelMethod': undefined,
