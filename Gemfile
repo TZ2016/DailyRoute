@@ -61,3 +61,4 @@ gem 'prawn'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+gem "rspec-rails", :group => [:development, :test]
