@@ -108,6 +108,8 @@ class ApplicationController < ActionController::Base
   end
 
   def preprocess(point)
+    require 'pp'
+    pp point
     if point.arrivebefore and point.departafter
   		return
     end
