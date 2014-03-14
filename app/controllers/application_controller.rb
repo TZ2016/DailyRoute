@@ -89,7 +89,8 @@ class ApplicationController < ActionController::Base
   		places = '|' + geocode_to_s(point.geocode)
   	end
   	passby = '&waypoints=optimize:true%s&sensor=false' % places
-  	addr = addr+origin+dest+passby
+  	addr = URI.encode(addr+origin+dest+passby)
+
   	require 'net/http'
   	return Net::HTTP.get(URI.parse(addr))
   end
