@@ -14,6 +14,8 @@ class CreateLocations < ActiveRecord::Migration
       t.integer :priority
       t.boolean :blacklisted
       t.boolean :lockedin
+      t.boolean :start
+      t.boolean :dest
       t.text :geocode
 
       t.timestamps

@@ -13,6 +13,7 @@ class MainController < ApplicationController
 		@route = Route.new
 		@route.travelMethod = params[:travelMethod]
 		@route.save
+		counter = 0
 		params[:locationList].each do |point|
 			@location = Location.new
 			@location.routeid = @route.id
@@ -26,6 +27,17 @@ class MainController < ApplicationController
 			@location.priority = point.priority
 			@location.blacklist = false
 			@location.lockedin = false
+			if counter == 0
+				@location.start = true
+			else
+				@location.start = false
+			end
+			if counter == params[:locationList].length -1
+				@location.dest = true
+			else
+				@location.dest = false
+			end
+			counter+=1
 			@location.save
 		end
 	end
