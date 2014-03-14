@@ -20,7 +20,6 @@ function initialize() {
   };
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
   directionsDisplay.setMap(map);
-  directionsDisplay.setPanel(document.getElementById("route-1"));
 
   // listeners
   google.maps.event.addListener(map, 'click', function(e) {
@@ -65,7 +64,7 @@ function codeAddress(address, refineLocations) {
     } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
       refineLocations([]);
     } else{
-      alertMessage('Geocode was not successful for the following reason: ' + status);
+      $.alertMessage('Geocode was not successful for the following reason: ' + status);
     }
   });
 }
@@ -79,20 +78,9 @@ function getNameOfAddress(geores) {
   return geores.formatted_address;
 }
 
-// function getNameOfAddress(geores) {
-//   // return the full name of the address backed by GeocoderResult object
-//   var components = [];
-//   geores.address_components.forEach(function (addrcomp) {
-//     components.push(addrcomp.short_name);
-//   });
-//   return components.join(", ");
-// }
+function drawRoute(data, panelid) {
+  directionsDisplay.setPanel(document.getElementById(panelid));
 
-
-
-
-
-function calcRoute(data) {
   var size = data.length;
   var start = new google.maps.LatLng(data[0].Lat, data[0].Long);
   var end = new google.maps.LatLng(data[size-1].Lat, data[size-1].Long);
@@ -161,10 +149,10 @@ function revGeoAndMarker(latlng) {
       if (results[1]) {
         revGeoAndMarkerHelper(results[1]);
       } else {
-        alertMessage('No results found');
+        $.alertMessage('No results found');
       }
     } else {
-      alertMessage('Geocoder failed due to: ' + status);
+      $.alertMessage('Geocoder failed due to: ' + status);
     }
   });
 }

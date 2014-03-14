@@ -1,3 +1,6 @@
+// data returned from the back end
+var _result = {};
+
 // global temporary variables
 var _locToRefine = [];
 
@@ -16,11 +19,11 @@ $(function() {
   // add loc
   $('#newloc').bind('keypress', function(e) {
     if(e.keyCode==13){
-      handleAddLocation();
+      $.handleAddLocation();
     }
   });
 
-  $( '#addloc-btn' ).click( handleAddLocation );
+  $( '#addloc-btn' ).click( $.handleAddLocation );
 
   // dropdown
   $( "#addloc-dp-clear" ).click( function() {
@@ -59,23 +62,29 @@ $(function() {
   });
 
   // direction panel
-  $( "#dir-panel" ).accordion();
+  $( "#dir-panel-temp" ).accordion();
+  $( "#dir-panel" ).accordion({
+    collapsible: true,
+    active: false,
+    heightStyle: 'content',
+    beforeActivate: $.displayRoute
+  });
 
   // refine location dialog
   $( "#refineloc-lst" ).selectable();
 
   $( "#refineloc-none" ).click( function () {
-    alertMessage("Oops! Please try with a different input.");
+    $.alertMessage("Oops! Please try with a different input.");
     $( "#refineloc-dlg" ).modal("hide");
   });
 
   $( "#refineloc-select" ).click( function () {
     var $selected = $( "#refineloc-lst > .ui-selected" );
     if ($selected.length === 0) {
-      alertMessage("No location is yet selected!");
+      $.alertMessage("No location is yet selected!");
     } else {
       var index = $( "#refineloc-lst li" ).index($selected[0]);
-      addLocation(_locToRefine[index]);
+      $.addLocation(_locToRefine[index]);
       $( "#refineloc-dlg" ).modal("hide");
     }
   });
@@ -91,69 +100,85 @@ $(function() {
 
   // test calc route
   $( "#testcalc" ).click( function() {
+    //FIXME
+    // send request to back end and store to _result variable    
     geocoder.geocode( { 'address': "Berkeley" }, function(res, s) {
       var result = res[0].geometry.location;
       var result2 = res[1].geometry.location;
       var loc1 = {'Lat': result.lat(), 'Long': result.lng()};
       var loc2 = {'Lat': result2.lat(), 'Long': result2.lng()};
-      calcRoute([loc1, loc2, loc1, loc2]);
+      _data = { 'errCode': 1, 'route': [loc1, loc2, loc1, loc2] };
     });
+
   });
-
-  function handleAddLocation () {
-    var address = $( "#newloc" ).val().toString();
-    $( "#loc-acc-ins" ).attr("style", "display: none;");
-    codeAddress(address, refineLocations);
-  }
-
-  function addLocation (location) {
-    // add to the list of locations
-    // add a constraint entry
-
-    var address = getTagForAddress(location);
-    var markerid = addMarker(location);
-    var newlocid = "#loc-acc-" + markerid;
-    var $newlocelem = $( "#loc-acc-tmp" ).clone().attr("id", newlocid.slice(1));
-
-    $( "#newloc" ).val("");
-
-    $( "#loc-acc" ).append($newlocelem);
-    $( newlocid + " > h3" ).text(address);
-    $( newlocid ).removeAttr("style");
-    $( "#loc-acc" ).accordion("refresh");
-    $( "#loc-acc" ).accordion({ active: markerid+1 });
-  }
-
-  function refineLocations (locations) {
-    // called when more than one results are found
-
-    if (locations.length === 0) {
-      alertMessage("none was returned");
-    } else if (locations.length == 1) {
-      addLocation(locations[0]);
-    } else {
-      // refineloc-lst refineloc-lst-tmp refineloc-dlg
-      _locToRefine = [];
-      $( "#refineloc-lst" ).empty();
-      
-      locations.forEach(function (location) {
-        var name = getNameOfAddress(location);
-        var $temp = $( "#refineloc-lst-tmp" ).clone().removeAttr("id");
-
-        _locToRefine.push(location);
-        $( "#refineloc-lst" ).append( $temp.clone().text(name));
-      });
-
-      $( "#refineloc-dlg" ).modal({
-        show: true,
-        keyboard: false,
-        backdrop: "static"
-      });
-    }
-  }
 
 });
 
-function alertMessage (msg) {
+
+
+
+
+
+jQuery.handleAddLocation = function () {
+  var address = $( "#newloc" ).val().toString();
+  $( "#loc-acc-ins" ).attr("style", "display: none;");
+  codeAddress(address, $.refineLocations);
+};
+
+jQuery.addLocation = function (location) {
+  // add to the list of locations
+  // add a constraint entry
+
+  var address = getTagForAddress(location);
+  var markerid = addMarker(location);
+  var newlocid = "#loc-acc-" + markerid;
+  var $newlocelem = $( "#loc-acc-tmp" ).clone().attr("id", newlocid.slice(1));
+
+  $( "#newloc" ).val("");
+
+  $( "#loc-acc" ).append($newlocelem);
+  $( newlocid + " > h3" ).text(address);
+  $( newlocid ).removeAttr("style");
+  $( "#loc-acc" ).accordion("refresh");
+  $( "#loc-acc" ).accordion({ active: markerid+1 });
+};
+
+jQuery.refineLocations = function (locations) {
+  // called when more than one results are found
+
+  if (locations.length === 0) {
+    $.alertMessage("none was returned");
+  } else if (locations.length == 1) {
+    $.addLocation(locations[0]);
+  } else {
+    // refineloc-lst refineloc-lst-tmp refineloc-dlg
+    _locToRefine = [];
+    $( "#refineloc-lst" ).empty();
+    
+    locations.forEach(function (location) {
+      var name = getNameOfAddress(location);
+      var $temp = $( "#refineloc-lst-tmp" ).clone().removeAttr("id");
+
+      _locToRefine.push(location);
+      $( "#refineloc-lst" ).append( $temp.clone().text(name));
+    });
+
+    $( "#refineloc-dlg" ).modal({
+      show: true,
+      keyboard: false,
+      backdrop: "static"
+    });
+  }
+};
+
+jQuery.displayRoute = function (ev, ui) {
+  var num = 1; // FIXME
+  var pid = "route-" + num;
+
+  $( "#" + pid + "> h3" ).text("Route " + num);
+  drawRoute(_data['route'], pid);
+};
+
+jQuery.alertMessage = function (msg) {
   alert(msg);
-}
+};
