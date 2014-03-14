@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
-  protect_from_forgery with: :exception
+  # protect_from_forgery with: :exception
 
   require 'rubygems'
   require 'json'
@@ -15,18 +15,10 @@ class ApplicationController < ActionController::Base
   def solve (id)
   	start, dest, locations = getLocations(id)
   	arranged,unarranged,invalid_input = classify_loc(start,locations, dest)
-  	require 'pp'
-    puts '==========inside solve================'
-    puts 'arranged'
-    pp arranged
-    puts 'unarranged'
-    pp unarranged
     if invalid_input
   		render :json => {errCode: ERR_INVALID_INPUT_TIME}
   	elsif arranged == []
-  		puts '==============call shortset path=================='
       shortest_path(start,locations, dest)
-
   	else
   		fit_schedule(arranged, unarranged)
   	end
@@ -37,31 +29,19 @@ class ApplicationController < ActionController::Base
   	start = currRoute.select{|loc| loc.start}
   	dest = currRoute.select{|loc| loc.dest}
   	locations = currRoute.select{|loc| (not loc.start) and (not loc.dest)}
-  	puts '======================letlocations==============='
-    pp start
-    pp dest
-    pp locations
     return start, dest, locations
   end
 
   ## http://maps.googleapis.com/maps/api/directions/json?origin=Adelaide,SA&destination=Adelaide,SA&waypoints=optimize:true|Barossa+Valley,SA|Clare,SA|Connawarra,SA|McLaren+Vale,SA&sensor=false&key=API_KEY
   def shortest_path(start, locations, dest)
   	result = JSON.parse(request_route(start,locations, dest))
-    puts '================ result =========================='
-    # puts result['status'] 
-  	puts result['status'] 
-    # pp result
 
     if result.has_key? 'Error' or result['status'] != 'OK'
   		render :json => {errCode: ERR_REQUEST_FAIL}
   	else
-      pp result
   		order = result['routes'][0]['waypoint_order']
   		ordered_loc = order.map{|x| locations[x]}
   		ordered_loc = (start+ordered_loc+dest).map{|x| x.geocode}
-      puts '====================sendback================================'
-      require 'pp'
-      pp ordered_loc
   		render :json => {errCode: SUCCESS, route: ordered_loc}
   	end
   end
@@ -108,9 +88,6 @@ class ApplicationController < ActionController::Base
   			unarranged << point
   		end
   	end
-    require 'pp'
-    pp arranged
-    pp unarranged
 
   	arranged.sort_by do |a|
   		a.arrivebefore
@@ -139,9 +116,6 @@ class ApplicationController < ActionController::Base
   end
 
   def preprocess(point)
-    puts '===========preprocess================='
-    require 'pp'
-    pp point
     if (point.arrivebefore and point.departafter) or ((not point.arrivebefore) and (not point.departafter))
   		return
     end

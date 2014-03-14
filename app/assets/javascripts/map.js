@@ -106,42 +106,10 @@ function drawRoute(num, panelid) {
   directionsService.route(request, function(response, status) {
     if (status == google.maps.DirectionsStatus.OK) {
       directionsDisplay.setDirections(response);
-      // var route = response.routes[0];
-      // var summaryPanel = document.getElementById("route-test");
-      // summaryPanel.innerHTML = "";
-      // for (var i = 0; i < route.legs.length; i++) {
-      //   var routeSegment = i+1;
-      //   summaryPanel.innerHTML += "<b>Route Segment: " + routeSegment + "</b><br />";
-      //   summaryPanel.innerHTML += route.legs[i].start_address + " to ";
-      //   summaryPanel.innerHTML += route.legs[i].end_address + "<br />";
-      //   summaryPanel.innerHTML += route.legs[i].distance.text + "<br /><br />";
-      // }
     }
   });
 
-  // google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
-  //     computeTotalDistance(directionsDisplay.directions);
-  // });
 }
-
-
-// function computeTotalDistance(result) {
-//   var total = 0;
-//   var myroute = result.routes[0];
-//   for (i = 0; i < myroute.legs.length; i++) {
-//     total += myroute.legs[i].distance.value;
-//   }
-//   total = total / 1000.0;
-//   // document.getElementById("total").innerHTML = total + " km";
-// }
-
-// function convertToLatLng(input) {
-//   var latlngStr = input.split(',', 2);
-//   var lat = parseFloat(latlngStr[0]);
-//   var lng = parseFloat(latlngStr[1]);
-//   var latlng = new google.maps.LatLng(lat, lng);
-//   return latlng;
-// }
 
 function revGeoAndMarker(latlng) {
   geocoder.geocode({'latLng': latlng}, function (results, status) {

@@ -10,15 +10,7 @@ class MainController < ApplicationController
 	end
 
 	def master
-		puts '======================params====================='
-		require 'pp'
-		pp params
 		parseRoute
-		puts "================route saved=================="
-		require 'pp'
-		pp @route
-		pp Location.all
-		puts '================================================='
 		solve(@route.id)
 		# exportRoute
 	end
@@ -26,8 +18,6 @@ class MainController < ApplicationController
 
 
 	def parseRoute
-		puts "I Got It"
-		puts params
 		@route = Route.new
 		@route.travelMethod = params[:travelMethod]
 		@route.save
