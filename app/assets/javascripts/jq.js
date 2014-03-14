@@ -58,6 +58,9 @@ $(function() {
     collapsible: true
   });
 
+  // direction panel
+  $( "#dir-panel" ).accordion();
+
   // refine location dialog
   $( "#refineloc-lst" ).selectable();
 

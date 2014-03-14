@@ -1,7 +1,8 @@
 var geocoder;
 var map;
 var rendererOptions = {
-  draggable: true
+  // draggable: true
+  draggable: false
 };
 var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 var directionsService = new google.maps.DirectionsService();
@@ -19,7 +20,7 @@ function initialize() {
   };
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
   directionsDisplay.setMap(map);
-  directionsDisplay.setPanel(document.getElementById("directionsPanel"));
+  directionsDisplay.setPanel(document.getElementById("route-1"));
 
   // listeners
   google.maps.event.addListener(map, 'click', function(e) {
@@ -117,35 +118,34 @@ function calcRoute(data) {
   directionsService.route(request, function(response, status) {
     if (status == google.maps.DirectionsStatus.OK) {
       directionsDisplay.setDirections(response);
-      var route = response.routes[0];
-      var summaryPanel = document.getElementById("directions_panel");
-      summaryPanel.innerHTML = "";
-      // For each route, display summary information.
-      for (var i = 0; i < route.legs.length; i++) {
-        var routeSegment = i+1;
-        summaryPanel.innerHTML += "<b>Route Segment: " + routeSegment + "</b><br />";
-        summaryPanel.innerHTML += route.legs[i].start_address + " to ";
-        summaryPanel.innerHTML += route.legs[i].end_address + "<br />";
-        summaryPanel.innerHTML += route.legs[i].distance.text + "<br /><br />";
-      }
+      // var route = response.routes[0];
+      // var summaryPanel = document.getElementById("route-test");
+      // summaryPanel.innerHTML = "";
+      // for (var i = 0; i < route.legs.length; i++) {
+      //   var routeSegment = i+1;
+      //   summaryPanel.innerHTML += "<b>Route Segment: " + routeSegment + "</b><br />";
+      //   summaryPanel.innerHTML += route.legs[i].start_address + " to ";
+      //   summaryPanel.innerHTML += route.legs[i].end_address + "<br />";
+      //   summaryPanel.innerHTML += route.legs[i].distance.text + "<br /><br />";
+      // }
     }
   });
 
-  google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
-      computeTotalDistance(directionsDisplay.directions);
-  });
+  // google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
+  //     computeTotalDistance(directionsDisplay.directions);
+  // });
 }
 
 
-function computeTotalDistance(result) {
-  var total = 0;
-  var myroute = result.routes[0];
-  for (i = 0; i < myroute.legs.length; i++) {
-    total += myroute.legs[i].distance.value;
-  }
-  total = total / 1000.0;
-  document.getElementById("total").innerHTML = total + " km";
-}
+// function computeTotalDistance(result) {
+//   var total = 0;
+//   var myroute = result.routes[0];
+//   for (i = 0; i < myroute.legs.length; i++) {
+//     total += myroute.legs[i].distance.value;
+//   }
+//   total = total / 1000.0;
+//   // document.getElementById("total").innerHTML = total + " km";
+// }
 
 // function convertToLatLng(input) {
 //   var latlngStr = input.split(',', 2);
