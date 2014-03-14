@@ -86,7 +86,7 @@ class ApplicationController < ActionController::Base
   	dest = 'destination=%s' % geocode_to_s(dest[0].geocode)
   	places = ''
   	locations.each do |point|
-  		places = '|' + geocode_to_s(point.geocode)
+  		places += '|' + geocode_to_s(point.geocode)
   	end
   	passby = '&waypoints=optimize:true%s&sensor=false' % places
   	addr = URI.encode(addr+origin+dest+passby)
