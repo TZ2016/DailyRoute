@@ -32,3 +32,8 @@
 	height: 40px; 
 }
 
+/* dir panel */
+#dir-panel > div {
+	padding-left: 18px;
+	padding-right: 18px;
+}
