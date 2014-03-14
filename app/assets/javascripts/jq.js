@@ -112,22 +112,11 @@ $(function() {
     });
   });
 
-  // test calc route
-  $( "#testcalc" ).click( function() {
-    //FIXME
-    // send request to back end and store to _result variable    
-    geocoder.geocode( { 'address': "Berkeley" }, function(res, s) {
-      var result = res[0].geometry.location;
-      var result2 = res[1].geometry.location;
-      var loc1 = {'Lat': result.lat(), 'Long': result.lng()};
-      var loc2 = {'Lat': result2.lat(), 'Long': result2.lng()};
-      _data = { 'errCode': 1, 'route': [loc1, loc2, loc1, loc2] };
-    });
-  });
-
   // view result button and utilities
-
   $( "#calc-btn" ).click( function () {
+    $( "#dir-panel > div" ).text("");
+    $( "#dir-panel" ).accordion( "option", "active", false );
+
     genSendData();
     $.sendQuery();
   });
@@ -222,6 +211,7 @@ jQuery.sendQuery = function () {
       _data = data;
       $( "#dir-panel-temp > h3" ).text("Instruction");
       $( "#dir-panel-temp > div" ).text("Your routes are ready.");
+      $( "#dir-panel > h3" ).text("Route 1");
     },
     error: function (jqXHR, status, error) {
       $( "#dir-row" ).attr("style", "display: none;");
