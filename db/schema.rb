@@ -27,6 +27,9 @@ ActiveRecord::Schema.define(version: 20140313145006) do
     t.integer  "priority"
     t.boolean  "blacklisted"
     t.boolean  "lockedin"
+    t.boolean  "start"
+    t.boolean  "dest"
+    t.text     "geocode"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

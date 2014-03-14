@@ -102,7 +102,7 @@ class ApplicationController < ActionController::Base
   	origins = 'origins='+places
   	destination = 'destinations='+places
   	mode = 'mode=' + @route.travelMethod
-  	address = address + origins + destinations + mode
+  	address = address + origins + destination + mode
   	require 'net/http'
   	return Net::HTTP.get(URI.parse(address))
   end
@@ -112,7 +112,7 @@ class ApplicationController < ActionController::Base
   		return
     end
   	if (not point.departafter) and arrivebefore
-  		point.departafter = point.arrivebefore +point.minduration
+  		point.departafter = point.arrivebefore + point.minduration
   	elsif (not point.arrivebefore) and point.departbefore
   		point.arrivebefore = point.departbefore - point.minduration
   	end

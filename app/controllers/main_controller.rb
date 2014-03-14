@@ -10,6 +10,7 @@ class MainController < ApplicationController
 	end
 
 	def parseRoute
+		puts "I Got It"
 		@route = Route.new
 		@route.travelMethod = params[:travelMethod]
 		@route.save

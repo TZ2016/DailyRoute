@@ -1,5 +1,20 @@
-// data returned from the back end
-var _result = {};
+// data communication
+var _url = "/main/parseRoute";
+var _sendGeo = [];
+var _sendData = {};
+var _result = {'travelMethod': undefined,
+               'locationList':
+                   [{ 'searchtext': undefined,
+                      'location': ('lng', 'lat'),
+                      'minduration': undefined,
+                      'maxduration': undefined,
+                      'arrivebefore': undefined,
+                      'arriveafter': undefined,
+                      'departbefore': undefined,
+                      'departafter': undefined,
+                      'priority': undefined
+                    }]
+             };
 
 // global temporary variables
 var _locToRefine = [];
@@ -32,11 +47,7 @@ $(function() {
 
   // remove loc
   $( '#loc-acc' ).on("click", ".remove-btn", function () {
-    var $accentry = $( this ).parent().parent().parent().parent().parent().parent(); //ERRORPRONE
-    var markerid = Number($accentry.attr("id").split("-").pop());
-
-    $accentry.remove();
-    deleteMarker(markerid);
+    $.removeLocation(this);
   });
 
   // accordion main
@@ -58,6 +69,7 @@ $(function() {
   // accordion instruction
   $( "#loc-acc-ins" ).accordion({
     header: "> div > h3",
+    heightStyle: 'content',
     collapsible: true
   });
 
@@ -109,21 +121,34 @@ $(function() {
       var loc2 = {'Lat': result2.lat(), 'Long': result2.lng()};
       _data = { 'errCode': 1, 'route': [loc1, loc2, loc1, loc2] };
     });
+  });
 
+  // view result button and utilities
+
+  $( "#calc-btn" ).click( function () {
+    genSendData();
+    $.sendQuery();
+  });
+
+  $( document ).ajaxComplete(function( event, request, settings ) {
+    if (settings.url === _url) {
+      $( "#dir-panel-temp > h3" ).text("Calculating...");
+      $( "#dir-panel-temp > div" ).text("Your query data was send.");
+    }
+  });
+
+  $( document ).ajaxSuccess(function( event, request, settings ) {
+    if (settings.url === _url) {
+      $( "#dir-panel-temp > h3" ).text("Instruction");
+      $( "#dir-panel-temp > div" ).text("Your routes are ready.");
+    }
   });
 
 });
 
 
 
-
-
-
-jQuery.handleAddLocation = function () {
-  var address = $( "#newloc" ).val().toString();
-  $( "#loc-acc-ins" ).attr("style", "display: none;");
-  codeAddress(address, $.refineLocations);
-};
+// Adding location
 
 jQuery.addLocation = function (location) {
   // add to the list of locations
@@ -134,13 +159,20 @@ jQuery.addLocation = function (location) {
   var newlocid = "#loc-acc-" + markerid;
   var $newlocelem = $( "#loc-acc-tmp" ).clone().attr("id", newlocid.slice(1));
 
-  $( "#newloc" ).val("");
+  _sendGeo[markerid] = location;
 
+  $( "#newloc" ).val("");
   $( "#loc-acc" ).append($newlocelem);
   $( newlocid + " > h3" ).text(address);
   $( newlocid ).removeAttr("style");
   $( "#loc-acc" ).accordion("refresh");
   $( "#loc-acc" ).accordion({ active: markerid+1 });
+};
+
+jQuery.handleAddLocation = function () {
+  var address = $( "#newloc" ).val().toString();
+  $( "#loc-acc-ins" ).attr("style", "display: none;");
+  codeAddress(address, $.refineLocations);
 };
 
 jQuery.refineLocations = function (locations) {
@@ -171,6 +203,35 @@ jQuery.refineLocations = function (locations) {
   }
 };
 
+jQuery.removeLocation = function (rmvobj) {
+    var $accentry = $( rmvobj ).parent().parent().parent().parent().parent().parent(); //ERRORPRONE
+    var markerid = Number($accentry.attr("id").split("-").pop());
+
+    $accentry.remove();
+    deleteMarker(markerid);
+    delete _sendGeo[markerid];
+
+    if ($("#loc-acc > div").length == 1) {
+      $( "#loc-acc-ins" ).removeAttr("style");
+    }
+};
+
+// view result
+
+jQuery.sendQuery = function () {
+  $.ajax({
+    type: 'POST',
+    url:  _url,
+    data: JSON.stringify(_sendData),
+    contentType: "application/json",
+    dataType: "json",
+  });
+};
+
+function genSendData () {
+  // _sendData
+}
+
 jQuery.displayRoute = function (ev, ui) {
   var num = 1; // FIXME
   var pid = "route-" + num;
@@ -178,6 +239,8 @@ jQuery.displayRoute = function (ev, ui) {
   $( "#" + pid + "> h3" ).text("Route " + num);
   drawRoute(_data['route'], pid);
 };
+
+// utilities
 
 jQuery.alertMessage = function (msg) {
   alert(msg);
