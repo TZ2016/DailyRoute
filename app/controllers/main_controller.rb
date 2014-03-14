@@ -2,6 +2,13 @@ class MainController < ApplicationController
 
 	def index
 	end
+
+	def aboutUs
+	end
+
+	def tutorial
+	end
+
 	def parseRoute
 		@route = Route.new
 		@route.travelMethod = params[:travelMethod]
@@ -45,9 +52,9 @@ class MainController < ApplicationController
 				Location.update(params[:locationid], :locationname => point.locationname)
 			end
 		end
-    end
+	end
 	
--	def exportRoute
+	def exportRoute
  		outputFile = Prawn::Document.new
  		outputFile.image(getMap())
  		route = getRoute()
@@ -70,7 +77,7 @@ class MainController < ApplicationController
 		tempLoc = Array.new
 		tempOrder = Array.new
 		count = 0
-		for entry on currRoute do
+		for entry in currRoute do
 			pos = entry.positioninroute
 			if pos > 0
 				@tempOrder << entry
