@@ -9,8 +9,21 @@ class MainController < ApplicationController
 	def tutorial
 	end
 
+	def master
+		parseRoute
+		puts "================route saved=================="
+		require 'pp'
+		pp @route
+		pp Location.all
+		solve(@route.id)
+		# exportRoute
+	end
+
+
+
 	def parseRoute
 		puts "I Got It"
+		puts params
 		@route = Route.new
 		@route.travelMethod = params[:travelMethod]
 		@route.save
@@ -18,15 +31,16 @@ class MainController < ApplicationController
 		params[:locationList].each do |point|
 			@location = Location.new
 			@location.routeid = @route.id
-			@location.searchtext = point.searchtext
-			@location.minduration = point.minduration
-			@location.maxduration = point.maxduration
-			@location.arrivebefore = point.arrivebefore
-			@location.arriveafter = point.arriveafter
-			@location.departbefore = point.departbefore
-			@location.departafter = point.departafter
-			@location.priority = point.priority
-			@location.blacklist = false
+			@location.searchtext = point[:searchtext]
+			@location.minduration = point[:minduration]
+			@location.maxduration = point[:maxduration]
+			@location.arrivebefore = point[:arrivebefore]
+			@location.arriveafter = point[:arriveafter]
+			@location.departbefore = point[:departbefore]
+			@location.departafter = point[:departafter]
+			@location.priority = point[:priority]
+			@location.geocode = point[:geocode]
+			@location.blacklisted = false
 			@location.lockedin = false
 			if counter == 0
 				@location.start = true
@@ -45,7 +59,7 @@ class MainController < ApplicationController
 	
 	def updateRoute
 		params[:locationList].each do |point|
-			if point.blacklist == true
+			if point.blacklisted == true
 				@location = Location.new
 				@location.routeid = @route.id
 				@location.searchtext = point.searchtext
@@ -57,7 +71,7 @@ class MainController < ApplicationController
 				@location.departafter = point.departafter
 				@location.priority = point.priority
 				@location.positioninroute = -1
-				@location.blacklist = true
+				@location.blacklisted = true
 				@location.lockedin = false
 				@location.save
 			end

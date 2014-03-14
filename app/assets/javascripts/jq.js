@@ -1,11 +1,11 @@
 // data communication
 var _url = "/main/parseRoute";
 var _sendGeo = [];
-var _sendData = {};
-var _result = {'travelMethod': undefined,
-               'locationList':
+var _result = {};
+var _sendData = {'travelMethod': undefined,
+                 'locationList':
                    [{ 'searchtext': undefined,
-                      'location': ('lng', 'lat'),
+                      'geocode': ('lat', 'lng'),
                       'minduration': undefined,
                       'maxduration': undefined,
                       'arrivebefore': undefined,
@@ -224,12 +224,37 @@ jQuery.sendQuery = function () {
     url:  _url,
     data: JSON.stringify(_sendData),
     contentType: "application/json",
-    dataType: "json",
+    dataType: "json"
   });
 };
 
 function genSendData () {
   // _sendData
+  var $locs = $( "#loc-acc" ).children();
+  var entry;
+
+  _sendData['travelMethod'] = "driving";
+  _sendData['locationList'] = [];
+
+  for (var i = 1; i < $locs.length; i++) {
+
+    var $loc = $($locs[i]);
+    var entryid = $loc.attr('id');
+    var id = Number(entryid.split("-").pop());
+    var coord = _sendGeo[id].geometry.location;
+
+    entry = {};
+    entry['geocode'] = {'lat': coord.lat(), 'lng': coord.lng()};
+    entry['searchtext'] = getTagForAddress(_sendGeo[id]);
+    entry['minduration'] = $( "#"+entryid+" .dur-A" ).val().toString();
+    entry['maxduration'] = $( "#"+entryid+" .dur-B" ).val().toString();
+    entry['arriveafter'] = $( "#"+entryid+" .time-start-A" ).val().toString();
+    entry['arrivebefore'] = $( "#"+entryid+" .time-start-B" ).val().toString();
+    entry['departafter'] = $( "#"+entryid+" .time-end-A" ).val().toString();
+    entry['departbefore'] = $( "#"+entryid+" .time-end-B" ).val().toString();
+    entry['priority'] = 0;
+    _sendData['locationList'].push(entry);
+  }
 }
 
 jQuery.displayRoute = function (ev, ui) {

@@ -21,21 +21,21 @@ class ApplicationController < ActionController::Base
   end
 
   def getLocations(id)
-  	currRoute = Location.where(routeid: id).to_a.select {|loc| loc.positioninroute >= 0}
-  	start = currRoute.select{|loc| loc.start}
-  	dest = currRoute.select{|loc| loc.dest}
+  	currRoute = Location.where(routeid: id).to_a
+  	start = currRoute.find{|loc| loc.start}
+  	dest = currRoute.find{|loc| loc.dest}
   	locations = currRoute.select{|loc| !loc.start and !loc.dest}
   	return start, dest, locations
   end
 
   ## http://maps.googleapis.com/maps/api/directions/json?origin=Adelaide,SA&destination=Adelaide,SA&waypoints=optimize:true|Barossa+Valley,SA|Clare,SA|Connawarra,SA|McLaren+Vale,SA&sensor=false&key=API_KEY
   def shortest_path(start, locations, dest)
-  	result = request_route(start,location, dest)
+  	result = request_route(start,locations, dest)
   	if result[:status] != 'OK'
   		render :json => {errCode: ERR_REQUEST_FAIL}
   	else
   		order = result[:routes][0][:waypoint_order]
-  		ordered_loc = order.map{|x| location[x].geocode}
+  		ordered_loc = order.map{|x| locations[x].geocode}
   		ordered_loc = [start.geocode] + ordered_loc + [dest.geocode]
   		render :json => {errCode: SUCCESS, route: ordered_loc}
   	end
