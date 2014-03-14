@@ -32,7 +32,7 @@ class MainController < ApplicationController
 			else
 				@location.start = false
 			end
-			if counter == params[:locationList].length -1
+			if counter == (params[:locationList].length - 1)
 				@location.dest = true
 			else
 				@location.dest = false

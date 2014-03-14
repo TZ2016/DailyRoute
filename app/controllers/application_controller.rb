@@ -26,8 +26,7 @@ class ApplicationController < ActionController::Base
   	dest = currRoute.select{|loc| loc.dest}
   	locations = currRoute.select{|loc| !loc.start and !loc.dest}
   	return start, dest, locations
-
-
+  end
 
   ## http://maps.googleapis.com/maps/api/directions/json?origin=Adelaide,SA&destination=Adelaide,SA&waypoints=optimize:true|Barossa+Valley,SA|Clare,SA|Connawarra,SA|McLaren+Vale,SA&sensor=false&key=API_KEY
   def shortest_path(start, locations, dest)
@@ -105,17 +104,19 @@ class ApplicationController < ActionController::Base
   	mode = 'mode=' + @route.travelMethod
   	address = address + origins + destinations + mode
   	require 'net/http'
-  	return Net::HTTP.get(URI.parse(address))ø
+  	return Net::HTTP.get(URI.parse(address))
   end
 
   def preprocess(point)
-  	if point.arrivebefore and point.departafter:
+    if point.arrivebefore and point.departafter
   		return
+    end
   	if (not point.departafter) and arrivebefore
   		point.departafter = point.arrivebefore +point.minduration
-
   	elsif (not point.arrivebefore) and point.departbefore
   		point.arrivebefore = point.departbefore - point.minduration
   	end
   	point.save
   end
+
+end
