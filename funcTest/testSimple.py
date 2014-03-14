@@ -10,47 +10,76 @@ import testLib
         
 class TestGenerateRoute(testLib.RestTestCase):
     """Test adding users"""
-    def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
+    def assertResponse(self, respData, errCode = 1, input = None, num = 0):
         """
         Check that the response data dictionary matches the expected values
         """
-        self.assertDictEqual(errCode, respData[errCode])
+        print respData["errCode"]
+        if input != None:
+            self.assertDictEqual(input, respData["route"][num])
+        self.assertEqual(errCode, respData["errCode"])
 
-    def testNoConstrainOnePlace(self):
+    def testNoConstrainOnePlaceError(self):
         locationList = []
-        locationList.append({"searchtext": random, "geocode": {"lat": 38, "lng": -120}})
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
         respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
         self.assertResponse(respData)
 
-    def testNoConstrainTwoPlaces(self):
+    def testNoConstrainTwoPlacesError(self):
         locationList = []
         locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
         locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
         respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
         self.assertResponse(respData)
+
+    def testNoConstrainMultiPlacesError(self):
+        locationList = []
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
+        locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
+        locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
+        respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
+        self.assertResponse(respData)
+
+
+    def testNoConstrainOnePlace(self):
+        locationList = []
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
+        respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
+        self.assertResponse(respData, input={"lat": 38, "lng": -120}, num = 0)
+        self.assertResponse(respData, input={"lat": 38, "lng": -120}, num = 1)
+
+
+    def testNoConstrainMultiPlacesSize(self):
+        locationList = []
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
+        locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
+        locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
+        respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
+        self.assertResponse(respData, input={"lat": 38, "lng": -120}, num = 0)
+        self.assertResponse(respData, input={"lat": 39, "lng": -121}, num = 3)
+
+    def testNoConstrainOnePlaceSize(self):
+        locationList = []
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
+        respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
+        self.assertEqual(2, len(respData["route"]))
 
     def testNoConstrainMultiPlaces(self):
         locationList = []
         locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
         locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
-        locationList.append({"searchtext": "random", "geocode": {"lat": 35, "lng": -121}})
-        locationList.append({"searchtext": "random", "geocode": {"lat": 37, "lng": -121}})
-        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -121}})
-        locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -118}})
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
+        locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
         respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
-        self.assertResponse(respData)
+        self.assertEqual(4, len(respData["route"]))
 
-    def testWithConstrainDurationPossible(self):
+    def testDifferentTravelMethod(self):
         locationList = []
-        locationList.append({"searchtext": random, "geocode": {"lat": 38, "lng": -120}, "minduration": 15, "maxduration": 30})
-        locationList.append({"searchtext": random, "geocode": {"lat": 38, "lng": -110}, "minduration": 15, "maxduration": 30})
-        respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
+        locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
+        locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
+        respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "TRANSIT", 'locationList' : locationList} )
         self.assertResponse(respData)
-
-
-    def testWithConstrainDurationImpossible(self):
-        locationList = []
-        locationList.append({"searchtext": random, "geocode": {"lat": 38, "lng": -120}, "minduration": 30, "maxduration": 15})
-        locationList.append({"searchtext": random, "geocode": {"lat": 38, "lng": -110}, "minduration": 15, "maxduration": 30})
-        respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
-        self.assertResponse(respData, errCode = -2)

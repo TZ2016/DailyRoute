@@ -8,7 +8,6 @@ import httplib
 import sys
 import os
 import json
-import random
 
 
 class RestTestCase(unittest.TestCase):
@@ -23,7 +22,7 @@ class RestTestCase(unittest.TestCase):
     ERR_BAD_PASSWORD    = -4
     
     # Lookup the name of the server to test
-    serverToTest = "localhost:3000"
+    serverToTest = "localhost:5000"
     if "TEST_SERVER" in os.environ:
         serverToTest = os.environ["TEST_SERVER"]
         # Drop the http:// prefix
@@ -93,9 +92,8 @@ class RestTestCase(unittest.TestCase):
             raise
 
         
-    # def setUp(self):
-    #     self.conn = httplib.HTTPConnection(RestTestCase.serverToTest, timeout=1)
-    #     self.makeRequest("/TESTAPI/resetFixture", method="POST")
+    def setUp(self):
+        self.conn = httplib.HTTPConnection(RestTestCase.serverToTest, timeout=1)
         
     def tearDown(self):
         self.conn.close ()
