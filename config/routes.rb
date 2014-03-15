@@ -14,6 +14,8 @@ DailyRouteTest::Application.routes.draw do
   post '/main/parseRoute' => 'main#parseRoute'
   post '/main/master'     => 'main#master'
 
+  post '/main/reset' => "main#reset"
+
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
 

@@ -15,8 +15,6 @@ class MainController < ApplicationController
 		# exportRoute
 	end
 
-
-
 	def parseRoute
 		@route = Route.new
 		@route.travelMethod = params[:travelMethod]
@@ -132,4 +130,26 @@ class MainController < ApplicationController
 		end
 		return routeArray
  	end
+
+ 	# test structure
+
+	def reset
+		User.destroy_all()
+		Route.destroy_all()
+		Location.destroy_all()
+		render :json => { errCode: 1 }
+	end
+
+	def tests
+		result = `rspec spec/requests/unit_tests_spec.rb --format documentation > output.txt`
+		result = `cat output.txt`
+		words  = result.split(" ")
+		total_test = words[words.index("examples,") - 1]
+		failures   = words[words.index("failures") - 1]
+
+		render :json => { nrFailed: failures.to_i,
+						  output: result,
+						  totalTests: total_test.to_i }
+	end
+
 end

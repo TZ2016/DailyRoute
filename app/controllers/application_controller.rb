@@ -46,7 +46,6 @@ class ApplicationController < ActionController::Base
   	end
   end
 
-
   def fit_schedule(arranged, unarranged,info)
   end
 

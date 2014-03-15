@@ -1,59 +1,49 @@
 require 'spec_helper'
 
-describe User do
+describe Location do
 
 	before do
-		@user = User.new(username: "user0", password: "password")
+		@loc = Location.new()
 	end
 
-	subject { @user }
+	subject { @loc }
 
-	it { should respond_to(:username) }
-	it { should respond_to(:password) }
-	it { should respond_to(:counter)  }
-	it { should be_valid }
+	it { should respond_to(:routeid) }
+	it { should respond_to(:searchtext) }
+	it { should respond_to(:minduration)  }
+	it { should respond_to(:maxduration)  }
+	it { should respond_to(:arrivebefore)  }
+	it { should respond_to(:arriveafter)  }
+	it { should respond_to(:departbefore)  }
+	it { should respond_to(:departafter)  }
+	it { should respond_to(:priority)  }
+	it { should respond_to(:geocode)  }
+	it { should respond_to(:blacklisted)  }
+	it { should respond_to(:lockedin)  }
+	it { should_not be_valid }
+	
+	describe "when no geocode" do
 
-	describe "when username is legal and password is empty" do
-		before { @user.password = "" }
-		it { should be_valid }
+		it { should_not be_valid }
 	end
 
-	describe "when username and password are maximally long" do
+	describe " when no routeid" do
 		before do
-			@user.username = "u" * 128
-			@user.password = "p" * 128
+			@loc.geocode = {'lat' => 23, 'lng' => 34} 
+		end
+		it { should_not be_valid }
+	end
+
+	describe "with geocode and routied" do
+		before do
+			@loc.geocode = {'lat' => 23, 'lng' => 34} 
+			@loc.routeid = 1
 		end
 
 		it { should be_valid }		
 	end	
 
-	describe "when username is not present" do
-		before { @user.username = "" }
-		it { should_not be_valid }
-	end
-
-	describe "when username is too long" do
-		before { @user.username = "a" * 129 }
-		it { should_not be_valid }
-	end
-
-	describe "when password is too long" do
-		before do
-			@user.username = "user0"
-			@user.password = "p" * 129
-		end
-
-		it { should_not be_valid }
-	end
-
-	describe "when username is not unique" do
-		before do
-			user_with_same_name = @user.dup
-			user_with_same_name.save
-		end
-
-		it { should_not be_valid }
-	end
+	
 
 	after(:each) do
   		User.delete_all
