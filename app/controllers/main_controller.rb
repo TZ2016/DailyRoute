@@ -1,5 +1,7 @@
 class MainController < ApplicationController
 
+	# methods mainly for rendering purposes
+
 	def index
 		@pagehelper_active = "Main"
 	end
@@ -10,14 +12,32 @@ class MainController < ApplicationController
 
 	def tutorial
 		@pagehelper_active = "Tutorial"
-		@currUser = "TestGuest"
+		login # test
 	end
+
+	# user management
+
+	def login
+		@currUser = User.new
+		@currUser.username = 'Test'
+	end
+
+	def logout
+		@currUser = nil
+	end
+
+	def signup
+	end
+
+	# frontend interface
 
 	def master
 		parseRoute
 		solve(@route.id)
 		# exportRoute
 	end
+
+	# core functionalities
 
 	def parseRoute
 		@route = Route.new
