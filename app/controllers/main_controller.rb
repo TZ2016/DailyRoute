@@ -1,12 +1,16 @@
 class MainController < ApplicationController
 
 	def index
+		@pagehelper_active = "Main"
 	end
 
 	def aboutUs
+		@pagehelper_active = "About"
 	end
 
 	def tutorial
+		@pagehelper_active = "Tutorial"
+		@currUser = "TestGuest"
 	end
 
 	def master
