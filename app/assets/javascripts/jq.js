@@ -168,7 +168,13 @@ function initPage () {
         if (errCode == 1) {
           location.reload();
         } else {
-          $.alertMessage("Illegal Credentials!");
+          var i = 1;
+          var msg = "Your credentials were rejected due to: \n";
+          data['reasons'].forEach( function (r) {
+            msg += i + ". " + r.toString() + "\n";
+            i += 1;
+          });
+          $.alertMessage(msg);
         }
       },
       error: function (jqXHR, status, error) {

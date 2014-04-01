@@ -25,7 +25,8 @@ class UsersController < ApplicationController
       render :json => {errCode: 1}
     else
       # render 'new'
-      render :json => {errCode: -1}
+      puts @user.errors.messages
+      render :json => {errCode: -1, reasons: @user.errors.full_messages}
     end
   end
 
