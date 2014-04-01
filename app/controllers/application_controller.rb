@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   # protect_from_forgery with: :exception
+  include SessionsHelper
 
   require 'rubygems'
   require 'json'
@@ -21,7 +22,7 @@ class ApplicationController < ActionController::Base
       shortest_path(start,locations, dest)
   	else
   		fit_schedule(arranged, unarranged)
-  	end
+    end
   end
 
   def getLocations(id)
@@ -43,7 +44,7 @@ class ApplicationController < ActionController::Base
   		ordered_loc = order.map{|x| locations[x]}
   		ordered_loc = (start+ordered_loc+dest).map{|x| x.geocode}
   		render :json => {errCode: SUCCESS, route: ordered_loc}
-  	end
+    end
   end
 
   def fit_schedule(arranged, unarranged,info)

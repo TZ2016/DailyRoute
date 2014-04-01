@@ -121,6 +121,34 @@ $(function() {
     $.sendQuery();
   });
 
+  /////////////////////////////////////////////////////////
+
+  $( "#signin-form #signin" ).click( function () {
+    credentials = {'email':    $( "#email-field" ).val().toString(),
+                   'password': $( "#password-field" ).val().toString()
+                  };
+
+    $.ajax({
+      type: 'POST',
+      url:  "sessions/create",
+      data: JSON.stringify(credentials),
+      contentType: "application/json",
+      dataType: "json",
+      beforeSend: function (jqXHR, settings) {
+        console.log("beforesend");
+      },
+      success: function (data, status, jqXHR) {
+        console.log("success");
+      },
+      error: function (jqXHR, status, error) {
+        console.log("error");
+        console.log(jqXHR);
+        console.log(status);
+        console.log(error);
+      }
+    });
+  });
+
 });
 
 

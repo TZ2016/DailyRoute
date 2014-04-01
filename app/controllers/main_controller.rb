@@ -12,23 +12,6 @@ class MainController < ApplicationController
 
 	def tutorial
 		@pagehelper_active = "Tutorial"
-		@currUser = User.new
-		@currUser.username = 'Test'
-	end
-
-	# user management
-
-	def login
-		@currUser = User.new
-		@currUser.username = 'Test'
-		@currUser.save
-	end
-
-	def logout
-		@currUser = nil
-	end
-
-	def signup
 	end
 
 	# frontend interface

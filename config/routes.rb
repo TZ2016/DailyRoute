@@ -1,4 +1,8 @@
 DailyRouteTest::Application.routes.draw do
+ 
+  resources :users
+  resources :sessions,      only: [:new, :create, :destroy]
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -15,6 +19,19 @@ DailyRouteTest::Application.routes.draw do
   post '/main/master'     => 'main#master'
 
   post '/main/reset' => "main#reset"
+
+  post '/users/create' => "users#create"
+  post '/sessions/create' => "sessions#create"
+  get  '/sessions/current_user' => "sessions#current_user"
+
+  # root to: 'static_pages#home'
+  match '/signup',  to: 'users#new',            via: 'get'
+  match '/signin',  to: 'sessions#new',         via: 'get'
+  match '/signout', to: 'sessions#destroy',     via: 'delete'
+  # match '/help',    to: 'static_pages#help',    via: 'get'
+  # match '/about',   to: 'static_pages#about',   via: 'get'
+  # match '/contact', to: 'static_pages#contact', via: 'get'
+
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase

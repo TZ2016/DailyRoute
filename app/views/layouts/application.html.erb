@@ -49,18 +49,18 @@
           ><a href="/aboutUs">About</a></li>
       </ul>
       <!-- user login logout -->
-      <% if @currUser.nil? %>
-        <form class="navbar-form navbar-right">
+      <% if !signed_in? %>
+        <form class="navbar-form navbar-right" id="signin-form" >
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="Username">
-            <input type="password" class="form-control" placeholder="Password">
+            <input id="email-field" type="email" class="form-control" placeholder="Email">
+            <input id="password-field" type="password" class="form-control" placeholder="Password">
           </div>
-          <button type="button" class="btn btn-default btn-sm">SignUp</button>
-          <button type="button" class="btn btn-default btn-sm">LogIn</button>
+          <button id="signup" type="button" class="btn btn-default btn-sm">SignUp</button>
+          <button id="signin" type="button" class="btn btn-default btn-sm">LogIn</button>
         </form>
       <% else %>
         <p class="navbar-text navbar-right">Signed in as
-          <%= @currUser.username %>
+          <%= current_user.email %>
           <button type="button" class="btn btn-link btn-sm">Home</button>
           <button type="button" class="btn btn-link btn-sm">LogOut</button>
         </p>
