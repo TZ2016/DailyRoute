@@ -127,4 +127,16 @@ class ApplicationController < ActionController::Base
   	point.save
   end
 
+  def fuzzySearch(center, type)
+    address = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
+    location = 'location=' + center
+    sensor = 'sensor=' + 'true'
+    rankby = 'rankby=' + '2'
+    types = 'types=' + type
+    key = 'key=' + 'AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM'
+    address = address + location + sensor + rankby + types + key
+    require 'net/http'
+    return Net::HTTP.get(URI.parse(address))
+  end
+
 end
