@@ -16,13 +16,16 @@ class UsersController < ApplicationController
   end
 
   def create
+    puts user_params
     @user = User.new(user_params)
     if @user.save
       sign_in @user
-      flash[:success] = "Welcome to the Sample App!"
-      redirect_to @user
+      # flash[:success] = "Welcome to the Sample App!"
+      # redirect_to @user
+      render :json => {errCode: 1}
     else
-      render 'new'
+      # render 'new'
+      render :json => {errCode: -1}
     end
   end
 
@@ -47,8 +50,10 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:email, :password,
-                                   :password_confirmation)
+      params.permit(:email, :password,
+                    :password_confirmation)
+      # params.require(:user).permit(:email, :password,
+      #                              :password_confirmation)
     end
 
     # Before filters

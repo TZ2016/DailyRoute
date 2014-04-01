@@ -39,7 +39,7 @@
         <% if @pagehelper_active == "Main" %>
           <li class="active"><a>Main</a></li>
         <% else %>
-          <li><a href="/index">Main</a></li>
+          <li><a href="/main">Main</a></li>
         <% end %>
 
         <li <% if @pagehelper_active == "Tutorial" %>
@@ -49,7 +49,7 @@
         <li <% if @pagehelper_active == "About" %>
             class="active"
             <% end %>
-          ><a href="/aboutUs">About</a></li>
+          ><a href="/about">About</a></li>
       </ul>
       <!-- user login logout -->
       <% if !signed_in? %>

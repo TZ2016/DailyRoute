@@ -1,19 +1,5 @@
 class MainController < ApplicationController
 
-	# methods mainly for rendering purposes
-
-	def index
-		@pagehelper_active = "Main"
-	end
-
-	def aboutUs
-		@pagehelper_active = "About"
-	end
-
-	def tutorial
-		@pagehelper_active = "Tutorial"
-	end
-
 	# frontend interface
 
 	def master

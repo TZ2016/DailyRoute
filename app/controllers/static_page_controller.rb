@@ -1,12 +1,15 @@
 class StaticPageController < ApplicationController
-
-	def index
+	
+	def main
+		@pagehelper_active = "Main"
 	end
 
-	def aboutUs
+	def about
+		@pagehelper_active = "About"
 	end
 
 	def tutorial
+		@pagehelper_active = "Tutorial"
 	end
-	
+
 end

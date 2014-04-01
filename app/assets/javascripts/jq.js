@@ -1,7 +1,8 @@
 // data communication
 var _url_calcroute = "/main/master";
-var _url_login = "sessions/create";
+var _url_login = "signin";
 var _url_logout = "signout";
+var _url_signup = "signup";
 var _sendGeo = [];
 var _result = {};
 var _sendData = {'travelMethod': undefined,
@@ -136,11 +137,50 @@ function initPage () {
 
   /////////////////////////////////////////////////////////
 
+  $( "#signin-form #signup" ).click( function () {
+    $( "#signup-dlg" ).modal({
+      show: true,
+      keyboard: false,
+      backdrop: "static"
+    });
+  });
+
+  $( "#signup-cancel" ).click( function () {
+    $( "#refineloc-dlg" ).modal("hide");
+  });
+
+  $( "#signup-btn" ).click( function () {
+    credentials = {'email':    $( "#signup-email" ).val().toString(),
+                 'password': $( "#signup-pw" ).val().toString(),
+                 'password_confirmation': $( "#signup-pwcf" ).val().toString()
+                };
+    $.ajax({
+      type: 'POST',
+      url:  _url_signup,
+      data: JSON.stringify(credentials),
+      contentType: "application/json",
+      dataType: "json",
+      beforeSend: function (jqXHR, settings) {
+      },
+      success: function (data, status, jqXHR) {
+        console.log(data);
+        errCode = data['errCode'];
+        if (errCode == 1) {
+          location.reload();
+        } else {
+          $.alertMessage("Illegal Credentials!");
+        }
+      },
+      error: function (jqXHR, status, error) {
+        $.alertMessage("Server Error!");
+      }
+    });
+  });
+
   $( "#signin-form #signin" ).click( function () {
     credentials = {'email':    $( "#email-field" ).val().toString(),
                    'password': $( "#password-field" ).val().toString()
                   };
-
     $.ajax({
       type: 'POST',
       url:  _url_login,
@@ -232,6 +272,7 @@ jQuery.refineLocations = function (locations) {
       keyboard: false,
       backdrop: "static"
     });
+
   }
 };
 
