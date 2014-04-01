@@ -1,5 +1,7 @@
 // data communication
-var _url = "/main/master";
+var _url_calcroute = "/main/master";
+var _url_login = "sessions/create";
+var _url_logout = "signout";
 var _sendGeo = [];
 var _result = {};
 var _sendData = {'travelMethod': undefined,
@@ -19,7 +21,13 @@ var _sendData = {'travelMethod': undefined,
 // global temporary variables
 var _locToRefine = [];
 
-$(function() {
+$(function () {
+  initPage();
+});
+$(window).bind('page:change', function () {
+  initPage();
+});
+function initPage () {
 
   // auto complete
   var availableTags = [
@@ -121,6 +129,11 @@ $(function() {
     $.sendQuery();
   });
 
+  // auto refresh
+  // $( "#navbar-btn" ).on("click", "a", function () {
+  //   location.reload();
+  // });
+
   /////////////////////////////////////////////////////////
 
   $( "#signin-form #signin" ).click( function () {
@@ -130,28 +143,42 @@ $(function() {
 
     $.ajax({
       type: 'POST',
-      url:  "sessions/create",
+      url:  _url_login,
       data: JSON.stringify(credentials),
       contentType: "application/json",
       dataType: "json",
       beforeSend: function (jqXHR, settings) {
-        console.log("beforesend");
       },
       success: function (data, status, jqXHR) {
-        console.log("success");
+        errCode = data['errCode'];
+        if (errCode == 1) {
+          location.reload();
+        } else {
+          $.alertMessage("Invalid combination!");
+        }
       },
       error: function (jqXHR, status, error) {
-        console.log("error");
-        console.log(jqXHR);
-        console.log(status);
-        console.log(error);
+        $.alertMessage("Server Error!");
       }
     });
   });
 
-});
+  $( "#logout-btn" ).click( function () {
+    $.ajax({
+      type: 'DELETE',
+      url:  _url_logout,
+      beforeSend: function (jqXHR, settings) {
+      },
+      success: function (data, status, jqXHR) {
+        location.reload();
+      },
+      error: function (jqXHR, status, error) {
+        $.alertMessage("Server Error!");
+      }
+    });
+  });
 
-
+}
 
 // Adding location
 
@@ -226,7 +253,7 @@ jQuery.removeLocation = function (rmvobj) {
 jQuery.sendQuery = function () {
   $.ajax({
     type: 'POST',
-    url:  _url,
+    url:  _url_calcroute,
     data: JSON.stringify(_sendData),
     contentType: "application/json",
     dataType: "json",

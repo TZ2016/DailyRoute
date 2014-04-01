@@ -22,15 +22,15 @@ DailyRouteTest::Application.routes.draw do
 
   post '/users/create' => "users#create"
   post '/sessions/create' => "sessions#create"
-  get  '/sessions/current_user' => "sessions#current_user"
 
   # root to: 'static_pages#home'
   match '/signup',  to: 'users#new',            via: 'get'
-  match '/signin',  to: 'sessions#new',         via: 'get'
+  match '/signin',  to: 'sessions#create',         via: 'post'
   match '/signout', to: 'sessions#destroy',     via: 'delete'
-  # match '/help',    to: 'static_pages#help',    via: 'get'
-  # match '/about',   to: 'static_pages#about',   via: 'get'
-  # match '/contact', to: 'static_pages#contact', via: 'get'
+  
+  match '/help',    to: 'static_pages#help',    via: 'get'
+  match '/about',   to: 'static_pages#about',   via: 'get'
+  match '/tutorial', to: 'static_pages#tutorial', via: 'get'
 
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
