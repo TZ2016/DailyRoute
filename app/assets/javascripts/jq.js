@@ -146,7 +146,7 @@ function initPage () {
   });
 
   $( "#signup-cancel" ).click( function () {
-    $( "#refineloc-dlg" ).modal("hide");
+    $( "#signup-dlg" ).modal("hide");
   });
 
   $( "#signup-btn" ).click( function () {

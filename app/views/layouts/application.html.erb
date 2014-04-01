@@ -52,7 +52,7 @@
           ><a href="/about">About</a></li>
       </ul>
       <!-- user login logout -->
-      <% if !signed_in? %>
+      <% if !signed_in? and @pagehelper_active == "Main"%>
         <form class="navbar-form navbar-right" id="signin-form" >
           <div class="form-group">
             <input id="email-field" type="email" class="form-control" placeholder="Email">
@@ -61,7 +61,7 @@
           <button id="signup" type="button" class="btn btn-default btn-sm">SignUp</button>
           <button id="signin" type="button" class="btn btn-default btn-sm">LogIn</button>
         </form>
-      <% else %>
+      <% elsif signed_in? %>
         <p class="navbar-text navbar-right">Signed in as
           <%= current_user.email %>
           <button id="home-btn" type="button" class="btn btn-link btn-sm">Home</button>
