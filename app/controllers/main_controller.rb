@@ -12,7 +12,8 @@ class MainController < ApplicationController
 
 	def tutorial
 		@pagehelper_active = "Tutorial"
-		login # test
+		@currUser = User.new
+		@currUser.username = 'Test'
 	end
 
 	# user management
@@ -20,6 +21,7 @@ class MainController < ApplicationController
 	def login
 		@currUser = User.new
 		@currUser.username = 'Test'
+		@currUser.save
 	end
 
 	def logout
