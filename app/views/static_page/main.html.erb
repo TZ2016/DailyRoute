@@ -1,34 +1,15 @@
 <div class="container">
   <div class="row">
     <!-- Sidebar Level 1 -->
-    <div class="col-md-4 sidebar">
+    <div id="sidebar-main" class="col-md-4 sidebar">
+
       <!-- Title -->
       <h4>Start your route now!</h4>
 
       <!-- To add new location -->
-      <div id="addloc" class="row">
-        <div class="col-md-12">
-          <div class="input-group">
-            <label for="newloc" class="sr-only">New Location</label>
-            <input id="newloc" type="text" class="form-control" placeholder="New Location">
-            <div class="input-group-btn">
-              <button type="button" id="addloc-btn" class="btn btn-success" tabindex="-1">Add</button>
-              <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" tabindex="-1">
-                <span class="caret"></span>
-                <span class="sr-only">Toggle Dropdown</span>
-              </button>
-              <ul class="dropdown-menu pull-right" role="menu">
-                <li><a href="#">Add</a></li>
-                <li><a href="#">Add from Marker</a></li>
-                <li><a href="#">Fuzzy Add from Marker</a></li>
-                <li class="divider"></li>
-                <li><a id="addloc-dp-clear">Clear Field</a></li>
-              </ul>
-            </div>
-          </div><!-- /.input-group -->
-        </div>
-      </div>
+      <%= render 'static_page/panel_add' %>
       <br>
+
       <!-- mode of transportation -->
       <div class="row">
         <div class="col-md-12">
@@ -52,116 +33,29 @@
 
       <!-- Locations added so far -->
       <h4>Selected Locations</h4>
-      <!-- sortable accordion -->
-      <div class="row">
-        <!-- Instruction starts -->
-        <div id="loc-acc-ins" class="col-md-12">
-          <div class="group">
-            <h3>Your added location</h3>
-            <div>
-              <p>
-                The locations you add will appear in this accordion.
-              </p>
-              <p> 
-                You can sort your locations to your convenience.
-              </p>
-            </div>
-          </div>
-        </div>
-        <!-- Instruction ends -->
-        <div id="loc-acc" class="col-md-12">
-          <!-- Sample group -->
-          <div id="loc-acc-tmp" class="group" style="display: none;">
-            <h3>New Location</h3>
-            <div>
-              <!-- time form starts -->
-              <form class="form-horizontal" role="form">
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">
-                    Arrive
-                  </label>
-                  <div class="col-sm-5">
-                    <input type="text" class="form-control time-start-A" placeholder="after">
-                  </div>
-                  <div class="col-sm-5">
-                    <input type="text" class="form-control time-start-B" placeholder="before">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">
-                    Duration
-                  </label>
-                  <div class="col-sm-5">
-                    <input type="text" class="form-control dur-A" placeholder="min">
-                  </div>
-                  <div class="col-sm-5">
-                    <input type="text" class="form-control dur-B" placeholder="max">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">
-                    Depart
-                  </label>
-                  <div class="col-sm-5">
-                    <input type="text" class="form-control time-end-A" placeholder="after">
-                  </div>
-                  <div class="col-sm-5">
-                    <input type="text" class="form-control time-end-B" placeholder="before">
-                  </div>
-                </div>
-                <!-- Time range input ends -->
-                <div class="form-group">
-                  <div class="col-sm-12">
-                    <div class="col-sm-6">
-                      <button type="reset" class="btn btn-warning col-sm-12">
-                        Reset
-                      </button>
-                    </div>
-                    <div class="col-sm-6">
-                      <button type="button" class="btn btn-danger remove-btn col-sm-12">
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-              <!-- time form ends -->
-            </div>
-          </div>
-          <!-- sample ends -->
-        </div>
-      </div>
+      <%= render 'static_page/panel_location' %>
       <hr>
-      <!-- location accordion ends -->
 
       <button id="calc-btn" type="button" class="btn btn-warning">
         Calculate Routes
       </button>
       <hr>
-      <!-- NOTE: register mode of transportation -->
 
       <!-- Directions Panel starts -->
-      <div id="dir-row" class="row" style="display:none;">
-        <h4 class="col-md-12">Directions Panel</h4>
-        <div id="dir-panel-temp" class="col-md-12">
-          <h3>Attention!</h3>
-          <div id="route-0" class="dir-route">
-            <p>
-            Your new route will be displayed here after you click "View Route" button.
-            </p>
-          </div>
-        </div>
-        <div id="dir-panel" class="col-md-12">
-          <h3>Attention!</h3>
-          <div id="route-1" class="dir-route">
-            <p>
-            </p>
-          </div>
-        </div>
-      </div>
-      <!-- Directions Panel ends -->
+      <%= render 'static_page/panel_direction' %>
 
     <!-- end of sidebar -->
+    <!-- Sidebar for saved routes -->
+    <div id="sidebar-saved" class="col-md-4 sidebar" style="display:none;">
+
+      <%= render 'static_page/panel_direction' %>
+      <hr>
+      <button id="return-btn" type="button" class="btn btn-warning">
+        Return to Main Panel
+      </button>
+
+    </div>
+    <!-- end of saved routes -->
   </div>
 
     <div class="col-md-8 col-md-offset-4 main">
@@ -172,72 +66,9 @@
   </div>
 
   <!-- Refine Location Dialog -->
-  <div class="modal fade" id="refineloc-dlg" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Refine Locations</h4>
-        </div>
-        <div class="modal-body">
-          <p>
-            We found more than one locations matching your request. 
-            Please select the one you desire and click "Choose", or click "None":
-          </p>
-          <ol id="refineloc-lst" class="selectable">
-          </ol>
-          <ol style="display: none;">
-            <li id="refineloc-lst-tmp" class="ui-widget-content">Address</li>
-          </ol>
-        </div>
-        <div class="modal-footer">
-          <button type="button" id="refineloc-none" class="btn btn-warning">None</button>
-          <button type="button" id="refineloc-select" class="btn btn-primary">Choose</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <%= render 'static_page/dialog_refine' %>
   
   <!-- User SignUp -->
-  <div class="modal fade" id="signup-dlg" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">User Signup Form</h4>
-        </div>
-        <div class="modal-body">
-          <!-- form starts -->
-          <form role="form">
-            <div class="form-group">
-              <label for="signup-email">Email address</label>
-              <input type="email" class="form-control" id="signup-email" placeholder="Enter email">
-            </div>
-            <div class="form-group">
-              <label for="signup-pw">Password</label>
-              <input type="password" class="form-control" id="signup-pw" placeholder="Password">
-            </div>
-            <div class="form-group">
-              <label for="signup-pwcf">Password Confirmation</label>
-              <input type="password" class="form-control" id="signup-pwcf" placeholder="Password">
-            </div>
-            <div class="form-group">
-              <label for="signup-photo">User Photo</label>
-              <input type="file" id="signup-photo">
-              <p class="help-block">Photo cannot exceed 2MB.</p>
-            </div>
-            <!-- <div class="checkbox">
-              <label>
-                <input type="checkbox"> Check me out
-              </label>
-            </div> -->
-          </form>
-          <!-- form ends -->
-        </div>
-        <div class="modal-footer">
-          <button type="button" id="signup-cancel" class="btn btn-warning">Cancel</button>
-          <button type="button" id="signup-btn" class="btn btn-primary">SignUp</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <%= render 'static_page/dialog_signup' %>
 
 </div>

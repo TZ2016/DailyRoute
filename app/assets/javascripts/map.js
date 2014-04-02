@@ -81,7 +81,7 @@ function getNameOfAddress(geores) {
 function drawRoute(num, panelid) {
   directionsDisplay.setPanel(document.getElementById(panelid));
 
-  data = _data['route']; // FIXME
+  data = _data[num-1];
   var size = data.length;
   var start = new google.maps.LatLng(data[0].lat, data[0].lng);
   var end = new google.maps.LatLng(data[size-1].lat, data[size-1].lng);

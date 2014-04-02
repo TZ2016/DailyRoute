@@ -1,0 +1,24 @@
+<div class="modal fade" id="refineloc-dlg" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Refine Locations</h4>
+      </div>
+      <div class="modal-body">
+        <p>
+          We found more than one locations matching your request. 
+          Please select the one you desire and click "Choose", or click "None":
+        </p>
+        <ol id="refineloc-lst" class="selectable">
+        </ol>
+        <ol style="display: none;">
+          <li id="refineloc-lst-tmp" class="ui-widget-content">Address</li>
+        </ol>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="refineloc-none" class="btn btn-warning">None</button>
+        <button type="button" id="refineloc-select" class="btn btn-primary">Choose</button>
+      </div>
+    </div>
+  </div>
+</div>
