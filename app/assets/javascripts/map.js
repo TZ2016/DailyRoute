@@ -133,7 +133,6 @@ function revGeoAndMarkerHelper(geocoderres) {
 
   var location = geocoderres.geometry.location;
   var fulladdr = getNameOfAddress(geocoderres);
-  var shortname = getTagForAddress(geocoderres);
   var marker = new google.maps.Marker({
     position: location,
     map: map
@@ -143,7 +142,7 @@ function revGeoAndMarkerHelper(geocoderres) {
   _tempmarker = marker;
 
   // FIXME
-  document.getElementById("newloc").value = shortname;
+  document.getElementById("newloc").value = fulladdr;
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
