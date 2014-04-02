@@ -319,12 +319,12 @@ function handleResult (data) {
   if (data["errCode"] == 1) {
     _data = data['route'];
     var index = 0;
-    var $temppanel = $( "#route-temp" ).clone();
+    var $temppanel = $( "#route-temp" ).clone().removeAttr("style");
     
     $( "#dir-ins > h3" ).text("Instruction");
     $( "#dir-ins > div" ).text("Your routes are ready.");
     $( "#dir-acc" ).empty();
-    $( "#dir-acc" ).append( $temppanel.clone() );
+    $( "#dir-acc" ).append( $temppanel.clone().attr("style", "display:none;") );
 
     _data.forEach( function (route) {
       index += 1;
