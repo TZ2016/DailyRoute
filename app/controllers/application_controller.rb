@@ -7,22 +7,27 @@ class ApplicationController < ActionController::Base
   require 'rubygems'
   require 'json'
   require 'net/http'
-  
+  require 'pp'
   SUCCESS = 1
   ERR_REQUEST_FAIL = -1
   ERR_INVALID_INPUT_TIME = -2
   ERR_NOT_ENOUGH_TIME_FOR_TRAVEL = -3
+  ERR_NEED_SPECIFY_START_TIME_AND_ARRIVE_TIME = -4
 
   # start and end are Location. locations is an Array of Location.
   def solve (id)
   	start, dest, locations = getLocations(id)
     mode = Route.find(id).travelMethod
-  	arranged,unarranged,invalid_input = classify_loc(start,locations, dest)
-    if invalid_input
-  		render :json => {errCode: ERR_INVALID_INPUT_TIME}
+  	arranged,unarranged, err = classify_loc(start,locations, dest)
+    if err != SUCCESS
+      puts '============ERROR========='
+      pp err
+  		render :json => {errCode: err}
   	elsif arranged == []
+      puts '============call shortest_path========='
       render :json => shortest_path(start,locations, dest, mode)
   	else
+      puts '============call fit_schedule========='
   		render :json => fit_schedule(arranged, unarranged, mode)
     end
   end
@@ -52,51 +57,80 @@ class ApplicationController < ActionController::Base
 
 
   
-  def fit_schedule(intervals, arranged, unarranged, mode)
+  def fit_schedule(arranged, unarranged, mode)
+    puts '================= inside fitschd ====================='
+    intervals, err = get_intervals(arranged, mode)
+    if err != SUCCESS
+      return {errCode: err}
+    end
     num = intervals.length
-    result = []
-    for i in (0.. intervals.length ** unarranged.length)
+    durations = []
+    routes = []
+
+    for i in (0.. intervals.length ** unarranged.length-1)
       parts = partition(i, num, unarranged)
-      result << get_time_for_partition(parts, intervals, arranged, mode)
+      order, dur, ifsuccess =  get_time_for_partition(parts, intervals, arranged, mode)
+      if ifsuccess
+        routes << order
+        durations << dur
+      end
+    end
+    result = []
+    for i in (0..routes.length-1)
+      result << [routes[i], durations[i]] 
     end
     result.sort{|x, y| x[1] <=> y[1]}
-    return {errCode: SUCCESS, route: result.map{|x| x[0]}, duration: result.map{|x| x[1]}}
+    routes = result.map{|x| x[0]}
+    durations = result.map{|x| x[1]}
+    pp '============TO RETURN==============='
+    pp result
+    return {errCode: SUCCESS, route: routes, duration: durations}
   end
+
 
 
 
   def get_time_for_partition(partition, intervals, arranged, mode)
     order = []
-    durations = 0
-    for i in (0..length(intervals) - 1)
+    duration = 0
+    for i in (0..intervals.length - 1)
       time = get_time(arranged[i], partition[i], arranged[i+1], mode)
       if time > intervals[i]
-        return [], []
+        return [], 0, false
       else
         order << arranged[i]
-        order = order + partition
-        order << arranged[i + 1]
-        durations += time
+        order = order + partition[i]
+        duration += time
       end
     end
-    return order, durations
+    order << arranged.last
+    pp '==============ORDER=================='
+    pp order
+    order = order.map{|x| x.geocode}
+    return order, duration, true
   end
 
 
 
   def get_time(start, pass, dest, mode)
-    result = shortest_path(start, pass, dest, mode)
+    result = shortest_path([start], pass, [dest], mode)
+    pp '============= inside get time =========================='
+    pp result[:duration][0]
     if result['errCode'] = SUCCESS 
-        return result['duration'][0]
+        return result[:duration][0]
     else
         return Float::INFINITY
     end
   end
   
   def partition(i, num, unarranged)
-    indicator = i.to_s(num)
+    if num <= 1
+      indicator = ''
+    else 
+      indicator = i.to_s(num)
+    end
     result = [[]] * num
-    for j in (0..length(unarranged) - 1)
+    for j in (0..unarranged.length - 1)
       if j < indicator.length 
         result[indicator[j]] << unarranged[j]
       else
@@ -106,21 +140,25 @@ class ApplicationController < ActionController::Base
     return result
   end
 
-  def getIntervals(arranged, mode)
+  def get_intervals(arranged, mode)
     intervals = []
     for i in (0..arranged.length - 2)
       if arranged[i].departafter > arranged[i+1].arrivebefore
+        puts '====================================='
+        pp arranged[i].departafter
+        pp arranged[i+1].arrivebefore
         return [], ERR_INVALID_INPUT_TIME
       else
         intervals << arranged[i+1].arrivebefore - arranged[i].departafter
       end
-    end  
+    end 
     return intervals, check_time_validity(intervals, arranged, mode)  
   end
 
   def check_time_validity(intervals, arranged, mode)
+    pp '============check_time_validity====================='
     for i in (0..arranged.length - 2)
-      if get_time(arranged[i], [], arranged[i+1], mode)['duration'] > intervals[i]
+      if get_time(arranged[i], [], arranged[i+1], mode) > intervals[i]
         return ERR_NOT_ENOUGH_TIME_FOR_TRAVEL
       end
     end
@@ -172,23 +210,26 @@ class ApplicationController < ActionController::Base
     arranged.sort_by do |a|
       a.arrivebefore
     end
-    
-    invalid_input = false
-    if arranged != [] and (arranged.first != start or arranged.last != dest)
-      invalid_input = true
+    pp '=============LOOK ============='
+    pp arranged.first
+    pp start
+    if arranged != [] and (arranged.first != start[0] or arranged.last != dest[0])
+    return [], [], ERR_NEED_SPECIFY_START_TIME_AND_ARRIVE_TIME
     end
-    return arranged, unarranged, invalid_input
+    return arranged, unarranged, SUCCESS
   end
 
 
   def preprocess(point)
+    puts '============================================='
+    pp point
     if (point.arrivebefore and point.departafter) or ((not point.arrivebefore) and (not point.departafter))
       return
     end
     if (not point.departafter) and point.arrivebefore
       point.departafter = point.arrivebefore + point.minduration
     elsif (not point.arrivebefore) and point.departafter
-      point.arrivebefore = point.departbefore - point.minduration
+      point.arrivebefore = point.departafter - point.minduration
     end
     point.save
   end
