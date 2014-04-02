@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   end
 
   def saved_routes
-    solve(Route.first.id)
+    solve(Route.last.id)
   end
 
   def new
