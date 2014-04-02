@@ -62,3 +62,6 @@ gem 'prawn'
 # gem 'debugger', group: [:development, :test]
 gem "rspec-rails", :group => [:development, :test]
 gem 'sprockets', '2.11.0'
+
+#code coverage
+gem 'simplecov', '~> 0.7.1'

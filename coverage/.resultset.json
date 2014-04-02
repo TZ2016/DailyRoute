@@ -1,0 +1,41 @@
+{
+  "RSpec": {
+    "coverage": {
+      "F:/Qi's Rails/DailyRoute/app/models/location.rb": [
+        1,
+        1,
+        1,
+        1,
+        null,
+        null
+      ],
+      "F:/Qi's Rails/DailyRoute/app/models/user.rb": [
+        1,
+        null,
+        2,
+        1,
+        1,
+        1,
+        null,
+        1,
+        1,
+        null,
+        1,
+        1,
+        null,
+        null,
+        1,
+        9,
+        null,
+        null,
+        1,
+        null,
+        1,
+        1,
+        null,
+        null
+      ]
+    },
+    "timestamp": 1396477427
+  }
+}

@@ -42,29 +42,11 @@ class TestGenerateRoute(testLib.RestTestCase):
         self.assertResponse(respData)
 
 
-    def testNoConstrainOnePlace(self):
-        locationList = []
-        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
-        respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
-        self.assertResponse(respData, input={"lat": 38, "lng": -120}, num = 0)
-        self.assertResponse(respData, input={"lat": 38, "lng": -120}, num = 1)
-
-
-    def testNoConstrainMultiPlacesSize(self):
-        locationList = []
-        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
-        locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
-        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
-        locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
-        respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
-        self.assertResponse(respData, input={"lat": 38, "lng": -120}, num = 0)
-        self.assertResponse(respData, input={"lat": 39, "lng": -121}, num = 3)
-
     def testNoConstrainOnePlaceSize(self):
         locationList = []
         locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
         respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
-        self.assertEqual(2, len(respData["route"]))
+        self.assertEqual(2, len(respData["route"][0]))
 
     def testNoConstrainMultiPlaces(self):
         locationList = []
@@ -73,7 +55,7 @@ class TestGenerateRoute(testLib.RestTestCase):
         locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
         locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
         respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
-        self.assertEqual(4, len(respData["route"]))
+        self.assertEqual(4, len(respData["route"][0]))
 
     def testDifferentTravelMethod(self):
         locationList = []
@@ -82,6 +64,32 @@ class TestGenerateRoute(testLib.RestTestCase):
         locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
         locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
         respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "TRANSIT", 'locationList' : locationList} )
+        self.assertResponse(respData)
+
+    def testWithConstriantOnePlaceError(self):
+        locationList = []
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}, "arriveafter": "10:00pm"})
+        respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
+        self.assertResponse(respData)
+
+    def testWithConstrantOnePlaceSize(self):
+        locationList = []
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}, "arriveafter": "10:00pm"})
+        respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
+        self.assertEqual(2,len(respData["route"][0]))
+
+    def testWithConstrantMultiPlaceSize(self):
+        locationList = []
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}, "arriveafter": "10:00pm"})
+        locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -120}, "arriveafter": "11:00pm"})
+        respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
+        self.assertEqual(2,len(respData["route"][0]))
+
+    def testWithConstrantMultiPlace(self):
+        locationList = []
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}, "arriveafter": "10:00pm"})
+        locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -120}, "arriveafter": "11:00pm"})
+        respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )
         self.assertResponse(respData)
 
 
@@ -152,3 +160,22 @@ class TestLogin(testLib.RestTestCase):
         respData = self.makeRequest("/signup",   method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
         respData = self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password1'} )
         self.assertResponse(respData, errCode = -1) 
+
+
+class TestSaveRoute(testLib.RestTestCase):
+
+    def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
+        """
+        Check that the response data dictionary matches the expected values
+        """
+        self.assertEqual(errCode, respData['errCode'])
+
+    def testSavedRoutes(self):
+        self.makeRequest('/main/reset', method="POST", data={})
+        self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
+        self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        locationList = []
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}, "arriveafter": "10:00pm"})
+        self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "DRIVING", 'locationList' : locationList} )        
+        respData = self.makeRequest('/saved', method="GET")
+        self.assertEqual(2,len(respData["route"][0]))
