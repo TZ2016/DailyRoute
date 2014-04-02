@@ -360,14 +360,14 @@ jQuery.sendQuery = function () {
 
 function handleResult (data, baseID, accID) {
   if (data["errCode"] == 1) {
-    _data = data['route'];
+    _data = data;
     var index = 0;
     var $temppanel = $( "#"+baseID+"-temp" ).clone().removeAttr("style");
     
     $( "#"+accID ).empty();
     $( "#"+accID ).append( $temppanel.clone().attr("style", "display:none;") );
 
-    _data.forEach( function (route) {
+    _data['route'].forEach( function (route) {
       index += 1;
       var newid = baseID + "-" + index;
       var $newpanel = $temppanel.clone().attr("id", newid);

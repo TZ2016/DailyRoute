@@ -81,11 +81,12 @@ function getNameOfAddress(geores) {
 function drawRoute(num, panelid) {
   directionsDisplay.setPanel(document.getElementById(panelid));
 
-  data = _data[num-1];
+  var data = _data['route'][num-1];
   var size = data.length;
   var start = new google.maps.LatLng(data[0].lat, data[0].lng);
   var end = new google.maps.LatLng(data[size-1].lat, data[size-1].lng);
-  var selectedMode = "DRIVING";
+  var selectedMode = _data['mode'].toUpperCase();
+  console.log(selectedMode);
   var waypts = [];
   var loc;
   for (var i = 1; i < size-1; i++) {

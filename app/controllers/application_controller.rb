@@ -28,6 +28,16 @@ class ApplicationController < ActionController::Base
       render :json => general_search(fuzzy)
     end
   end
+
+  def solve_helper(arranged, unarranged, start, dest, locations, mode)
+  	if arranged == []
+      puts '============call shortest_path========='
+      return shortest_path(start,locations, dest, mode)
+  	elsif fuzzy = []
+      puts '============call fit_schedule========='
+  		return fit_schedule(arranged, unarranged, mode)
+    end
+  end
    
   #
   def general_search(fuzzy)
@@ -47,16 +57,6 @@ class ApplicationController < ActionController::Base
     return Net::HTTP.get(URI.parse(address))
   end
 
-
-  def solve_helper(arranged, unarranged, start, dest, locations, mode)
-  	if arranged == []
-      puts '============call shortest_path========='
-      return shortest_path(start,locations, dest, mode)
-  	elsif fuzzy = []
-      puts '============call fit_schedule========='
-  		return fit_schedule(arranged, unarranged, mode)
-    end
-  end
 
   def getLocations(id)
   	currRoute = Location.where(routeid: id).to_a
@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
   		ordered_loc = order.map{|x| locations[x]}
   		ordered_loc = (start+ordered_loc+dest).map{|x| x.geocode}
       totaltime = result['routes'][0]['legs'].map{|x| x['duration']['value']}.inject(:+)
-  		return {errCode: SUCCESS, route: [ordered_loc], duration: [totaltime] }
+  		return {errCode: SUCCESS, route: [ordered_loc], duration: [totaltime], mode: mode}
     end
   end
 
@@ -114,7 +114,7 @@ class ApplicationController < ActionController::Base
     durations = result.map{|x| x[1]}
     pp '============TO RETURN==============='
     pp result
-    return {errCode: SUCCESS, route: routes, duration: durations}
+    return {errCode: SUCCESS, route: routes, duration: durations, mode: mode}
   end
 
 
