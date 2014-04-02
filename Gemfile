@@ -42,10 +42,11 @@ gem 'spring', group: :development
 
 gem 'bootstrap-sass', '~> 3.1.1'
 
+gem 'capybara', '1.1.2'
+
 group :production do
   gem 'pg', '0.15.1'
   gem 'rails_12factor', '0.0.2'
-  gem 'capybara', '1.1.2'
 end
 
 #gem for creating pdfs
