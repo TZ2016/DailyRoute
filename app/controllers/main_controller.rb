@@ -1,19 +1,14 @@
 class MainController < ApplicationController
 
-	def index
-	end
-
-	def aboutUs
-	end
-
-	def tutorial
-	end
+	# frontend interface
 
 	def master
 		parseRoute
 		solve(@route.id)
 		# exportRoute
 	end
+
+	# core functionalities
 
 	def parseRoute
 		@route = Route.new

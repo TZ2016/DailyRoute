@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   # protect_from_forgery with: :exception
+  include SessionsHelper
 
   require 'rubygems'
   require 'json'
@@ -250,6 +251,18 @@ class ApplicationController < ActionController::Base
   		point.arrivebefore = point.departbefore - point.minduration
   	end
   	point.save
+  end
+
+  def fuzzySearch(center, type)
+    address = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
+    location = 'location=' + center
+    sensor = 'sensor=' + 'true'
+    rankby = 'rankby=' + '2'
+    types = 'types=' + type
+    key = 'key=' + 'AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM'
+    address = address + location + sensor + rankby + types + key
+    require 'net/http'
+    return Net::HTTP.get(URI.parse(address))
   end
 
 end

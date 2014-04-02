@@ -83,3 +83,72 @@ class TestGenerateRoute(testLib.RestTestCase):
         locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
         respData = self.makeRequest("/main/master", method="POST", data = { 'travelMethod' : "TRANSIT", 'locationList' : locationList} )
         self.assertResponse(respData)
+
+
+class TestAddUser(testLib.RestTestCase):
+    """
+    Test adding users
+    """
+    def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
+        """
+        Check that the response data dictionary matches the expected values
+        """
+        self.assertEqual(errCode, respData['errCode'])
+
+    def testAdd(self):
+        self.makeRequest('/main/reset', method="POST", data={})
+        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
+        self.assertResponse(respData)
+
+    def testAddMultiple(self):
+        self.makeRequest('/main/reset', method="POST", data={})
+        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
+        self.assertResponse(respData, errCode = -1)    
+
+    def testAddEmptyUsername(self):
+        self.makeRequest('/main/reset', method="POST", data={})
+        respData = self.makeRequest("/signup", method="POST", data = { 'email' : '', 'password' : 'password', 'password_confirmation' : 'password'} )
+        self.assertResponse(respData, errCode = -1)
+
+    def testAddWrongEmail(self):
+        self.makeRequest('/main/reset', method="POST", data={})
+        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'user0', 'password' : 'password', 'password_confirmation' : 'password'} )
+        self.assertResponse(respData, errCode = -1)    
+
+    def testShortPassword(self):
+        self.makeRequest('/main/reset', method="POST", data={})
+        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'pass', 'password_confirmation' : 'pass'} )
+        self.assertResponse(respData, errCode = -1)
+
+    def inconsistentPassword(self):
+        self.makeRequest('/main/reset', method="POST", data={})
+        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password1'} )
+        self.assertResponse(respData, errCode = -1)
+
+class TestLogin(testLib.RestTestCase):
+    """
+    Test login
+    """
+    def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
+        """
+        Check that the response data dictionary matches the expected values
+        """
+        self.assertEqual(errCode, respData['errCode'])
+
+    def testLoginTwice(self):
+        self.makeRequest('/main/reset', method="POST", data={})
+        respData = self.makeRequest("/signup",   method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
+        respData = self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.assertResponse(respData)   
+
+    def testNoUser(self):
+        self.makeRequest('/main/reset', method="POST", data={})
+        respData = self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.assertResponse(respData, errCode = -1)
+
+    def testWrongPassword(self):
+        self.makeRequest('/main/reset', method="POST", data={})
+        respData = self.makeRequest("/signup",   method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
+        respData = self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password1'} )
+        self.assertResponse(respData, errCode = -1) 

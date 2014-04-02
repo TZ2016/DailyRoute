@@ -1,5 +1,8 @@
 // data communication
-var _url = "/main/master";
+var _url_calcroute = "/main/master";
+var _url_login = "signin";
+var _url_logout = "signout";
+var _url_signup = "signup";
 var _sendGeo = [];
 var _result = {};
 var _sendData = {'travelMethod': undefined,
@@ -19,7 +22,13 @@ var _sendData = {'travelMethod': undefined,
 // global temporary variables
 var _locToRefine = [];
 
-$(function() {
+$(function () {
+  initPage();
+});
+$(window).bind('page:change', function () {
+  initPage();
+});
+function initPage () {
 
   // auto complete
   var availableTags = [
@@ -121,9 +130,101 @@ $(function() {
     $.sendQuery();
   });
 
-});
+  // auto refresh
+  // $( "#navbar-btn" ).on("click", "a", function () {
+  //   location.reload();
+  // });
 
+  /////////////////////////////////////////////////////////
 
+  $( "#signin-form #signup" ).click( function () {
+    $( "#signup-dlg" ).modal({
+      show: true,
+      keyboard: false,
+      backdrop: "static"
+    });
+  });
+
+  $( "#signup-cancel" ).click( function () {
+    $( "#signup-dlg" ).modal("hide");
+  });
+
+  $( "#signup-btn" ).click( function () {
+    credentials = {'email':    $( "#signup-email" ).val().toString(),
+                 'password': $( "#signup-pw" ).val().toString(),
+                 'password_confirmation': $( "#signup-pwcf" ).val().toString()
+                };
+    $.ajax({
+      type: 'POST',
+      url:  _url_signup,
+      data: JSON.stringify(credentials),
+      contentType: "application/json",
+      dataType: "json",
+      beforeSend: function (jqXHR, settings) {
+      },
+      success: function (data, status, jqXHR) {
+        console.log(data);
+        errCode = data['errCode'];
+        if (errCode == 1) {
+          location.reload();
+        } else {
+          var i = 1;
+          var msg = "Your credentials were rejected due to: \n";
+          data['reasons'].forEach( function (r) {
+            msg += i + ". " + r.toString() + "\n";
+            i += 1;
+          });
+          $.alertMessage(msg);
+        }
+      },
+      error: function (jqXHR, status, error) {
+        $.alertMessage("Server Error!");
+      }
+    });
+  });
+
+  $( "#signin-form #signin" ).click( function () {
+    credentials = {'email':    $( "#email-field" ).val().toString(),
+                   'password': $( "#password-field" ).val().toString()
+                  };
+    $.ajax({
+      type: 'POST',
+      url:  _url_login,
+      data: JSON.stringify(credentials),
+      contentType: "application/json",
+      dataType: "json",
+      beforeSend: function (jqXHR, settings) {
+      },
+      success: function (data, status, jqXHR) {
+        errCode = data['errCode'];
+        if (errCode == 1) {
+          location.reload();
+        } else {
+          $.alertMessage("Invalid combination!");
+        }
+      },
+      error: function (jqXHR, status, error) {
+        $.alertMessage("Server Error!");
+      }
+    });
+  });
+
+  $( "#logout-btn" ).click( function () {
+    $.ajax({
+      type: 'DELETE',
+      url:  _url_logout,
+      beforeSend: function (jqXHR, settings) {
+      },
+      success: function (data, status, jqXHR) {
+        location.reload();
+      },
+      error: function (jqXHR, status, error) {
+        $.alertMessage("Server Error!");
+      }
+    });
+  });
+
+}
 
 // Adding location
 
@@ -177,6 +278,7 @@ jQuery.refineLocations = function (locations) {
       keyboard: false,
       backdrop: "static"
     });
+
   }
 };
 
@@ -198,7 +300,7 @@ jQuery.removeLocation = function (rmvobj) {
 jQuery.sendQuery = function () {
   $.ajax({
     type: 'POST',
-    url:  _url,
+    url:  _url_calcroute,
     data: JSON.stringify(_sendData),
     contentType: "application/json",
     dataType: "json",
