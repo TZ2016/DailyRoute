@@ -56,7 +56,7 @@ class MainController < ApplicationController
 		minute = minute.to_i
 		if ap == 'p'
 			hour += 12
-		elsif ap = 'a' and hour = 12
+		elsif ap == 'a' and hour == 12
 			hour = 0
 	    end
 		return Time.new(@year, @month, @day, hour, minute)

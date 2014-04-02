@@ -18,17 +18,43 @@ class ApplicationController < ActionController::Base
   def solve (id)
   	start, dest, locations = getLocations(id)
     mode = Route.find(id).travelMethod
-  	arranged,unarranged, err = classify_loc(start,locations, dest)
+  	arranged,unarranged, fuzzy, err = classify_loc(start,locations, dest)
     if err != SUCCESS
-      puts '============ERROR========='
-      pp err
+      pp ' ========HERE=============== '
   		render :json => {errCode: err}
-  	elsif arranged == []
+    elsif fuzzy == []
+      render :json => solve_helper(arranged, unarranged, start, dest, locations, mode)
+    else
+      render :json => general_search(fuzzy)
+    end
+  end
+   
+  #
+  def general_search(fuzzy)
+  end
+
+   # AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM
+  def search_nearby(query, type, radius, center)
+    address = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
+    query = 'query=' + query
+    key = '&key=' + 'AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM'
+    sensor = '&sensor=' + 'false'
+    location = '&location=' + geocode_to_s(center.geocode)
+    radius = '&radius=' + radius.to_s
+    # types = 'types=' + type
+    address = URI.encode(address + query + key + sensor +location +radius)
+    require 'net/http'
+    return Net::HTTP.get(URI.parse(address))
+  end
+
+
+  def solve_helper(arranged, unarranged, start, dest, locations, mode)
+  	if arranged == []
       puts '============call shortest_path========='
-      render :json => shortest_path(start,locations, dest, mode)
-  	else
+      return shortest_path(start,locations, dest, mode)
+  	elsif fuzzy = []
       puts '============call fit_schedule========='
-  		render :json => fit_schedule(arranged, unarranged, mode)
+  		return fit_schedule(arranged, unarranged, mode)
     end
   end
 
@@ -42,6 +68,10 @@ class ApplicationController < ActionController::Base
 
   ## http://maps.googleapis.com/maps/api/directions/json?origin=Adelaide,SA&destination=Adelaide,SA&waypoints=optimize:true|Barossa+Valley,SA|Clare,SA|Connawarra,SA|McLaren+Vale,SA&sensor=false&key=API_KEY
   def shortest_path(start, locations, dest, mode)
+    pp '=========in shortest path========='
+    pp start
+    pp dest
+    pp locations
   	result = JSON.parse(request_route(start,locations, dest, mode))
 
     if result.has_key? 'Error' or result['status'] != 'OK'
@@ -111,8 +141,9 @@ class ApplicationController < ActionController::Base
 
 
   def get_time(start, pass, dest, mode)
-    result = shortest_path([start], pass, [dest], mode)
+
     pp '============= inside get time =========================='
+    result = shortest_path([start], pass, [dest], mode)
     pp result[:duration][0]
     if result['errCode'] = SUCCESS 
         return result[:duration][0]
@@ -163,6 +194,8 @@ class ApplicationController < ActionController::Base
   def check_time_validity(intervals, arranged, mode)
     pp '============check_time_validity====================='
     for i in (0..arranged.length - 2)
+      pp arranged[i]
+      pp arranged[i+1]
       if get_time(arranged[i], [], arranged[i+1], mode) > intervals[i]
         return ERR_NOT_ENOUGH_TIME_FOR_TRAVEL
       end
@@ -181,11 +214,15 @@ class ApplicationController < ActionController::Base
   end 
 
   def request_route(start, locations, dest, mode)
+    pp '=============inside request route========='
+    pp start
+    pp  dest
     addr = 'http://maps.googleapis.com/maps/api/directions/json?'
+    
     origin = 'origin=%s&' % geocode_to_s(start[0].geocode) 
     dest = 'destination=%s' % geocode_to_s(dest[0].geocode)
     places = ''
-    
+    pp locations
     locations.each do |point|
       places += '|' + geocode_to_s(point.geocode)
     end
@@ -200,8 +237,9 @@ class ApplicationController < ActionController::Base
 
   ## requires start.departafter and end.startbefore
   def classify_loc(start, locations, dest)
+    pp '===============Classify loc==================='
     all_loc = start+locations+dest
-    arranged,unarranged = [],[]
+    arranged,unarranged, fuzzy = [],[], []
 
     all_loc.each do |point|
       preprocess(point)
@@ -210,16 +248,16 @@ class ApplicationController < ActionController::Base
       else
         unarranged << point
       end
+      if point.geocode == nil
+        fuzzy << point
+      end
     end
     arranged.sort_by!{|x| x.arrivebefore}
-    pp '=============LOOK ============='
-    pp arranged.first
-    pp start
     pp arranged
     if arranged != [] and (arranged.first != start[0] or arranged.last != dest[0])
-    return [], [], ERR_NEED_SPECIFY_START_TIME_AND_ARRIVE_TIME
+    return [], [], [], ERR_NEED_SPECIFY_START_TIME_AND_ARRIVE_TIME
     end
-    return arranged, unarranged, SUCCESS
+    return arranged, unarranged, fuzzy, SUCCESS
   end
 
 
@@ -237,17 +275,7 @@ class ApplicationController < ActionController::Base
     point.save
   end
 
-  def fuzzySearch(center, type, radius)
-    address = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
-    location = 'location=' + center
-    sensor = 'sensor=' + 'true'
-    rankby = 'rankby=' + radius.to_s
-    types = 'types=' + type
-    key = 'key=' + 'AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM'
-    address = address + location + sensor + rankby + types + key
-    require 'net/http'
-    return Net::HTTP.get(URI.parse(address))
-  end
+
 
 end
   # def fit_schedule(arranged, unarranged, mode)
