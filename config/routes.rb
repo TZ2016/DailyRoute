@@ -16,6 +16,7 @@ DailyRouteTest::Application.routes.draw do
   match 'signout', to: 'sessions#destroy',     via: 'delete'
   
   # core
+  match 'saved', to: 'users#saved_routes',  via: 'get'
 
   # testing
   post '/main/reset' => "main#reset"
