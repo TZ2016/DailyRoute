@@ -47,6 +47,9 @@ class MainController < ApplicationController
 	end
 
 	def read_time(text)
+		if text == ''
+			return nil
+		end
 		hour, rest = text.split(':')
 		minute, ap = rest[0..1], rest[2]
 		if ap == 'p'
@@ -56,6 +59,9 @@ class MainController < ApplicationController
 	end
 
 	def read_duration(text)
+		if text == ''
+			return nil
+		end
 		hour, minute = text.split(':')
 		return hour * 3600 + minute * 60
 	end
