@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
   	if arranged == []
       puts '============call shortest_path========='
       return shortest_path(start,locations, dest, mode)
-  	elsif fuzzy = []
+  	elsif fuzzy == []
       puts '============call fit_schedule========='
   		return fit_schedule(arranged, unarranged, mode)
     end
@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
     location = '&location=' + geocode_to_s(center.geocode)
     radius = '&radius=' + radius.to_s
     # types = 'types=' + type
-    address = URI.encode(address + query + key + sensor +location +radius)
+    address = URI.encode(address + query + key + sensor + location + radius)
     require 'net/http'
     return Net::HTTP.get(URI.parse(address))
   end

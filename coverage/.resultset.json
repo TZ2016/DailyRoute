@@ -1,7 +1,7 @@
 {
   "RSpec": {
     "coverage": {
-      "F:/Qi's Rails/DailyRoute/app/models/location.rb": [
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/models/location.rb": [
         1,
         1,
         1,
@@ -9,7 +9,7 @@
         null,
         null
       ],
-      "F:/Qi's Rails/DailyRoute/app/models/user.rb": [
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/models/user.rb": [
         1,
         null,
         2,
@@ -36,6 +36,6 @@
         null
       ]
     },
-    "timestamp": 1396477427
+    "timestamp": 1396480807
   }
 }
