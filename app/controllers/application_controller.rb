@@ -146,9 +146,10 @@ class ApplicationController < ActionController::Base
 
   def get_intervals(arranged, mode)
     intervals = []
+    pp arranged
     for i in (0..arranged.length - 2)
       if arranged[i].departafter > arranged[i+1].arrivebefore
-        puts '====================================='
+        puts '===============HAHA======================'
         pp arranged[i].departafter
         pp arranged[i+1].arrivebefore
         return [], ERR_INVALID_INPUT_TIME
@@ -210,13 +211,11 @@ class ApplicationController < ActionController::Base
         unarranged << point
       end
     end
-
-    arranged.sort_by do |a|
-      a.arrivebefore
-    end
+    arranged.sort_by!{|x| x.arrivebefore}
     pp '=============LOOK ============='
     pp arranged.first
     pp start
+    pp arranged
     if arranged != [] and (arranged.first != start[0] or arranged.last != dest[0])
     return [], [], ERR_NEED_SPECIFY_START_TIME_AND_ARRIVE_TIME
     end
