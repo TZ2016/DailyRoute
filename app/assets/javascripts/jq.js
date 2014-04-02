@@ -83,10 +83,11 @@ function initPage () {
   });
 
   // direction panel
-  $( "#dir-panel-temp" ).accordion({
+  $( "#dir-ins" ).accordion({
     heightStyle: "content"
   });
-  $( "#dir-panel" ).accordion({
+  $( "#dir-acc" ).accordion({
+    header: "> div > h3",
     collapsible: true,
     active: false,
     heightStyle: 'content',
@@ -123,17 +124,12 @@ function initPage () {
 
   // view result button and utilities
   $( "#calc-btn" ).click( function () {
-    $( "#dir-panel > div" ).text("");
-    $( "#dir-panel" ).accordion( "option", "active", false );
+    // $( "#dir-acc" ).attr("style", "display: none;");
+    $( "#dir-acc" ).accordion( "option", "active", false );
 
     genSendData();
     $.sendQuery();
   });
-
-  // auto refresh
-  // $( "#navbar-btn" ).on("click", "a", function () {
-  //   location.reload();
-  // });
 
   /////////////////////////////////////////////////////////
 
@@ -236,7 +232,7 @@ jQuery.addLocation = function (location) {
   var markerid = addMarker(location);
   var newlocid = "#loc-acc-" + markerid;
   var $newlocelem = $( "#loc-acc-tmp" ).clone().attr("id", newlocid.slice(1));
-
+  
   _sendGeo[markerid] = location;
 
   $( "#newloc" ).val("");
@@ -306,14 +302,11 @@ jQuery.sendQuery = function () {
     dataType: "json",
     beforeSend: function (jqXHR, settings) {
       $( "#dir-row" ).removeAttr("style");
-      $( "#dir-panel-temp > h3" ).text("Calculating...");
-      $( "#dir-panel-temp > div" ).text("Your query data was sent.");
+      $( "#dir-ins > h3" ).text("Calculating...");
+      $( "#dir-ins > div" ).text("Your query data was sent.");
     },
     success: function (data, status, jqXHR) {
       handleResult(data);
-      $( "#dir-panel-temp > h3" ).text("Instruction");
-      $( "#dir-panel-temp > div" ).text("Your routes are ready.");
-      $( "#dir-panel > h3" ).text("Route 1");
     },
     error: function (jqXHR, status, error) {
       $( "#dir-row" ).attr("style", "display: none;");
@@ -323,9 +316,29 @@ jQuery.sendQuery = function () {
 };
 
 function handleResult (data) {
-  _data = data;
-  if (data["errCode"] != 1) {
-    $.alertMessage("Google server denied your request!");
+  if (data["errCode"] == 1) {
+    _data = data['route'];
+    var index = 0;
+    var $temppanel = $( "#route-temp" ).clone();
+    
+    $( "#dir-ins > h3" ).text("Instruction");
+    $( "#dir-ins > div" ).text("Your routes are ready.");
+    $( "#dir-acc" ).empty();
+    $( "#dir-acc" ).append( $temppanel.clone() );
+
+    _data.forEach( function (route) {
+      index += 1;
+      var newid = "route-" + index;
+      var $newpanel = $temppanel.clone().attr("id", newid);
+
+      $( "#dir-acc" ).append( $newpanel );
+      $( "#"+newid+" > .route-title" ).text("Route " + index).attr("id", newid+"-title");
+      $( "#"+newid+" > .route-content" ).attr("id", newid+"-content");
+    });
+    $( "#dir-acc" ).accordion("refresh");
+  } else {
+    _data = [];
+    $.alertMessage("Google server denied your request!(code="+data['errCode']+")");
   }
 }
 
@@ -359,11 +372,12 @@ function genSendData () {
 }
 
 jQuery.displayRoute = function (ev, ui) {
-  var num = 1; // FIXME
-  var pid = "route-" + num;
+  if (ui.newHeader.text() !== "") {
+    var num = Number(ui.newHeader.text().split(" ").pop()); // FIXME
+    var pid = "route-" + num + "-content";
 
-  $( "#" + pid + "> h3" ).text("Route " + num);
-  drawRoute(num, pid);
+    drawRoute(num, pid);
+  }
 };
 
 // utilities

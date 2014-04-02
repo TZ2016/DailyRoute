@@ -46,7 +46,7 @@ class ApplicationController < ActionController::Base
   		ordered_loc = order.map{|x| locations[x]}
   		ordered_loc = (start+ordered_loc+dest).map{|x| x.geocode}
       totaltime = result['routes'][0]['legs'].map{|x| x['duration']['value']}.inject(:+)
-  		return {errCode: SUCCESS, route: [ordered_loc], duration: [totaltime] }
+  		return {errCode: SUCCESS, route: [ordered_loc] * 3, duration: [totaltime] }
     end
   end
 
