@@ -16,15 +16,17 @@ class MainController < ApplicationController
 		@route.save
 		counter = 0
 		params[:locationList].each do |point|
+			t = Time.now
+			@year, @month, @day = t.year, t.month, t.day
 			@location = Location.new
 			@location.routeid = @route.id
 			@location.searchtext = point[:searchtext]
-			@location.minduration = point[:minduration]
-			@location.maxduration = point[:maxduration]
-			@location.arrivebefore = point[:arrivebefore]
-			@location.arriveafter = point[:arriveafter]
-			@location.departbefore = point[:departbefore]
-			@location.departafter = point[:departafter]
+			@location.minduration = read_duration(point[:minduration])
+			@location.maxduration = read_duration(point[:maxduration])
+			@location.arrivebefore = read_time(point[:arrivebefore])
+			@location.arriveafter = read_time(point[:arriveafter])
+			@location.departbefore = read_time(point[:departbefore])
+			@location.departafter = read_time(point[:departafter])
 			@location.priority = point[:priority]
 			@location.geocode = point[:geocode]
 			@location.blacklisted = false
@@ -42,6 +44,20 @@ class MainController < ApplicationController
 			counter+=1
 			@location.save
 		end
+	end
+
+	def read_time(text)
+		hour, rest = text.split(':')
+		minute, ap = rest[0..1], rest[2]
+		if ap == 'p'
+			hour += 12
+		end
+		return Time.new(@year, @month, @day, hour, minute)
+	end
+
+	def read_duration(text)
+		hour, minute = text.split(':')
+		return hour * 3600 + minute * 60
 	end
 	
 	def updateRoute
