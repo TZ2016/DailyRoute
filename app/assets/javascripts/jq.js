@@ -55,6 +55,9 @@ function initPage () {
     $( "#newloc" ).val("");
   });
 
+  // mode
+  $( "#trans-mode" ).buttonset();
+
   // remove loc
   $( '#loc-acc' ).on("click", ".remove-btn", function () {
     $.removeLocation(this);
@@ -385,8 +388,21 @@ function genSendData () {
   var $locs = $( "#loc-acc" ).children();
   var entry;
 
-  _sendData['travelMethod'] = "driving";
   _sendData['locationList'] = [];
+  switch($('#trans-mode :checked').attr("id")) {
+    case "mode-d":
+      _sendData['travelMethod'] = "driving";
+      break;
+    case "mode-w":
+      _sendData['travelMethod'] = "walking";
+      break;
+    case "mode-b":
+      _sendData['travelMethod'] = "bycycling";
+      break;
+    case "mode-t":
+      _sendData['travelMethod'] = "transit";
+      break;
+  }
 
   for (var i = 1; i < $locs.length; i++) {
 
