@@ -220,6 +220,16 @@ function initPage () {
     });
   });
 
+  $( "#routes-btn" ).click( function () {
+    $( "#sidebar-main" ).hide();
+    $( "#sidebar-saved" ).show();
+  });
+
+  $( "#return-btn" ).click( function () {
+    $( "#sidebar-main" ).show();
+    $( "#sidebar-saved" ).hide();
+  });
+
 }
 
 // Adding location

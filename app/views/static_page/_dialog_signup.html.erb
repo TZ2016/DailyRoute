@@ -1,0 +1,41 @@
+<div class="modal fade" id="signup-dlg" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">User Signup Form</h4>
+      </div>
+      <div class="modal-body">
+        <!-- form starts -->
+        <form role="form">
+          <div class="form-group">
+            <label for="signup-email">Email address</label>
+            <input type="email" class="form-control" id="signup-email" placeholder="Enter email">
+          </div>
+          <div class="form-group">
+            <label for="signup-pw">Password</label>
+            <input type="password" class="form-control" id="signup-pw" placeholder="Password">
+          </div>
+          <div class="form-group">
+            <label for="signup-pwcf">Password Confirmation</label>
+            <input type="password" class="form-control" id="signup-pwcf" placeholder="Password">
+          </div>
+          <div class="form-group">
+            <label for="signup-photo">User Photo</label>
+            <input type="file" id="signup-photo">
+            <p class="help-block">Photo cannot exceed 2MB.</p>
+          </div>
+          <!-- <div class="checkbox">
+            <label>
+              <input type="checkbox"> Check me out
+            </label>
+          </div> -->
+        </form>
+        <!-- form ends -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="signup-cancel" class="btn btn-warning">Cancel</button>
+        <button type="button" id="signup-btn" class="btn btn-primary">SignUp</button>
+      </div>
+    </div>
+  </div>
+</div>
