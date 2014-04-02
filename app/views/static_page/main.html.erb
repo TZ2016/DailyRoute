@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <!-- Sidebar Level 1 -->
-    <div id="sidebar-main" class="col-md-4 sidebar">
+    <div class="col-md-4 sidebar">
 
       <!-- Title -->
       <h4>Start your route now!</h4>
@@ -44,19 +44,28 @@
       <!-- Directions Panel starts -->
       <%= render 'static_page/panel_direction' %>
 
-    <!-- end of sidebar -->
+    </div>
+
     <!-- Sidebar for saved routes -->
     <div id="sidebar-saved" class="col-md-4 sidebar" style="display:none;">
-
-      <%= render 'static_page/panel_direction' %>
+      <div id="savedroutes-row" class="row">
+        <h4 class="col-md-12">Your Saved Routes</h4>
+        <div id="savedroutes-ins" class="col-md-12">
+          <h3>Instructions</h3>
+          <div><p>Click to view.</p></div>
+        </div>
+        <div id="savedroutes-acc" class="col-md-12">
+          <div id="savedroutes-temp" style="display:none;" class="route-panel">
+            <h3 class="route-title">Title</h3>
+            <div class="route-content"><p></p></div>
+          </div>
+        </div>
+      </div>
       <hr>
       <button id="return-btn" type="button" class="btn btn-warning">
         Return to Main Panel
       </button>
-
     </div>
-    <!-- end of saved routes -->
-  </div>
 
     <div class="col-md-8 col-md-offset-4 main">
       <div id="map-canvas" class="map-container">

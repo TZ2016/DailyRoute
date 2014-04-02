@@ -3,6 +3,7 @@ var _url_calcroute = "/main/master";
 var _url_login = "signin";
 var _url_logout = "signout";
 var _url_signup = "signup";
+var _url_saved = "saved";
 var _sendGeo = [];
 var _result = {};
 var _sendData = {'travelMethod': undefined,
@@ -94,6 +95,18 @@ function initPage () {
     beforeActivate: $.displayRoute
   });
 
+  // saved routes panel
+  $( "#savedroutes-ins" ).accordion({
+    heightStyle: "content"
+  });
+  $( "#savedroutes-acc" ).accordion({
+    header: "> div > h3",
+    collapsible: true,
+    active: false,
+    heightStyle: 'content',
+    beforeActivate: $.displayRoute
+  });
+
   // refine location dialog
   $( "#refineloc-lst" ).selectable();
 
@@ -159,7 +172,6 @@ function initPage () {
       beforeSend: function (jqXHR, settings) {
       },
       success: function (data, status, jqXHR) {
-        console.log(data);
         errCode = data['errCode'];
         if (errCode == 1) {
           location.reload();
@@ -223,6 +235,22 @@ function initPage () {
   $( "#routes-btn" ).click( function () {
     $( "#sidebar-main" ).hide();
     $( "#sidebar-saved" ).show();
+
+    //FIXME
+    $.ajax({
+      type: 'GET',
+      url:  _url_saved,
+      contentType: "application/json",
+      dataType: "json",
+      beforeSend: function (jqXHR, settings) {
+      },
+      success: function (data, status, jqXHR) {
+        // data = {errCode: , route: []}
+        handleResult(data, "savedroutes", "savedroutes-acc");
+      },
+      error: function (jqXHR, status, error) {
+      }
+      });
   });
 
   $( "#return-btn" ).click( function () {
@@ -316,7 +344,9 @@ jQuery.sendQuery = function () {
       $( "#dir-ins > div" ).text("Your query data was sent.");
     },
     success: function (data, status, jqXHR) {
-      handleResult(data);
+      $( "#dir-ins > h3" ).text("Instruction");
+      $( "#dir-ins > div" ).text("Your routes are ready.");
+      handleResult(data, "route", "dir-acc");
     },
     error: function (jqXHR, status, error) {
       $( "#dir-row" ).attr("style", "display: none;");
@@ -325,27 +355,25 @@ jQuery.sendQuery = function () {
   });
 };
 
-function handleResult (data) {
+function handleResult (data, baseID, accID) {
   if (data["errCode"] == 1) {
     _data = data['route'];
     var index = 0;
-    var $temppanel = $( "#route-temp" ).clone().removeAttr("style");
+    var $temppanel = $( "#"+baseID+"-temp" ).clone().removeAttr("style");
     
-    $( "#dir-ins > h3" ).text("Instruction");
-    $( "#dir-ins > div" ).text("Your routes are ready.");
-    $( "#dir-acc" ).empty();
-    $( "#dir-acc" ).append( $temppanel.clone().attr("style", "display:none;") );
+    $( "#"+accID ).empty();
+    $( "#"+accID ).append( $temppanel.clone().attr("style", "display:none;") );
 
     _data.forEach( function (route) {
       index += 1;
-      var newid = "route-" + index;
+      var newid = baseID + "-" + index;
       var $newpanel = $temppanel.clone().attr("id", newid);
 
-      $( "#dir-acc" ).append( $newpanel );
+      $( "#"+accID ).append( $newpanel );
       $( "#"+newid+" > .route-title" ).text("Route " + index).attr("id", newid+"-title");
       $( "#"+newid+" > .route-content" ).attr("id", newid+"-content");
     });
-    $( "#dir-acc" ).accordion("refresh");
+    $( "#"+accID ).accordion("refresh");
   } else {
     _data = [];
     $.alertMessage("Google server denied your request!(code="+data['errCode']+")");
@@ -383,8 +411,9 @@ function genSendData () {
 
 jQuery.displayRoute = function (ev, ui) {
   if (ui.newHeader.text() !== "") {
-    var num = Number(ui.newHeader.text().split(" ").pop()); // FIXME
-    var pid = "route-" + num + "-content";
+    var num = Number(ui.newHeader.text().split(" ").pop());
+    var baseID = ui.newHeader.parent().attr("id").split("-")[0];
+    var pid = baseID + "-" + num + "-content";
 
     drawRoute(num, pid);
   }
