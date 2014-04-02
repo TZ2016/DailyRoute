@@ -51,7 +51,7 @@ class ApplicationController < ActionController::Base
   		ordered_loc = order.map{|x| locations[x]}
   		ordered_loc = (start+ordered_loc+dest).map{|x| x.geocode}
       totaltime = result['routes'][0]['legs'].map{|x| x['duration']['value']}.inject(:+)
-  		return {errCode: SUCCESS, route: [ordered_loc] * 3, duration: [totaltime] }
+  		return {errCode: SUCCESS, route: [ordered_loc], duration: [totaltime] }
     end
   end
 
@@ -79,7 +79,7 @@ class ApplicationController < ActionController::Base
     for i in (0..routes.length-1)
       result << [routes[i], durations[i]] 
     end
-    result.sort{|x, y| x[1] <=> y[1]}
+    result.sort_by!{|x| x[1]}
     routes = result.map{|x| x[0]}
     durations = result.map{|x| x[1]}
     pp '============TO RETURN==============='
@@ -104,8 +104,6 @@ class ApplicationController < ActionController::Base
       end
     end
     order << arranged.last
-    pp '==============ORDER=================='
-    pp order
     order = order.map{|x| x.geocode}
     return order, duration, true
   end
@@ -129,14 +127,20 @@ class ApplicationController < ActionController::Base
     else 
       indicator = i.to_s(num)
     end
-    result = [[]] * num
-    for j in (0..unarranged.length - 1)
-      if j < indicator.length 
-        result[indicator[j]] << unarranged[j]
-      else
-        result[0] << unarranged[j]
-      end
+    indicator = '0' * (num - indicator.length) + indicator
+    result = []
+    for _ in (1..num)
+      result << []
     end
+    pp '============PARTITION================'
+    pp unarranged.length
+    pp indicator
+    pp result
+    for j in (0..unarranged.length - 1)
+        puts '========= Indicator ==================='
+        result[indicator[j].to_i] << unarranged[j]
+    end
+    pp result
     return result
   end
 
