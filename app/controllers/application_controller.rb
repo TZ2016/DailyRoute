@@ -30,12 +30,12 @@ class ApplicationController < ActionController::Base
   end
 
   def solve_helper(arranged, unarranged, start, dest, locations, mode)
-  	if arranged == []
+    if arranged == []
       puts '============call shortest_path========='
       return shortest_path(start,locations, dest, mode)
-  	elsif fuzzy == []
+    else
       puts '============call fit_schedule========='
-  		return fit_schedule(arranged, unarranged, mode)
+      return fit_schedule(arranged, unarranged, mode)
     end
   end
    
@@ -144,8 +144,9 @@ class ApplicationController < ActionController::Base
 
     pp '============= inside get time =========================='
     result = shortest_path([start], pass, [dest], mode)
-    pp result[:duration][0]
-    if result['errCode'] = SUCCESS 
+    if result[:errCode] == SUCCESS 
+        pp '=============result==========='
+        pp result
         return result[:duration][0]
     else
         return Float::INFINITY
@@ -158,6 +159,7 @@ class ApplicationController < ActionController::Base
     else 
       indicator = i.to_s(num)
     end
+    pp [i, num, indicator]
     indicator = '0' * (num - indicator.length) + indicator
     result = []
     for _ in (1..num)
