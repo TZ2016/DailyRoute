@@ -12,4 +12,9 @@ class StaticPageController < ApplicationController
 		@pagehelper_active = "Tutorial"
 	end
 
+	def reset
+		User.destroy_all
+		render :json => { errCode: 1 }
+	end
+
 end
