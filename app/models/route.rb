@@ -11,4 +11,13 @@ class Route < ActiveRecord::Base
 	validates :mode, presence: true
 	validates :mode, inclusion: %w(driving transit bicycling walking)
 
+	def generate_route_from_user_input
+
+	end	
+
+	def parseRoutefrom
+
+	private 
+
+
 end
