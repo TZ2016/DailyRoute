@@ -29,12 +29,12 @@ DailyRouteTest::Application.routes.draw do
   # testing
 
   post '/main/reset' => "static_page#reset"
-  post '/main/routes_of_user'
-  post '/main/remove_all_routes_of'
-  post '/main/add_route_to'
-  get  '/test/resetAll'
-  get  '/test/resetUser'
-  get  '/test/resetRoute'
-  get  '/test/resetStep'
+  post '/tests/routes_of_user'
+  post '/tests/remove_all_routes_of'
+  post '/tests/add_route_to'
+  get  '/tests/resetAll'
+  get  '/tests/resetUser'
+  get  '/tests/resetRoute'
+  get  '/tests/resetStep'
 
 end
