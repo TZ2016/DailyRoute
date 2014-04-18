@@ -112,17 +112,17 @@ describe User do
 
 		before { @user.save }
 		let!(:older_route) do
-			Route.create(user_id: @user.id, name: "test_route", mode: "driving")
+			Route.create(user_id: @user.id, name: "old", mode: "driving", created_at: 1.day.ago)
 		end
 		let!(:newer_route) do
-			Route.create(user_id: @user.id, name: "test_route", mode: "driving")
+			Route.create(user_id: @user.id, name: "new", mode: "driving", created_at: 1.hour.ago)
 		end
 
-		it "should have the right microposts in the right order" do
+		it "should have the right routes in the right order" do
 			expect(@user.routes.to_a).to eq [newer_route, older_route]
 		end
 
-		it "should destroy associated microposts" do
+		it "should destroy associated routes" do
 			routes = @user.routes.to_a
 			@user.destroy
 			expect(routes).not_to be_empty

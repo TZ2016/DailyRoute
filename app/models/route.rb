@@ -11,13 +11,12 @@ class Route < ActiveRecord::Base
 	validates :mode, presence: true
 	validates :mode, inclusion: %w(driving transit bicycling walking)
 
-
-	def Route.check_route(input)
-		rtn = {}
-		rtn[:errCode] = 1
-		step = {name: "step", geocode: "88.88, 99.99", departure: DateTime.new, arrival: DateTime.new}
-		route = {steps: [step, step], name: "route", mode: "waLking"}
-		rtn[:routes] = [route, route]
-		return rtn
-	end
+	# def Route.check_route(input)
+	# 	rtn = {}
+	# 	rtn[:errCode] = 1
+	# 	step = {name: "step", geocode: "88.88, 99.99", departure: DateTime.new, arrival: DateTime.new}
+	# 	route = {steps: [step, step], name: "route", mode: "waLking"}
+	# 	rtn[:routes] = [route, route]
+	# 	return rtn
+	# end
 end
