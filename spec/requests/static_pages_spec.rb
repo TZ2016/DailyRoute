@@ -4,7 +4,29 @@ describe "Static pages" do
 
   subject { page }
 
-  describe "Home page" do
+  describe "Main page" do
+    before { visit root_path }
+
+    it { should have_content('Start your route now!') }
+    it { should have_button('Add') }
+    it { should have_field("newloc") }
+
+    it { should have_content('Transportation Mode') }
+    it { should have_selector("#trans-mode") }
+    it { should have_selector("#mode-d") }
+    it { should have_selector("#mode-w") }
+    it { should have_selector("#mode-t") }
+    it { should have_selector("#mode-b") }
+
+    it { should have_content('Selected Locations') }
+    it { should have_selector('#loc-acc-ins') }
+
+    it { should have_button('Calculate Routes') }
+
+    it { should have_selector("#map-canvas") }
+  end
+
+  describe "Navigation bar" do
     before { visit root_path }
 
     it "should have title" do
