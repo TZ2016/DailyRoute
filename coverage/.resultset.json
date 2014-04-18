@@ -1,35 +1,108 @@
 {
   "RSpec": {
     "coverage": {
-      "F:/Qi's Rails/DailyRoute/app/models/user.rb": [
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/helpers/application_helper.rb": [
+        1,
+        null
+      ],
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/helpers/main_helper.rb": [
+        1,
+        null
+      ],
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/helpers/routes_helper.rb": [
         1,
         null,
-        1,
-        null,
-        26,
-        1,
-        1,
-        1,
-        null,
-        1,
-        1,
-        null,
-        1,
-        25,
-        null,
-        null,
-        1,
-        33,
-        null,
-        null,
-        1,
-        null,
-        1,
-        25,
         null,
         null
       ],
-      "F:/Qi's Rails/DailyRoute/app/models/step.rb": [
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/helpers/sessions_helper.rb": [
+        1,
+        null,
+        1,
+        0,
+        0,
+        0,
+        0,
+        null,
+        null,
+        1,
+        0,
+        null,
+        null,
+        1,
+        0,
+        null,
+        null,
+        1,
+        0,
+        0,
+        null,
+        null,
+        1,
+        0,
+        null,
+        null,
+        1,
+        0,
+        0,
+        0,
+        null,
+        null,
+        null,
+        1,
+        0,
+        null,
+        0,
+        0,
+        null,
+        null,
+        1,
+        0,
+        0,
+        null,
+        null,
+        1,
+        0,
+        null,
+        null
+      ],
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/helpers/static_page_helper.rb": [
+        1,
+        null
+      ],
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/helpers/users_helper.rb": [
+        1,
+        null
+      ],
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/models/user.rb": [
+        1,
+        null,
+        1,
+        null,
+        31,
+        1,
+        1,
+        1,
+        null,
+        1,
+        1,
+        null,
+        1,
+        30,
+        null,
+        null,
+        1,
+        30,
+        null,
+        null,
+        1,
+        null,
+        1,
+        30,
+        null,
+        null
+      ],
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/models/step.rb": [
         1,
         null,
         null,
@@ -37,7 +110,7 @@
         null,
         1,
         null,
-        112,
+        104,
         null,
         1,
         1,
@@ -47,7 +120,7 @@
         null,
         null
       ],
-      "F:/Qi's Rails/DailyRoute/app/models/route.rb": [
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/models/route.rb": [
         1,
         null,
         23,
@@ -55,7 +128,7 @@
         1,
         1,
         null,
-        134,
+        126,
         null,
         1,
         1,
@@ -69,11 +142,10 @@
         0,
         0,
         0,
-
         null,
         null
       ]
     },
-    "timestamp": 1397812413
+    "timestamp": 1397813142
   }
 }
