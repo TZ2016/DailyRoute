@@ -34,16 +34,6 @@ module RoutesHelper
   end
 
   #Change the time representation in the sol from Time to DateTime.
-  def format(sol)
-    if sol[:errCode] == SUCCESS
-      for route in sol[:routes]
-        for step in route[:steps]
-          step[:departure] = step[:departure].to_datetime
-          step[:arrival] = step[:arrival].to_datetime
-        end
-      end
-    end
-  end
   
   def init(inp)
     @inp = inp
@@ -94,8 +84,8 @@ module RoutesHelper
     # order = result['routes'][0]['waypoint_order']
     # ordered_loc = order.map{|x| locations[x]}
     # ordered_loc = (@start+ordered_loc+@dest).map{|x| x['geocode']}
-    totaltime = result['routes'][0]['legs'].map{|x| x['duration']['value']}.inject(:+)
-    return {errCode: SUCCESS, routes: [route1], duration: [totaltime]}
+    route1[:traveltime] = result['routes'][0]['legs'].map{|x| x['duration']['value']}.inject(:+)
+    return {errCode: SUCCESS, routes: [route1]}
   end
 
 
@@ -183,10 +173,10 @@ module RoutesHelper
       pp @arranged[i]
       pp @arranged[i+1]
       if get_time([@arranged[i],@arranged[i+1]]) > @intervals[i]
-      	pp '==============interval length==========='
-      	pp @intervals
-      	pp '=========cost time============='
-      	pp get_time([@arranged[i],@arranged[i+1]])
+        pp '==============interval length==========='
+        pp @intervals
+        pp '=========cost time============='
+        pp get_time([@arranged[i],@arranged[i+1]])
         return ERR_NOT_ENOUGH_TIME_FOR_TRAVEL
       end
     end
@@ -196,10 +186,10 @@ module RoutesHelper
   def get_time(locs)
     pp '============= inside get time =========================='
     result = shortest_path(locs)
-    pp '		=============result==========='
+    pp '    =============result==========='
     pp result
     if result[:errCode] == SUCCESS 
-        return result[:duration][0]
+        return result[:routes][0][:traveltime]
     else
         return Float::INFINITY
     end
@@ -213,10 +203,10 @@ module RoutesHelper
     dest = 'destination=%s' % geocode_to_s(locs.last['geocode'])
     waypoints = ''
     if locs.length >= 3
-    	waypoints = '&waypoints=optimize:true%s'
-    	for i in (2..locs.length - 2)
-      	waypoints += '|' + geocode_to_s(loc[i]['geocode'])
-    	end
+      waypoints = '&waypoints=optimize:true'
+      for i in (2..locs.length - 2)
+        waypoints += '|' + geocode_to_s(loc[i]['geocode'])
+      end
     end   
     sensor = "&sensor=false"
     mode = '&mode=%s' % @mode
@@ -231,15 +221,15 @@ module RoutesHelper
     pp '===============Classify loc==================='
     @arranged,@unarranged, @fuzzy = [],[], []
     for point in @inp['locationList']
-    	preprocess(point)
-    	if point["arrivebefore"]
-      	@arranged << point
-    	else
-      	@unarranged << point
-    	end
-    	if point["geocode"] == nil
-      	@fuzzy << point
-    	end
+      preprocess(point)
+      if point["arrivebefore"]
+        @arranged << point
+      else
+        @unarranged << point
+      end
+      if point["geocode"] == nil
+        @fuzzy << point
+      end
     end
     @arranged.sort_by!{|x| x["arrivebefore"]}
     pp '=====first===='
@@ -252,10 +242,10 @@ module RoutesHelper
     if @arranged.first != @start or @arranged.last != @dest
       @err = ERR_IN_SPECIFY_START_TIME_AND_ARRIVE_TIME
     else
-	  	@err = SUCCESS
-		end
-		pp @err
- 	end
+      @err = SUCCESS
+    end
+    pp @err
+  end
 
 
   def preprocess(point)
@@ -327,6 +317,17 @@ module RoutesHelper
     pp geocode
     return geocode['lat'].to_s + ',' + geocode['lng'].to_s
   end 
+  
+  def format(sol)
+    if sol[:errCode] == SUCCESS
+      for route in sol[:routes]
+        for step in route[:steps]
+          step[:departure] = step[:departure].to_datetime
+          step[:arrival] = step[:arrival].to_datetime
+        end
+      end
+    end
+  end
 
   def general_search
   end
