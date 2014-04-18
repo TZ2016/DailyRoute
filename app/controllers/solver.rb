@@ -12,14 +12,14 @@ module Solver
   ERR_REQUEST_FAIL = -1
   ERR_INVALID_INPUT_TIME = -2
   ERR_NOT_ENOUGH_TIME_FOR_TRAVEL = -3
-  ERR_NEED_SPECIFY_@START_TIME_AND_ARRIVE_TIME = -4
+  ERR_NEED_SPECIFY_START_TIME_AND_ARRIVE_TIME = -4
   APP_KEY = "AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM"
 
   # Use information in @inp. Return a hash includes 
   # keys: errCode, (route), (durations), (mode). 
   # route, durations, mode exist if errCode == SUCCESS
   def solve(inp)
-    initialize() 
+    init(inp) 
     if @err != SUCCESS
       pp ' ========HERE=============== '
   		return {errCode: @err}
@@ -33,7 +33,11 @@ module Solver
   end
 
   # Clear all instance variables. Called in the beginning of any solve.
-  def initialize(inp)
+  
+
+
+
+  def init(inp)
     @inp = inp
     @start, @dest, @mode, @arranged, @unarranged, @intervals = nil
     @year = DateTime.now.year
@@ -44,8 +48,8 @@ module Solver
       loc['arriveafter'] = read_time(loc['arriveafter'])
       loc['departbefore'] = read_time(loc['departbefore'])
       loc['departafter'] = read_time(loc['departafter'])
-      loc['minduration'] = read_time(loc['minduration'])
-      loc['maxduration'] = read_time(loc['maxduration'])
+      loc['minduration'] = read_duration(loc['minduration'])
+      loc['maxduration'] = read_duration(loc['maxduration'])
     end
     @start = @inp['locationList'].first
     @mode = @inp['travelMethod']
