@@ -13,7 +13,7 @@ module Solver
   ERR_INVALID_INPUT_TIME = -2
   ERR_NOT_ENOUGH_TIME_FOR_TRAVEL = -3
   ERR_NEED_SPECIFY_@START_TIME_AND_ARRIVE_TIME = -4
-  APP_KEY = 'AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM'
+  APP_KEY = "AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM"
 
   # Use information in @inp. Return a hash includes 
   # keys: errCode, (route), (durations), (mode). 
@@ -28,7 +28,7 @@ module Solver
     end
     @start = @inp.locationList.first
     @mode = @inp.travelMethod
-    @dest = @inp.locationList.last
+    @@dest = @inp.locationList.last
     classify_loc()      #set @arranged @unarranged
     if @err != SUCCESS
       pp ' ========HERE=============== '
@@ -47,55 +47,38 @@ module Solver
     @start, @dest, @mode, @arranged, @unarranged, @intervals = nil
   end
 
-   
-  # Fuzzy searach
-  def general_search
-  end
-
-   # 
-  def search_nearby(query, type, radius, center)
-    address = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
-    query = 'query=' + query
-    key = '&key=' + APP_KEY
-    sensor = '&sensor=' + 'false'
-    location = '&location=' + geocode_to_s(center['geocode'])
-    radius = '&radius=' + radius.to_s
-    # types = 'types=' + type
-    address = URI.encode(address + query + key + sensor + location + radius)
-    require 'net/http'
-    return Net::HTTP.get(URI.parse(address))
-  end
 
 
-  ## http://maps.googleapis.com/maps/api/directions/json?origin=Adelaide,SA&destination=Adelaide,SA&waypoints=optimize:true|Barossa+Valley,SA|Clare,SA|Connawarra,SA|McLaren+Vale,SA&sensor=false&key=API_KEY
-  def shortest_path
+  # Return a hash describe the shortest route from p1 to p2
+  # go through all locs in passby.
+  def shortest_path(p1,p2,passby)
     # pp '=========in shortest path========='
     # pp @start
-    # pp dest
+    # pp @dest
     # pp locations
-  	result = JSON.parse(request_route())
+    result = JSON.parse(request_route(p1, p2, passby))
     if result.has_key? 'Error' or result['status'] != 'OK'
-  		return {errCode: ERR_REQUEST_FAIL}
+      return {errCode: ERR_REQUEST_FAIL}
     end
     legs = result["legs"]
-  	routes = []
-  	first_step = {}
-    first_step[:geocode] = geocode_to_s(@start['geocode'])
-    fisrt_step[:departtime] = @start['departafter']
+    routes = []
+    first_step = {}
+    first_step[:geocode] = geocode_to_s(p1['geocode'])
+    fisrt_step[:departtime] = p1['departafter']
     fisrt_step[:arrivetime] = fisrt_step[:departtime] + legs[0]["duration"]["value"]}
     routes << first_step
-		for leg in result["legs"]
+    for leg in result["legs"]
       step = {}
       step[:geocode] = geocode_to_s(leg["end_location"])
       step[:departtime] = route.last[:arrivetime]
       step[:arrivetime] = step[:departtime] + leg["duration"]["value"]
-			routes << step
+      routes << step
     end
-		# order = result['routes'][0]['waypoint_order']
-		# ordered_loc = order.map{|x| locations[x]}
-		# ordered_loc = (@start+ordered_loc+dest).map{|x| x['geocode']}
+    # order = result['routes'][0]['waypoint_order']
+    # ordered_loc = order.map{|x| locations[x]}
+    # ordered_loc = (@start+ordered_loc+@dest).map{|x| x['geocode']}
     totaltime = result['routes'][0]['legs'].map{|x| x['duration']['value']}.inject(:+)
-		return {errCode: SUCCESS, route: [routes], duration: [totaltime], mode: @mode}
+    return {errCode: SUCCESS, route: [routes], duration: [totaltime], mode: @mode}
   end
 
 
@@ -153,10 +136,10 @@ module Solver
 
 
 
-  def get_time(@start, pass, dest)
+  def get_time(p1, pass, p2)
 
     pp '============= inside get time =========================='
-    result = shortest_path([@start], pass, [dest], @mode)
+    result = shortest_path(p1, pass, p2)
     if result[:errCode] == SUCCESS 
         pp '=============result==========='
         pp result
@@ -225,22 +208,20 @@ module Solver
   end
 
 
-  def request_route
+  def request_route(p1,p2,passby)
     pp '=============inside request route========='
-    pp @start
-    pp  dest
+
     addr = 'http://maps.googleapis.com/maps/api/directions/json?'
     
-    origin = 'origin=%s&' % geocode_to_s(@@start['geocode']) 
-    dest = 'destination=%s' % geocode_to_s(@dest['geocode'])
+    origin = 'origin=%s&' % geocode_to_s(p1['geocode']) 
+    dest = 'destination=%s' % geocode_to_s(p2['geocode'])
     places = ''
-    pp locations
     locations.each do |point|
       places += '|' + geocode_to_s(point['geocode'])
     end   
-    passby = '&waypoints=optimize:true%s&sensor=false' % places
+    waypoints = '&waypoints=optimize:true%s&sensor=false' % places
     mode = '&mode=%s' % @mode
-    addr = URI.encode(addr+origin+dest+passby)
+    addr = URI.encode(addr+origin+dest+waypoints)
 
     require 'net/http'
     return Net::HTTP.get(URI.parse(addr))
@@ -264,7 +245,7 @@ module Solver
     @arranged.sort_by!{|x| x["arrivebefore"]}
     pp @arranged
     
-    if @arranged != [] and (@arranged.first != @@start or @arranged.last != @dest)
+    if @arranged != [] and (@arranged.first != @@start or @arranged.last != @@dest)
       return [], [], [], ERR_NEED_SPECIFY_@START_TIME_AND_ARRIVE_TIME
     end
 
@@ -316,5 +297,21 @@ module Solver
     return geocode[:lat].to_s + ',' + geocode[:lng].to_s
   end 
 
+  def general_search
+  end
+
+   # 
+  def search_nearby(query, type, radius, center)
+    address = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
+    query = 'query=' + query
+    key = '&key=' + APP_KEY
+    sensor = '&sensor=' + 'false'
+    location = '&location=' + geocode_to_s(center['geocode'])
+    radius = '&radius=' + radius.to_s
+    # types = 'types=' + type
+    address = URI.encode(address + query + key + sensor + location + radius)
+    require 'net/http'
+    return Net::HTTP.get(URI.parse(address))
+  end
 
 end
