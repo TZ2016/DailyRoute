@@ -57,7 +57,7 @@ module Solver
     query = 'query=' + query
     key = '&key=' + 'AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM'
     sensor = '&sensor=' + 'false'
-    location = '&location=' + geocode_to_s(center.geocode)
+    location = '&location=' + geocode_to_s(center['geocode'])
     radius = '&radius=' + radius.to_s
     # types = 'types=' + type
     address = URI.encode(address + query + key + sensor + location + radius)
@@ -65,14 +65,6 @@ module Solver
     return Net::HTTP.get(URI.parse(address))
   end
 
-
-  def getLocations(id)
-  	currRoute = Location.where(routeid: id).to_a
-  	start = currRoute.select{|loc| loc.start}
-  	dest = currRoute.select{|loc| loc.dest}
-  	locations = currRoute.select{|loc| (not loc.start) and (not loc.dest)}
-    return start, dest, locations
-  end
 
   ## http://maps.googleapis.com/maps/api/directions/json?origin=Adelaide,SA&destination=Adelaide,SA&waypoints=optimize:true|Barossa+Valley,SA|Clare,SA|Connawarra,SA|McLaren+Vale,SA&sensor=false&key=API_KEY
   def shortest_path(start, locations, dest, mode)
@@ -87,8 +79,8 @@ module Solver
     legs = result["legs"]
   	routes = []
   	first_step = {}
-    first_step[:geocode] = geocode_to_s(@start.geocode)
-    fisrt_step[:departtime] = @start.departafter
+    first_step[:geocode] = geocode_to_s(@start['geocode'])
+    fisrt_step[:departtime] = @start['departafter']
     fisrt_step[:arrivetime] = fisrt_step[:departtime] + legs[0]["duration"]["value"]}
     routes << first_step
 		for leg in result["legs"]
@@ -100,7 +92,7 @@ module Solver
     end
 		# order = result['routes'][0]['waypoint_order']
 		# ordered_loc = order.map{|x| locations[x]}
-		# ordered_loc = (start+ordered_loc+dest).map{|x| x.geocode}
+		# ordered_loc = (start+ordered_loc+dest).map{|x| x['geocode']}
     totaltime = result['routes'][0]['legs'].map{|x| x['duration']['value']}.inject(:+)
 		return {errCode: SUCCESS, routes: [routes], duration: [totaltime], mode: mode}
   end
@@ -154,7 +146,7 @@ module Solver
       end
     end
     order << arranged.last
-    order = order.map{|x| x.geocode}
+    order = order.map{|x| x['geocode']}
     return order, duration, true
   end
 
@@ -201,13 +193,13 @@ module Solver
     intervals = []
     pp arranged
     for i in (0..arranged.length - 2)
-      if arranged[i].departafter > arranged[i+1].arrivebefore
+      if arranged[i]['departafter'] > arranged[i+1]['arrivebefore']
         puts '===============HAHA======================'
-        pp arranged[i].departafter
-        pp arranged[i+1].arrivebefore
+        pp arranged[i]['departafter']
+        pp arranged[i+1]['arrivebefore']
         return [], ERR_INVALID_INPUT_TIME
       else
-        intervals << arranged[i+1].arrivebefore - arranged[i].departafter
+        intervals << arranged[i+1]['arrivebefore'] - arranged[i]['departafter']
       end
     end 
     return intervals, check_time_validity(intervals, arranged, mode)  
@@ -231,24 +223,20 @@ module Solver
     end
   end
 
-  def geocode_to_s(geocode)
-    return geocode[:lat].to_s + ',' + geocode[:lng].to_s
-  end 
 
-  def request_route(start, locations, dest, mode)
+  def request_route
     pp '=============inside request route========='
     pp start
     pp  dest
     addr = 'http://maps.googleapis.com/maps/api/directions/json?'
     
-    origin = 'origin=%s&' % geocode_to_s(start[0].geocode) 
-    dest = 'destination=%s' % geocode_to_s(dest[0].geocode)
+    origin = 'origin=%s&' % geocode_to_s(@start['geocode']) 
+    dest = 'destination=%s' % geocode_to_s(@dest['geocode'])
     places = ''
     pp locations
     locations.each do |point|
-      places += '|' + geocode_to_s(point.geocode)
-    end
-    
+      places += '|' + geocode_to_s(point['geocode'])
+    end   
     passby = '&waypoints=optimize:true%s&sensor=false' % places
     mode = '&mode=%s' % mode
     addr = URI.encode(addr+origin+dest+passby)
@@ -257,28 +245,28 @@ module Solver
     return Net::HTTP.get(URI.parse(addr))
   end
 
-  ## requires start.departafter and end.startbefore
-  def classify_loc(start, locations, dest)
+  ## requires start['departafter'] and end.startbefore
+  def classify_loc
     pp '===============Classify loc==================='
-    all_loc = start+locations+dest
     arranged,unarranged, fuzzy = [],[], []
-
-    all_loc.each do |point|
+    @inp.locationList.each do |point|
       preprocess(point)
-      if point.arrivebefore
+      if point["arrivebefore"]
         arranged << point
       else
         unarranged << point
       end
-      if point.geocode == nil
+      if point["geocode"] == nil
         fuzzy << point
       end
     end
-    arranged.sort_by!{|x| x.arrivebefore}
+    arranged.sort_by!{|x| x["arrivebefore"]}
     pp arranged
-    if arranged != [] and (arranged.first != start[0] or arranged.last != dest[0])
-    return [], [], [], ERR_NEED_SPECIFY_START_TIME_AND_ARRIVE_TIME
+    
+    if arranged != [] and (arranged.first != @start or arranged.last != @dest)
+      return [], [], [], ERR_NEED_SPECIFY_START_TIME_AND_ARRIVE_TIME
     end
+
     return arranged, unarranged, fuzzy, SUCCESS
   end
 
@@ -286,44 +274,46 @@ module Solver
   def preprocess(point)
     puts '============================================='
     pp point
-    if (point.arrivebefore and point.departafter) or ((not point.arrivebefore) and (not point.departafter))
+    if (point['arrivebefore'] and point['departafter']) or \
+     ((not point['arrivebefore']) and (not point['departafter']))
       return
     end
-    if (not point.departafter) and point.arrivebefore
-      point.departafter = point.arrivebefore + point.minduration
-    elsif (not point.arrivebefore) and point.departafter
-      point.arrivebefore = point.departafter - point.minduration
+
+    if (not point['departafter']) and point['arrivebefore']
+      point['departafter'] = point['arrivebefore'] + point.minduration
+    elsif (not point['arrivebefore']) and point['departafter']
+      point['arrivebefore'] = point['departafter'] - point.minduration
     end
-    point.save
   end
 
-  private
   def read_time(text)
-		if text == '' or text == nil
-			return nil
-		end
-		hour, rest = text.split(':')
-		minute, ap = rest[0..1], rest[2]
-		hour = hour.to_i
-		minute = minute.to_i
-		if ap == 'p'
-			hour += 12
-		elsif ap == 'a' and hour == 12
-			hour = 0
-		end
-		return Time.new(@year, @month, @day, hour, minute)
-	end
+    if text == '' or text == nil
+      return nil
+    end
+    hour, rest = text.split(':')
+    minute, ap = rest[0..1], rest[2]
+    hour = hour.to_i
+    minute = minute.to_i
+    if ap == 'p'
+      hour += 12
+    elsif ap == 'a' and hour == 12
+      hour = 0
+    end
+    return Time.new(@year, @month, @day, hour, minute)
+  end
 
-	def read_duration(text)
-		if text == '' or text == nil
-			return 0
-		end
-		hour, minute = text.split(':')
-		hour, minute = hour.to_i, minute.to_i
-		return hour * 3600 + minute * 60
-	end
+  def read_duration(text)
+    if text == '' or text == nil
+      return 0
+    end
+    hour, minute = text.split(':')
+    hour, minute = hour.to_i, minute.to_i
+    return hour * 3600 + minute * 60
+  end
+
+  def geocode_to_s(geocode)
+    return geocode[:lat].to_s + ',' + geocode[:lng].to_s
+  end 
 
 
-
-end
 end
