@@ -6,6 +6,7 @@ class AddStepTable < ActiveRecord::Migration
 			t.string   :geocode
 			t.datetime :arrival
 			t.datetime :departure
+			t.boolean :lockedin
 
 			t.timestamps
 		end
