@@ -25,6 +25,7 @@ module Solver
       loc['arriveafter'] = read_time(loc['arriveafter'])
       loc['departbefore'] = read_time(loc['departbefore'])
       loc['departafter'] = read_time(loc['departafter'])
+      loc[]
     end
     @start = @inp['locationList'].first
     @mode = @inp['travelMethod']
@@ -68,7 +69,7 @@ module Solver
     first_step = {}
     first_step[:geocode] = geocode_to_s(p1['geocode'])
     fisrt_step[:departtime] = p1['departafter']
-    fisrt_step[:arrivetime] = fisrt_step[:departtime] + legs[0]["duration"]["value"]}
+    fisrt_step[:arrivetime] = fisrt_step[:departtime] + legs[0]["duration"]["value"]
     routes << first_step
     for leg in result["legs"]
       step = {}
@@ -140,7 +141,6 @@ module Solver
 
 
   def get_time(locs)
-
     pp '============= inside get time =========================='
     result = shortest_path(locs)
     if result[:errCode] == SUCCESS 
@@ -248,7 +248,7 @@ module Solver
     pp @arranged
     
     if @arranged != [] and (@arranged.first != @start or @arranged.last != @dest)
-      return [], [], [], ERR_NEED_SPECIFY_@START_TIME_AND_ARRIVE_TIME
+      return [], [], [], ERR_NEED_SPECIFY_START_TIME_AND_ARRIVE_TIME
     end
 
     return @arranged, @unarranged, fuzzy, SUCCESS
@@ -283,7 +283,7 @@ module Solver
     elsif ap == 'a' and hour == 12
       hour = 0
     end
-    return Time.new(@year, @month, @day, hour, minute)
+    return DateTime.new(@year, @month, @day, hour, minute)
   end
 
   def read_duration(text)
