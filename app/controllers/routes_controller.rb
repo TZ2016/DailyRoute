@@ -5,7 +5,8 @@ class RoutesController < ApplicationController
   before_action :correct_user,   only: :destroy
 
   def create
-  	result = solve(route_params)
+  	# result = solve(route_params)
+    result = check_route(route_params)
     if result[:errCode] == 1
       @routes = []
       build_routes(result[:routes])
@@ -14,7 +15,7 @@ class RoutesController < ApplicationController
       render "show"
     else
       flash[:error] = "errcode is not 1"
-	  redirect_to root_url #FIXME
+      redirect_to root_url #FIXME
       # render "static_pages/main"
     end
   end
@@ -35,6 +36,15 @@ class RoutesController < ApplicationController
       # puts params.require(:route).permit!
     end
   
+    def check_route(input)
+      rtn = {}
+      rtn[:errCode] = 1
+      step = {name: "step", geocode: "88.88, 99.99", departure: DateTime.new, arrival: DateTime.new}
+      route = {steps: [step, step], name: "route", mode: "waLking"}
+      rtn[:routes] = [route, route]
+      return rtn
+    end
+
     def correct_user
       @route = current_user.routes.find_by(id: params[:id])
       redirect_to root_url if @route.nil?
