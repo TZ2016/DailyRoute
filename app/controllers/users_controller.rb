@@ -3,32 +3,34 @@ class UsersController < ApplicationController
                 only: [:index, :edit, :update, :destroy]
   before_action :correct_user,   only: [:edit, :update]
 
-  def index
-    @users = User.paginate(page: params[:page])
-  end
+  # def index
+  #   @users = User.paginate(page: params[:page])
+  # end
 
   def show
     @user = User.find(params[:id])
+    @routes = @user.routes
+    # @routes = @user.routes.paginate(page: params[:page])
   end
 
-  def saved_routes
-    solve(Route.last.id)
-  end
+  # def saved_routes
+  #   solve(Route.last.id)
+  # end
 
-  def new
-    @user = User.new
-  end
+  # def new
+  #   @user = User.new
+  # end
 
   def create
     puts user_params
     @user = User.new(user_params)
     if @user.save
       sign_in @user
-      # flash[:success] = "Welcome to the Sample App!"
+      flash[:success] = "You are logged in!"
       # redirect_to @user
-      render :json => {errCode: 1}
+      render :json => {errCode: 1} # FIXME
     else
-      # render 'new'
+      # render 'new' # FIXME 
       puts @user.errors.messages
       render :json => {errCode: -1, reasons: @user.errors.full_messages}
     end
@@ -46,11 +48,11 @@ class UsersController < ApplicationController
     end
   end
 
-  def destroy
-    User.find(params[:id]).destroy
-    flash[:success] = "User destroyed."
-    redirect_to users_url
-  end
+  # def destroy
+  #   User.find(params[:id]).destroy
+  #   flash[:success] = "User destroyed."
+  #   redirect_to users_url
+  # end
 
   private
 
@@ -60,8 +62,6 @@ class UsersController < ApplicationController
       # params.require(:user).permit(:email, :password,
       #                              :password_confirmation)
     end
-
-    # Before filters
 
     def correct_user
       @user = User.find(params[:id])

@@ -11,43 +11,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140401035944) do
-
-  create_table "locations", force: true do |t|
-    t.text     "searchtext"
-    t.text     "address"
-    t.integer  "routeid"
-    t.integer  "positioninroute"
-    t.time     "minduration"
-    t.time     "maxduration"
-    t.datetime "arrivebefore"
-    t.datetime "arriveafter"
-    t.datetime "departbefore"
-    t.datetime "departafter"
-    t.integer  "priority"
-    t.boolean  "blacklisted"
-    t.boolean  "lockedin"
-    t.boolean  "start"
-    t.boolean  "dest"
-    t.text     "geocode"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+ActiveRecord::Schema.define(version: 20140417231115) do
 
   create_table "routes", force: true do |t|
-    t.string   "username"
-    t.string   "travelMethod"
-    t.string   "routeName"
+    t.integer  "user_id"
+    t.string   "name"
+    t.string   "location"
+    t.string   "mode"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "routes", ["user_id", "created_at"], name: "index_routes_on_user_id_and_created_at"
+
+  create_table "steps", force: true do |t|
+    t.integer  "route_id"
+    t.string   "name"
+    t.string   "geocode"
+    t.datetime "arrival"
+    t.datetime "departure"
+  end
+
+  add_index "steps", ["route_id", "arrival"], name: "index_steps_on_route_id_and_arrival"
+
   create_table "users", force: true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.string   "email"
     t.string   "password_digest"
     t.string   "remember_token"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

@@ -1,7 +1,8 @@
 DailyRouteTest::Application.routes.draw do
  
-  resources :users
-  resources :sessions,      only: [:new, :create, :destroy]
+  # resources :users
+  # resources :routes, only: [:create, :destroy]
+  # resources :sessions,      only: [:new, :create, :destroy]
 
   root 'static_page#main'
 
@@ -15,12 +16,17 @@ DailyRouteTest::Application.routes.draw do
   match 'signin',  to: 'sessions#create',         via: 'post'
   match 'signout', to: 'sessions#destroy',     via: 'delete'
   
+  # route
+  match 'routes', to: 'users#show', via: 'get'
+  match 'newroute',  to: 'routes#create', via: 'post'
+
   # core
-  match 'saved', to: 'users#saved_routes',  via: 'get'
+  # match 'saved', to: 'users#saved_routes',  via: 'get'
 
   # testing
-  post '/main/reset' => "main#reset"
-  post '/main/parseRoute' => 'main#parseRoute'
-  post '/main/master'     => 'main#master'
+  post '/main/reset' => "static_page#reset"
+  get  '/main/test'  => "static_page#tests"
+  # post '/main/parseRoute' => 'main#parseRoute'
+  # post '/main/master'     => 'main#master'
 
 end

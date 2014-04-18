@@ -10,41 +10,43 @@ class MainController < ApplicationController
 
 	# core functionalities
 
-	def parseRoute
-		@route = Route.new
-		@route.travelMethod = params[:travelMethod]
-		@route.save
-		counter = 0
-		params[:locationList].each do |point|
-			t = Time.now
-			@year, @month, @day = t.year, t.month, t.day
-			@location = Location.new
-			@location.routeid = @route.id
-			@location.searchtext = point[:searchtext]
-			@location.minduration = read_duration(point[:minduration])
-			@location.maxduration = read_duration(point[:maxduration])
-			@location.arrivebefore = read_time(point[:arrivebefore])
-			@location.arriveafter = read_time(point[:arriveafter])
-			@location.departbefore = read_time(point[:departbefore])
-			@location.departafter = read_time(point[:departafter])
-			@location.priority = point[:priority]
-			@location.geocode = point[:geocode]
-			@location.blacklisted = false
-			@location.lockedin = false
-			if counter == 0
-				@location.start = true
-			else
-				@location.start = false
-			end
-			if counter == (params[:locationList].length - 1)
-				@location.dest = true
-			else
-				@location.dest = false
-			end
-			counter+=1
-			@location.save
-		end
-	end
+	# def parseRoute
+	# 	puts "====================="
+	# 	puts params
+	# 	@route = Route.new
+	# 	@route.travelMethod = params[:travelMethod]
+	# 	@route.save
+	# 	counter = 0
+	# 	params[:locationList].each do |point|
+	# 		t = Time.now
+	# 		@year, @month, @day = t.year, t.month, t.day
+	# 		@location = Location.new
+	# 		@location.routeid = @route.id
+	# 		@location.searchtext = point[:searchtext]
+	# 		@location.minduration = read_duration(point[:minduration])
+	# 		@location.maxduration = read_duration(point[:maxduration])
+	# 		@location.arrivebefore = read_time(point[:arrivebefore])
+	# 		@location.arriveafter = read_time(point[:arriveafter])
+	# 		@location.departbefore = read_time(point[:departbefore])
+	# 		@location.departafter = read_time(point[:departafter])
+	# 		@location.priority = point[:priority]
+	# 		@location.geocode = point[:geocode]
+	# 		@location.blacklisted = false
+	# 		@location.lockedin = false
+	# 		if counter == 0
+	# 			@location.start = true
+	# 		else
+	# 			@location.start = false
+	# 		end
+	# 		if counter == (params[:locationList].length - 1)
+	# 			@location.dest = true
+	# 		else
+	# 			@location.dest = false
+	# 		end
+	# 		counter+=1
+	# 		@location.save
+	# 	end
+	# end
 
 	def read_time(text)
 		if text == '' or text == nil
@@ -58,7 +60,7 @@ class MainController < ApplicationController
 			hour += 12
 		elsif ap == 'a' and hour == 12
 			hour = 0
-	    end
+		end
 		return Time.new(@year, @month, @day, hour, minute)
 	end
 
@@ -95,17 +97,17 @@ class MainController < ApplicationController
 		end
 	end
 	
-	def exportRoute
- 		outputFile = Prawn::Document.new
- 		outputFile.image(getMap())
- 		route = getRoute()
- 		for loc in route do
- 			outputFile.text("#{loc.locationname}")
- 			outputFile.text("#{loc.address}")
- 		end
- 		outputFile.render_file "output.pdf"
- 		send_file outputFile.path
- 	end
+	# def exportRoute
+ # 		outputFile = Prawn::Document.new
+ # 		outputFile.image(getMap())
+ # 		route = getRoute()
+ # 		for loc in route do
+ # 			outputFile.text("#{loc.locationname}")
+ # 			outputFile.text("#{loc.address}")
+ # 		end
+ # 		outputFile.render_file "output.pdf"
+ # 		send_file outputFile.path
+ # 	end
  	
 	#return path to image of map
 	require 'open-uri'
@@ -152,26 +154,5 @@ class MainController < ApplicationController
 		end
 		return routeArray
  	end
-
- 	# test structure
-
-	def reset
-		User.destroy_all()
-		Route.destroy_all()
-		Location.destroy_all()
-		render :json => { errCode: 1 }
-	end
-
-	def tests
-		result = `rspec spec/requests/unit_tests_spec.rb --format documentation > output.txt`
-		result = `cat output.txt`
-		words  = result.split(" ")
-		total_test = words[words.index("examples,") - 1]
-		failures   = words[words.index("failures") - 1]
-
-		render :json => { nrFailed: failures.to_i,
-						  output: result,
-						  totalTests: total_test.to_i }
-	end
 
 end

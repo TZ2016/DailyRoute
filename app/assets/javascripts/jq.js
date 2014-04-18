@@ -1,9 +1,9 @@
 // data communication
-var _url_calcroute = "/main/master";
+var _url_calcroute = "newroute";
 var _url_login = "signin";
 var _url_logout = "signout";
 var _url_signup = "signup";
-var _url_saved = "saved";
+var _url_saved = "routes";
 var _sendGeo = [];
 var _result = {};
 var _sendData = {'travelMethod': undefined,
@@ -387,20 +387,21 @@ function genSendData () {
   // _sendData
   var $locs = $( "#loc-acc" ).children();
   var entry;
+  var _dataToSend = {};
 
-  _sendData['locationList'] = [];
+  _dataToSend['locationList'] = [];
   switch($('#trans-mode :checked').attr("id")) {
     case "mode-d":
-      _sendData['travelMethod'] = "driving";
+      _dataToSend['travelMethod'] = "driving";
       break;
     case "mode-w":
-      _sendData['travelMethod'] = "walking";
+      _dataToSend['travelMethod'] = "walking";
       break;
     case "mode-b":
-      _sendData['travelMethod'] = "bycycling";
+      _dataToSend['travelMethod'] = "bycycling";
       break;
     case "mode-t":
-      _sendData['travelMethod'] = "transit";
+      _dataToSend['travelMethod'] = "transit";
       break;
   }
 
@@ -421,8 +422,9 @@ function genSendData () {
     entry['departafter'] = $( "#"+entryid+" .time-end-A" ).val().toString();
     entry['departbefore'] = $( "#"+entryid+" .time-end-B" ).val().toString();
     entry['priority'] = 0;
-    _sendData['locationList'].push(entry);
+    _dataToSend['locationList'].push(entry);
   }
+  _sendData["route"] = _dataToSend;
 }
 
 jQuery.displayRoute = function (ev, ui) {
