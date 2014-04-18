@@ -19,6 +19,7 @@ module Solver
   # keys: errCode, (route), (durations), (mode). 
   # route, durations, mode exist if errCode == SUCCESS
   def solve(inp)
+    pp '================In solve ===================='
     init(inp) 
     if @err != SUCCESS
       pp ' ========Error in classify=============== '
