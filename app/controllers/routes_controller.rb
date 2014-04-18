@@ -1,6 +1,7 @@
 class RoutesController < ApplicationController
   require "solver"
   include Solver
+
   before_action :signed_in_user, only: [:create, :destroy]
   before_action :correct_user,   only: :destroy
 
@@ -12,10 +13,12 @@ class RoutesController < ApplicationController
       build_routes(result[:routes])
       flash[:success] = "Route created!"
       puts "==================================="
-      render "show"
+      render :json => result
+      # render "show"
     else
       flash[:error] = "errcode is not 1"
-      redirect_to root_url #FIXME
+      render :json => result
+      # redirect_to root_url #FIXME
       # render "static_pages/main"
     end
   end
