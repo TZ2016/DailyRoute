@@ -2,20 +2,24 @@ require 'spec_helper'
 
 describe Step do
   
-	user = User.create(email: "test@test.com", password: "password", password_confirmation: "password")
-	route = Route.create(user_id: user.id, name: "test_route", mode: "driving")
+	
 	before do
-		@step = Step.new(route_id: route.id, name: "test_step", geocode: "88.88, 88.88", departure: DateTime.now, arrival: DateTime.now)
+		User.destroy_all
+		Route.destroy_all
+		Step.destroy_all
+		@user = User.create(email: "test@test.com", password: "password", password_confirmation: "password")
+		@route = Route.create(user_id: @user.id, name: "test_route", mode: "driving")
+		@step = Step.new(route_id: @route.id, name: "test_step", geocode: "88.88, 88.88", departure: DateTime.now, arrival: DateTime.now)
 	end
 
-	subject{@route}
+	subject{@step}
 	it {should be_valid}
 
-	it {should response_to(route_id)}
-	it {should response_to(name)}
-	it {should response_to(geocode)}
-	it {should response_to(departure)}
-	it {should response_to(arrival)}
+	it {should respond_to(:route_id)}
+	it {should respond_to(:name)}
+	it {should respond_to(:geocode)}
+	it {should respond_to(:departure)}
+	it {should respond_to(:arrival)}
 
 	describe "route_id not exist" do
 		before {@step.route_id = nil}

@@ -2,10 +2,13 @@ require 'spec_helper'
 
 describe User do
 
-	let(:user) {User.create(email: "test@test.com", password: "password", password_confirmation: "password")}
+	
 	before do
-
-		@route = Route.new(user_id: user.id, name: "test_route", mode: "driving")
+		User.destroy_all
+		Route.destroy_all
+		Step.destroy_all
+		@user = User.create(email: "test@test.com", password: "password", password_confirmation: "password")
+		@route = Route.new(user_id: @user.id, name: "test_route", mode: "driving")
 	end
 
 	subject{@route}
@@ -41,7 +44,7 @@ describe User do
 	end	
 
 	describe "mode not present" do
-		before { @route.mode = nil }
+		before { @route.mode = "" }
 		it {should_not be_valid}
 	end
 
@@ -52,6 +55,7 @@ describe User do
 
 	after(:each) do
   		User.destroy_all
-  		Route.destroy_all
+		Route.destroy_all
+		Step.destroy_all
 	end
 end
