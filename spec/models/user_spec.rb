@@ -108,34 +108,34 @@ describe User do
 		its(:remember_token) { should_not be_blank }
 	end
 
-	# describe "micropost associations" do
+	describe "route associations" do
 
-	# 	before { @user.save }
-	# 	let!(:older_routes) do
-	# 		FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago)
-	# 	end
-	# 	let!(:newer_micropost) do
-	# 		FactoryGirl.create(:micropost, user: @user, created_at: 1.hour.ago)
-	# 	end
+		before { @user.save }
+		let!(:older_route) do
+			Route.create(user_id: @user.id, name: "test_route", mode: "driving")
+		end
+		let!(:newer_route) do
+			Route.create(user_id: @user.id, name: "test_route", mode: "driving")
+		end
 
-	# 	it "should have the right microposts in the right order" do
-	# 		expect(@user.microposts.to_a).to eq [newer_micropost, older_micropost]
-	# 	end
+		it "should have the right microposts in the right order" do
+			expect(@user.routes.to_a).to eq [newer_route, older_route]
+		end
 
-	# 	it "should destroy associated microposts" do
-	# 		microposts = @user.microposts.to_a
-	# 		@user.destroy
-	# 		expect(microposts).not_to be_empty
-	# 		microposts.each do |micropost|
-	# 			expect(Micropost.where(id: micropost.id)).to be_empty
-	# 		end
-	# 	end
+		it "should destroy associated microposts" do
+			routes = @user.routes.to_a
+			@user.destroy
+			expect(routes).not_to be_empty
+			routes.each do |route|
+				expect(Route.where(id: route.id)).to be_empty
+			end
+		end
 	
-	# end
+	end
 
-	# after(:each) do
-	# 	User.destroy_all
-	# end
+	after(:each) do
+		User.destroy_all
+	end
 
 end
 
