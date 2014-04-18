@@ -37,18 +37,19 @@
       <%= render 'static_page/panel_location' %>
       <hr>
 
-      <button id="calc-btn" type="button" class="btn btn-warning">
+<!--       <button id="calc-btn" type="button" class="btn btn-warning">
         Calculate Routes
-      </button>
+      </button> -->
+      <%= link_to "Calculate Route", newroute_path, remote: true, method: :post, id: "calc-btn", class: "btn btn-warning", role: "button" %>
       <hr>
 
       <!-- Directions Panel starts -->
-      <%= render 'static_page/panel_direction' %>
+      <!-- <%= render 'shared/panel_direction' %> -->
 
     </div>
 
     <!-- Sidebar for saved routes -->
-    <div id="sidebar-saved" class="col-md-4 sidebar" style="display:none;">
+<!--     <div id="sidebar-saved" class="col-md-4 sidebar" style="display:none;">
       <div id="savedroutes-row" class="row">
         <h4 class="col-md-12">Your Saved Routes</h4>
         <div id="savedroutes-ins" class="col-md-12">
@@ -66,12 +67,9 @@
       <button id="return-btn" type="button" class="btn btn-warning">
         Return to Main Panel
       </button>
-    </div>
+    </div> -->
 
-    <div class="col-md-8 col-md-offset-4 main">
-      <div id="map-canvas" class="map-container">
-      </div>
-    </div>
+    <%= render 'shared/google_map' %>
 
   </div>
 
@@ -79,6 +77,6 @@
   <%= render 'static_page/dialog_refine' %>
   
   <!-- User SignUp -->
-  <%= render 'static_page/dialog_signup' %>
+  <%= render 'shared/dialog_signup' %>
 
 </div>

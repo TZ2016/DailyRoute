@@ -1,7 +1,7 @@
 class Step < ActiveRecord::Base
 	# before_save {  }
 
-	VALID_GEOCODE_REGEX = /\A\(((\d+)\.(\d+))\,(\s*)((\d+)\.(\d+))\)\z/
+	VALID_GEOCODE_REGEX = /\A\[((\d+)\.(\d+))\,(\s*)((\d+)\.(\d+))\]\z/
 
 	belongs_to :route
 
