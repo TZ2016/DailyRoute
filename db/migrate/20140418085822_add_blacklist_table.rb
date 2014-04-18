@@ -8,6 +8,5 @@ class AddBlacklistTable < ActiveRecord::Migration
 			t.timestamps
 		end
 		
-		add_index :steps, [:route_id, :arrival]
   	end
 end
