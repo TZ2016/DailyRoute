@@ -21,7 +21,7 @@ module Solver
   def solve(inp)
     init(inp) 
     if @err != SUCCESS
-      pp ' ========HERE=============== '
+      pp ' ========Error in classify=============== '
   		return {errCode: @err}
     elsif @fuzzy.empty? and @arranged.empty?
       return shortest_path(@inp['locationList'])
@@ -62,10 +62,11 @@ module Solver
   # Return a hash describe the shortest route from p1 to p2
   # go through all locs in passby.
   def shortest_path(locs)
-    # pp '=========in shortest path========='
-    # pp @start
-    # pp @dest
-    # pp locations
+    pp '=========in shortest path========='
+    pp @start
+    pp @dest
+    pp locations
+    
     result = JSON.parse(request_route(locs))
     if result.has_key? 'Error' or result['status'] != 'OK'
       return {errCode: ERR_REQUEST_FAIL}
@@ -239,7 +240,7 @@ module Solver
   def classify_loc
     pp '===============Classify loc==================='
     @arranged,@unarranged, fuzzy = [],[], []
-    @inp.locationList.each do |point|
+    @inp['locationList'].each do |point|
       preprocess(point)
       if point["arrivebefore"]
         @arranged << point
