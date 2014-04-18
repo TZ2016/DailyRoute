@@ -6,19 +6,20 @@ var _url_signup = "signup";
 var _url_saved = "routes";
 var _sendGeo = [];
 var _result = {};
-var _sendData = {'travelMethod': undefined,
-                 'locationList':
-                   [{ 'searchtext': undefined,
-                      'geocode': ('lat', 'lng'),
-                      'minduration': undefined,
-                      'maxduration': undefined,
-                      'arrivebefore': undefined,
-                      'arriveafter': undefined,
-                      'departbefore': undefined,
-                      'departafter': undefined,
-                      'priority': undefined
-                    }]
-             };
+var _sendData = {};
+// var _sendData = {'travelMethod': undefined,
+//                  'locationList':
+//                    [{ 'searchtext': undefined,
+//                       'geocode': ('lat', 'lng'),
+//                       'minduration': undefined,
+//                       'maxduration': undefined,
+//                       'arrivebefore': undefined,
+//                       'arriveafter': undefined,
+//                       'departbefore': undefined,
+//                       'departafter': undefined,
+//                       'priority': undefined
+//                     }]
+//              };
 
 // global temporary variables
 var _locToRefine = [];
@@ -422,7 +423,7 @@ function genSendData () {
     entry['arrivebefore'] = $( "#"+entryid+" .time-start-B" ).val().toString();
     entry['departafter'] = $( "#"+entryid+" .time-end-A" ).val().toString();
     entry['departbefore'] = $( "#"+entryid+" .time-end-B" ).val().toString();
-    entry['priority'] = 0;
+    entry['priority'] = Number($( "#"+entryid+" .priority" ).val());
     _dataToSend['locationList'].push(entry);
   }
   _sendData["route"] = _dataToSend;
