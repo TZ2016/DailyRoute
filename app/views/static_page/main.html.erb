@@ -1,8 +1,8 @@
 <div class="container">
+  
   <div class="row">
     <!-- Sidebar Level 1 -->
-    <div class="col-md-4 sidebar">
-
+    <div class="col-md-4 sidebar">  
       <!-- Title -->
       <h4>Start your route now!</h4>
 
@@ -37,14 +37,13 @@
       <%= render 'static_page/panel_location' %>
       <hr>
 
-<!--       <button id="calc-btn" type="button" class="btn btn-warning">
+      <button id="calc-btn" type="button" class="btn btn-warning">
         Calculate Routes
-      </button> -->
-      <%= link_to "Calculate Route", newroute_path, remote: true, method: :post, id: "calc-btn", class: "btn btn-warning", role: "button" %>
+      </button>
       <hr>
 
       <!-- Directions Panel starts -->
-      <!-- <%= render 'shared/panel_direction' %> -->
+      <%= render 'shared/panel_direction' %>
 
     </div>
 

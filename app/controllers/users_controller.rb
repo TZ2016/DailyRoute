@@ -8,8 +8,7 @@ class UsersController < ApplicationController
   # end
 
   def show
-    @user = User.find(params[:id])
-    @routes = @user.routes
+    @routes = current_user.routes
     # @routes = @user.routes.paginate(page: params[:page])
   end
 

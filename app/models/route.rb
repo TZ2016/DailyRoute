@@ -15,7 +15,7 @@ class Route < ActiveRecord::Base
 	def Route.check_route(input)
 		rtn = {}
 		rtn[:errCode] = 1
-		step = {name: "step", geocode: "[88.88, 99.99]", departure: DateTime.new, arrival: DateTime.new}
+		step = {name: "step", geocode: "88.88, 99.99", departure: DateTime.new, arrival: DateTime.new}
 		route = {steps: [step, step], name: "route", mode: "waLking"}
 		rtn[:routes] = [route, route]
 		return rtn

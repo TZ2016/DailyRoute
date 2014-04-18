@@ -1,8 +1,8 @@
 DailyRouteTest::Application.routes.draw do
  
-  # resources :users
-  # resources :routes, only: [:create, :destroy]
-  # resources :sessions,      only: [:new, :create, :destroy]
+  resources :users
+  resources :routes, only: [:create, :destroy]
+  resources :sessions,      only: [:new, :create, :destroy]
 
   root 'static_page#main'
 
@@ -13,7 +13,9 @@ DailyRouteTest::Application.routes.draw do
 
   # user management
   match 'signup',  to: 'users#create',            via: 'post'
+  match 'signup',  to: 'users#new',            via: 'get'
   match 'signin',  to: 'sessions#create',         via: 'post'
+  match 'signin',  to: 'sessions#new',         via: 'get'
   match 'signout', to: 'sessions#destroy',     via: 'delete'
   
   # route

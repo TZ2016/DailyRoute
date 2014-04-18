@@ -1,6 +1,6 @@
 class RoutesController < ApplicationController
-  require "solve"
-  include Solver
+  # require "solve"
+  # include Solver
   before_action :signed_in_user, only: [:create, :destroy]
   before_action :correct_user,   only: :destroy
 
@@ -10,11 +10,12 @@ class RoutesController < ApplicationController
       @routes = []
       build_routes(result[:routes])
       flash[:success] = "Route created!"
-      puts "==================================="
-      render "show"
+      # render "show"
+      render :json => result
     else
       flash[:error] = "errcode is not 1"
-	  redirect_to root_url #FIXME
+      render :json => result
+	  # redirect_to root_url #FIXME
       # render "static_pages/main"
     end
   end
@@ -31,7 +32,7 @@ class RoutesController < ApplicationController
 
     def route_params
       params.require(:route).permit!
-      # puts "===="
+      # puts "====params"
       # puts params.require(:route).permit!
     end
   

@@ -81,16 +81,18 @@ function getNameOfAddress(geores) {
 function drawRoute(num, panelid) {
   directionsDisplay.setPanel(document.getElementById(panelid));
 
-  var data = _data['route'][num-1];
-  var size = data.length;
-  var start = new google.maps.LatLng(data[0].lat, data[0].lng);
-  var end = new google.maps.LatLng(data[size-1].lat, data[size-1].lng);
-  var selectedMode = _data['mode'].toUpperCase();
-  console.log(selectedMode);
+  var data = _data['routes'][num-1];
+  var size = data["steps"].length;
+  var start = new google.maps.LatLng(
+    parGeoLat(data["steps"][0]["geocode"]), parGeoLng(data["steps"][0]["geocode"]));
+  var end = new google.maps.LatLng(
+    parGeoLat(data["steps"][size-1]["geocode"]), parGeoLng(data["steps"][size-1]["geocode"]));
+  var selectedMode = data['mode'].toUpperCase();
   var waypts = [];
   var loc;
   for (var i = 1; i < size-1; i++) {
-    loc = new google.maps.LatLng(data[i].lat, data[i].lng);
+    loc = new google.maps.LatLng(
+      parGeoLat(data["steps"][i]["geocode"]), parGeoLng(data["steps"][i]["geocode"]));
     waypts.push({
         location: loc,
         stopover: true
@@ -111,6 +113,15 @@ function drawRoute(num, panelid) {
   });
 
 }
+
+function parGeoLat(geocode){
+  return geocode.split(",")[0];
+}
+
+function parGeoLng(geocode){
+  return geocode.split(",")[1];
+}
+
 
 function revGeoAndMarker(latlng) {
   geocoder.geocode({'latLng': latlng}, function (results, status) {

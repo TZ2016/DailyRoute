@@ -106,9 +106,9 @@ function initPage () {
     header: "> div > h3",
     collapsible: true,
     active: false,
-    heightStyle: 'content',
-    beforeActivate: $.displayRoute
+    heightStyle: 'content'
   });
+    // beforeActivate: $.displayRoute
 
   // refine location dialog
   $( "#refineloc-lst" ).selectable();
@@ -146,10 +146,6 @@ function initPage () {
     genSendData();
     $.sendQuery();
   });
-
-  // $("#calc-btn").on("ajax:success", function (e, data, status, xhr) {
-    
-  // });
 
   /////////////////////////////////////////////////////////
 
@@ -239,26 +235,26 @@ function initPage () {
     });
   });
 
-  $( "#routes-btn" ).click( function () {
-    $( "#sidebar-main" ).hide();
-    $( "#sidebar-saved" ).show();
+  // $( "#routes-btn" ).click( function () {
+  //   $( "#sidebar-main" ).hide();
+  //   $( "#sidebar-saved" ).show();
 
-    //FIXME
-    $.ajax({
-      type: 'GET',
-      url:  _url_saved,
-      contentType: "application/json",
-      dataType: "json",
-      beforeSend: function (jqXHR, settings) {
-      },
-      success: function (data, status, jqXHR) {
-        // data = {errCode: , route: []}
-        handleResult(data, "savedroutes", "savedroutes-acc");
-      },
-      error: function (jqXHR, status, error) {
-      }
-      });
-  });
+  //   //FIXME
+  //   $.ajax({
+  //     type: 'GET',
+  //     url:  _url_saved,
+  //     contentType: "application/json",
+  //     dataType: "json",
+  //     beforeSend: function (jqXHR, settings) {
+  //     },
+  //     success: function (data, status, jqXHR) {
+  //       // data = {errCode: , route: []}
+  //       handleResult(data, "savedroutes", "savedroutes-acc");
+  //     },
+  //     error: function (jqXHR, status, error) {
+  //     }
+  //     });
+  // });
 
   $( "#return-btn" ).click( function () {
     $( "#sidebar-main" ).show();
@@ -344,7 +340,7 @@ jQuery.sendQuery = function () {
     url:  _url_calcroute,
     data: JSON.stringify(_sendData),
     contentType: "application/json",
-    dataType: "html",
+    dataType: "json",
     beforeSend: function (jqXHR, settings) {
       $( "#dir-row" ).removeAttr("style");
       $( "#dir-ins > h3" ).text("Calculating...");
@@ -353,7 +349,7 @@ jQuery.sendQuery = function () {
     success: function (data, status, jqXHR) {
       $( "#dir-ins > h3" ).text("Instruction");
       $( "#dir-ins > div" ).text("Your routes are ready.");
-      // handleResult(data, "route", "dir-acc");
+      handleResult(data, "route", "dir-acc");
     },
     error: function (jqXHR, status, error) {
       $( "#dir-row" ).attr("style", "display: none;");
@@ -362,31 +358,8 @@ jQuery.sendQuery = function () {
   });
 };
 
-// jQuery.sendQuery = function () {
-//   $.ajax({
-//     type: 'POST',
-//     url:  _url_calcroute,
-//     data: JSON.stringify(_sendData),
-//     contentType: "application/json",
-//     dataType: "json",
-//     beforeSend: function (jqXHR, settings) {
-//       $( "#dir-row" ).removeAttr("style");
-//       $( "#dir-ins > h3" ).text("Calculating...");
-//       $( "#dir-ins > div" ).text("Your query data was sent.");
-//     },
-//     success: function (data, status, jqXHR) {
-//       $( "#dir-ins > h3" ).text("Instruction");
-//       $( "#dir-ins > div" ).text("Your routes are ready.");
-//       handleResult(data, "route", "dir-acc");
-//     },
-//     error: function (jqXHR, status, error) {
-//       $( "#dir-row" ).attr("style", "display: none;");
-//       $.alertMessage("Your query failed.");
-//     }
-//   });
-// };
-
 function handleResult (data, baseID, accID) {
+  console.log(data);
   if (data["errCode"] == 1) {
     _data = data;
     var index = 0;
@@ -395,7 +368,7 @@ function handleResult (data, baseID, accID) {
     $( "#"+accID ).empty();
     $( "#"+accID ).append( $temppanel.clone().attr("style", "display:none;") );
 
-    _data['route'].forEach( function (route) {
+    _data['routes'].forEach( function (route) {
       index += 1;
       var newid = baseID + "-" + index;
       var $newpanel = $temppanel.clone().attr("id", newid);

@@ -1,0 +1,79 @@
+<div class="container">
+  <div class="row">
+    <!-- Sidebar Level 1 -->
+    <div class="col-md-4 sidebar">
+
+      <!-- Title -->
+      <h4>All Your Searched Routes!</h4>
+
+      <!-- Directions Panel starts -->
+      <!-- <%= render 'shared/panel_direction' %> -->
+
+    </div>
+
+    <div id="sidebar-saved" class="col-md-4 sidebar">
+      <div id="savedroutes-row" class="row">
+        <h4 class="col-md-12">Your Saved Routes</h4>
+        <div id="savedroutes-ins" class="col-md-12">
+          <h3>Instructions</h3>
+          <div><p>Click to view.</p></div>
+        </div>
+        <div id="savedroutes-acc" class="col-md-12">
+          <% @routes.each_with_index do |r, i| %>
+
+            <% i = i.to_s %>
+            <div id= <%= "savedroutes-"+i %> class="route-panel">
+              <h3 class="savedroutes-title" id= <%= "savedroutes-"+i+"-title" %> > <%= "Route "+i %> </h3>
+
+              <div class="savedroutes-content" id= <%= "savedroutes-"+i+"-content" %>>
+                <p>
+                  <%= "Name: " + r.name %><br>
+                  <%= "Mode: " + r.mode %><br>
+                  <% r.steps.each_with_index do |s, i| %>
+                    <%= "=== Location No. " + i.to_s %>
+                    <%= "Geocode: " + s.geocode %><br>
+                    <%= "departure: " + s.departure.to_s %><br>
+                    <%= "arrival: " + s.arrival.inspect %><br>
+                  <% end %>
+                </p>
+                <button id=<%= "savedroute-btn"+i %> type="button" class="btn btn-info">
+                  Show This Route On Map
+                </button>
+              </div>
+            </div>
+
+          <% end %>
+        </div>
+      </div>
+      <hr>
+      <button id="return-btn" type="button" class="btn btn-warning">
+        Return to Main Panel
+      </button>
+    </div>
+
+    <!-- Sidebar for saved routes -->
+<!--     <div id="sidebar-saved" class="col-md-4 sidebar" style="display:none;">
+      <div id="savedroutes-row" class="row">
+        <h4 class="col-md-12">Your Saved Routes</h4>
+        <div id="savedroutes-ins" class="col-md-12">
+          <h3>Instructions</h3>
+          <div><p>Click to view.</p></div>
+        </div>
+        <div id="savedroutes-acc" class="col-md-12">
+          <div id="savedroutes-temp" style="display:none;" class="route-panel">
+            <h3 class="route-title">Title</h3>
+            <div class="route-content"><p></p></div>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <button id="return-btn" type="button" class="btn btn-warning">
+        Return to Main Panel
+      </button>
+    </div> -->
+
+    <%= render 'shared/google_map' %>
+
+  </div>
+
+</div>
