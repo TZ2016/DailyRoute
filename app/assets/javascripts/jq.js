@@ -147,6 +147,10 @@ function initPage () {
     $.sendQuery();
   });
 
+  // $("#calc-btn").on("ajax:success", function (e, data, status, xhr) {
+    
+  // });
+
   /////////////////////////////////////////////////////////
 
   $( "#signin-form #signup" ).click( function () {
@@ -340,7 +344,7 @@ jQuery.sendQuery = function () {
     url:  _url_calcroute,
     data: JSON.stringify(_sendData),
     contentType: "application/json",
-    dataType: "json",
+    dataType: "html",
     beforeSend: function (jqXHR, settings) {
       $( "#dir-row" ).removeAttr("style");
       $( "#dir-ins > h3" ).text("Calculating...");
@@ -349,7 +353,7 @@ jQuery.sendQuery = function () {
     success: function (data, status, jqXHR) {
       $( "#dir-ins > h3" ).text("Instruction");
       $( "#dir-ins > div" ).text("Your routes are ready.");
-      handleResult(data, "route", "dir-acc");
+      // handleResult(data, "route", "dir-acc");
     },
     error: function (jqXHR, status, error) {
       $( "#dir-row" ).attr("style", "display: none;");
@@ -357,6 +361,30 @@ jQuery.sendQuery = function () {
     }
   });
 };
+
+// jQuery.sendQuery = function () {
+//   $.ajax({
+//     type: 'POST',
+//     url:  _url_calcroute,
+//     data: JSON.stringify(_sendData),
+//     contentType: "application/json",
+//     dataType: "json",
+//     beforeSend: function (jqXHR, settings) {
+//       $( "#dir-row" ).removeAttr("style");
+//       $( "#dir-ins > h3" ).text("Calculating...");
+//       $( "#dir-ins > div" ).text("Your query data was sent.");
+//     },
+//     success: function (data, status, jqXHR) {
+//       $( "#dir-ins > h3" ).text("Instruction");
+//       $( "#dir-ins > div" ).text("Your routes are ready.");
+//       handleResult(data, "route", "dir-acc");
+//     },
+//     error: function (jqXHR, status, error) {
+//       $( "#dir-row" ).attr("style", "display: none;");
+//       $.alertMessage("Your query failed.");
+//     }
+//   });
+// };
 
 function handleResult (data, baseID, accID) {
   if (data["errCode"] == 1) {
