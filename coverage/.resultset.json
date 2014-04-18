@@ -1,7 +1,108 @@
 {
   "RSpec": {
     "coverage": {
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/helpers/application_helper.rb": [
+        1,
+        null
+      ],
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/helpers/main_helper.rb": [
+        1,
+        null
+      ],
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/helpers/routes_helper.rb": [
+        1,
+        null,
+        null,
+        null
+      ],
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/helpers/sessions_helper.rb": [
+        1,
+        null,
+        1,
+        0,
+        0,
+        0,
+        0,
+        null,
+        null,
+        1,
+        0,
+        null,
+        null,
+        1,
+        0,
+        null,
+        null,
+        1,
+        0,
+        0,
+        null,
+        null,
+        1,
+        0,
+        null,
+        null,
+        1,
+        0,
+        0,
+        0,
+        null,
+        null,
+        null,
+        1,
+        0,
+        null,
+        0,
+        0,
+        null,
+        null,
+        1,
+        0,
+        0,
+        null,
+        null,
+        1,
+        0,
+        null,
+        null
+      ],
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/helpers/static_page_helper.rb": [
+        1,
+        null
+      ],
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/helpers/users_helper.rb": [
+        1,
+        null
+      ],
+      "/Users/Tianhao/Dropbox/Repo/DailyRoute/app/models/user.rb": [
+        1,
+        null,
+        1,
+        null,
+        6,
+        1,
+        1,
+        1,
+        null,
+        1,
+        1,
+        null,
+        1,
+        5,
+        null,
+        null,
+        1,
+        5,
+        null,
+        null,
+        1,
+        null,
+        1,
+        5,
+        null,
+        null
+      ]
     },
-    "timestamp": 1397810344
+    "timestamp": 1397812325
   }
 }
