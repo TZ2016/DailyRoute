@@ -1,0 +1,37 @@
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <!-- collapsible -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Daily Route</a>
+    </div>
+    <!-- content -->
+    <div id="navbar-btn" class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+
+        <% if @pagehelper_active == "Main" %>
+          <li class="active"><a>Main</a></li>
+        <% else %>
+          <li><a href="/main">Main</a></li>
+        <% end %>
+
+        <li <% if @pagehelper_active == "Tutorial" %>
+            class="active"
+            <% end %>
+          ><a href="/tutorial">Tutorial</a></li>
+        <li <% if @pagehelper_active == "About" %>
+            class="active"
+            <% end %>
+          ><a href="/about">About</a></li>
+      </ul>
+
+      <!-- user login logout -->
+      <%= render 'layouts/user_nav' %>
+    </div>
+  </div>
+</div>

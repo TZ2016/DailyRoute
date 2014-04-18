@@ -10,9 +10,8 @@
 <% elsif signed_in? %>
   <p class="navbar-text navbar-right">Signed in as
     <%= current_user.email %>
-    <%= link_to "Home", current_user, type: "button", class: "btn btn-link btn-sm" %>
-    <button id="home-btn" type="button" class="btn btn-link btn-sm">Update</button>
-    <!-- <button id="routes-btn" type="button" class="btn btn-link btn-sm">Saved Routes</button> -->
+    <%= link_to "My Routes", current_user, type: "button", class: "btn btn-link btn-sm" %>
+    <%= link_to "Update", current_user, type: "button", class: "btn btn-link btn-sm" %>
     <button id="logout-btn" type="button" class="btn btn-link btn-sm">LogOut</button>
   </p>
 <% end %>

@@ -1,6 +1,10 @@
 DailyRouteTest::Application.routes.draw do
  
-  resources :users
+  resources :users do
+    member do
+      get 'remove_all_routes'
+    end
+  end
   resources :routes, only: [:create, :destroy]
   resources :sessions,      only: [:new, :create, :destroy]
 
@@ -21,9 +25,6 @@ DailyRouteTest::Application.routes.draw do
   # route
   match 'routes', to: 'users#show', via: 'get'
   match 'newroute',  to: 'routes#create', via: 'post'
-
-  # core
-  # match 'saved', to: 'users#saved_routes',  via: 'get'
 
   # testing
   post '/main/reset' => "static_page#reset"

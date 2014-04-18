@@ -5,8 +5,8 @@ class RoutesController < ApplicationController
 
   def create
 
-  	result = solve(route_params)
-    # result = check_route(route_params)
+  	# result = solve(route_params)
+    result = check_route(route_params)
     if result[:errCode] == 1
       @routes = []
       build_routes(result[:routes])
@@ -27,7 +27,7 @@ class RoutesController < ApplicationController
 
   def destroy
     @route.destroy
-    redirect_to root_url
+    redirect_to current_user
   end
 
   private
