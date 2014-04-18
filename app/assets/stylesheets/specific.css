@@ -45,3 +45,8 @@ legend {
     line-height: 20px;
     margin-bottom: 0;
 }
+
+/* trans mode */
+#trans-mode {
+	font-size: 65%;
+}

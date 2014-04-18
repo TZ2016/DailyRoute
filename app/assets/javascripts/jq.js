@@ -7,7 +7,7 @@ var _url_saved = "routes";
 var _sendGeo = [];
 var _result = {};
 var _sendData = {};
-// var _sendData = {'travelMethod': undefined,
+// var _sendData["route"] = {'travelMethod': undefined,
 //                  'locationList':
 //                    [{ 'searchtext': undefined,
 //                       'geocode': ('lat', 'lng'),
@@ -257,10 +257,10 @@ function initPage () {
   //     });
   // });
 
-  $( "#return-btn" ).click( function () {
-    $( "#sidebar-main" ).show();
-    $( "#sidebar-saved" ).hide();
-  });
+  // $( "#return-btn" ).click( function () {
+  //   $( "#sidebar-main" ).show();
+  //   $( "#sidebar-saved" ).hide();
+  // });
 
 }
 

@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :signed_in_user,
-                only: [:index, :edit, :update, :destroy]
-  before_action :correct_user,   only: [:edit, :update]
+                only: [:show, :edit, :update, :destroy, :remove_all_routes]
+  before_action :correct_user,   only: [:show, :edit, :update, :remove_all_routes]
 
   # def index
   #   @users = User.paginate(page: params[:page])
@@ -9,16 +9,11 @@ class UsersController < ApplicationController
 
   def show
     @routes = current_user.routes
-    # @routes = @user.routes.paginate(page: params[:page])
   end
 
-  # def saved_routes
-  #   solve(Route.last.id)
-  # end
-
-  # def new
-  #   @user = User.new
-  # end
+  def new
+    @user = User.new
+  end
 
   def create
     puts user_params
@@ -47,11 +42,10 @@ class UsersController < ApplicationController
     end
   end
 
-  # def destroy
-  #   User.find(params[:id]).destroy
-  #   flash[:success] = "User destroyed."
-  #   redirect_to users_url
-  # end
+  def remove_all_routes
+    @current_user.routes.destroy_all
+    redirect_to @current_user
+  end
 
   private
 
