@@ -12,10 +12,14 @@ module Solver
   ERR_REQUEST_FAIL = -1
   ERR_INVALID_INPUT_TIME = -2
   ERR_NOT_ENOUGH_TIME_FOR_TRAVEL = -3
-  ERR_NEED_SPECIFY_START_TIME_AND_ARRIVE_TIME = -4
+  ERR_NEED_SPECIFY_@START_TIME_AND_ARRIVE_TIME = -4
+  APP_KEY = 'AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM'
 
-  # start and end are Location. locations is an Array of Location.
+  # Use information in @inp. Return a hash includes 
+  # keys: errCode, (route), (durations), (mode). 
+  # route, durations, mode exist if errCode == SUCCESS
   def solve
+    initialize()
     for loc in @inp.locationList
       loc['arrivebefore'] = read_time(loc['arrivebefore'])
       loc['arriveafter'] = read_time(loc['arriveafter'])
@@ -25,37 +29,34 @@ module Solver
     @start = @inp.locationList.first
     @mode = @inp.travelMethod
     @dest = @inp.locationList.last
-  	arranged,unarranged, fuzzy, err = classify_loc(start,locations, dest)
-    if err != SUCCESS
+    classify_loc()      #set @arranged @unarranged
+    if @err != SUCCESS
       pp ' ========HERE=============== '
-  		render :json => {errCode: err}
-    elsif fuzzy == []
-      render :json => solve_helper(arranged, unarranged, start, dest, locations, mode)
+  		return {errCode: @err}
+    elsif @fuzzy.empty? and @arranged.empty?
+      return shortest_path
+    elsif @fuzzy.empty?
+      return fit_schedule
     else
-      render :json => general_search(fuzzy)
+      return general_search
     end
   end
 
-
-  def solve_helper(arranged, unarranged, start, dest, locations, mode)
-    if arranged == []
-      puts '============call shortest_path========='
-      return shortest_path(start,locations, dest, mode)
-    else
-      puts '============call fit_schedule========='
-      return fit_schedule(arranged, unarranged, mode)
-    end
+  # Clear all instance variables. Called in the beginning of any solve.
+  def initialize
+    @start, @dest, @mode, @arranged, @unarranged, @intervals = nil
   end
+
    
-  #
-  def general_search(fuzzy)
+  # Fuzzy searach
+  def general_search
   end
 
-   # AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM
+   # 
   def search_nearby(query, type, radius, center)
     address = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
     query = 'query=' + query
-    key = '&key=' + 'AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM'
+    key = '&key=' + APP_KEY
     sensor = '&sensor=' + 'false'
     location = '&location=' + geocode_to_s(center['geocode'])
     radius = '&radius=' + radius.to_s
@@ -67,12 +68,12 @@ module Solver
 
 
   ## http://maps.googleapis.com/maps/api/directions/json?origin=Adelaide,SA&destination=Adelaide,SA&waypoints=optimize:true|Barossa+Valley,SA|Clare,SA|Connawarra,SA|McLaren+Vale,SA&sensor=false&key=API_KEY
-  def shortest_path(start, locations, dest, mode)
-    pp '=========in shortest path========='
-    pp start
-    pp dest
-    pp locations
-  	result = JSON.parse(request_route(start,locations, dest, mode))
+  def shortest_path
+    # pp '=========in shortest path========='
+    # pp @start
+    # pp dest
+    # pp locations
+  	result = JSON.parse(request_route())
     if result.has_key? 'Error' or result['status'] != 'OK'
   		return {errCode: ERR_REQUEST_FAIL}
     end
@@ -92,26 +93,26 @@ module Solver
     end
 		# order = result['routes'][0]['waypoint_order']
 		# ordered_loc = order.map{|x| locations[x]}
-		# ordered_loc = (start+ordered_loc+dest).map{|x| x['geocode']}
+		# ordered_loc = (@start+ordered_loc+dest).map{|x| x['geocode']}
     totaltime = result['routes'][0]['legs'].map{|x| x['duration']['value']}.inject(:+)
-		return {errCode: SUCCESS, routes: [routes], duration: [totaltime], mode: mode}
+		return {errCode: SUCCESS, route: [routes], duration: [totaltime], mode: @mode}
   end
 
 
   
-  def fit_schedule(arranged, unarranged, mode)
-    puts '================= inside fitschd ====================='
-    intervals, err = get_intervals(arranged, mode)
-    if err != SUCCESS
-      return {errCode: err}
+  def fit_schedule
+    # puts '================= inside fitschd ====================='
+    get_intervals_and_check_validity  #set @interval, @err
+    if @err != SUCCESS
+      return {errCode: @err}
     end
-    num = intervals.length
+    num = @intervals.length
     durations = []
     routes = []
 
-    for i in (0.. intervals.length ** unarranged.length-1)
-      parts = partition(i, num, unarranged)
-      order, dur, ifsuccess =  get_time_for_partition(parts, intervals, arranged, mode)
+    for i in (0.. @intervals.length ** @unarranged.length-1)
+      parts = partition(i, num, @unarranged)
+      order, dur, ifsuccess =  get_time_for_partition(parts, @intervals, @arranged, @mode)
       if ifsuccess
         routes << order
         durations << dur
@@ -124,38 +125,38 @@ module Solver
     result.sort_by!{|x| x[1]}
     routes = result.map{|x| x[0]}
     durations = result.map{|x| x[1]}
-    pp '============TO RETURN==============='
-    pp result
-    return {errCode: SUCCESS, route: routes, duration: durations, mode: mode}
+    # pp '============TO RETURN==============='
+    # pp result
+    return {errCode: SUCCESS, route: routes, duration: durations, mode: @mode}
   end
 
 
 
 
-  def get_time_for_partition(partition, intervals, arranged, mode)
+  def get_time_for_partition(partition, @intervals)
     order = []
     duration = 0
-    for i in (0..intervals.length - 1)
-      time = get_time(arranged[i], partition[i], arranged[i+1], mode)
-      if time > intervals[i]
+    for i in (0..@intervals.length - 1)
+      time = get_time(@arranged[i], partition[i], @arranged[i+1], @mode)
+      if time > @intervals[i]
         return [], 0, false
       else
-        order << arranged[i]
+        order << @arranged[i]
         order = order + partition[i]
         duration += time
       end
     end
-    order << arranged.last
+    order << @arranged.last
     order = order.map{|x| x['geocode']}
     return order, duration, true
   end
 
 
 
-  def get_time(start, pass, dest, mode)
+  def get_time(@start, pass, dest)
 
     pp '============= inside get time =========================='
-    result = shortest_path([start], pass, [dest], mode)
+    result = shortest_path([@start], pass, [dest], @mode)
     if result[:errCode] == SUCCESS 
         pp '=============result==========='
         pp result
@@ -165,7 +166,7 @@ module Solver
     end
   end
   
-  def partition(i, num, unarranged)
+  def partition(i, num, @unarranged)
     if num <= 1
       indicator = ''
     else 
@@ -178,59 +179,59 @@ module Solver
       result << []
     end
     pp '============PARTITION================'
-    pp unarranged.length
+    pp @unarranged.length
     pp indicator
     pp result
-    for j in (0..unarranged.length - 1)
+    for j in (0..@unarranged.length - 1)
         puts '========= Indicator ==================='
-        result[indicator[j].to_i] << unarranged[j]
+        result[indicator[j].to_i] << @unarranged[j]
     end
     pp result
     return result
   end
 
-  def get_intervals(arranged, mode)
-    intervals = []
-    pp arranged
-    for i in (0..arranged.length - 2)
-      if arranged[i]['departafter'] > arranged[i+1]['arrivebefore']
+  # Get @intervals for each two consectutive locs in ARRANDED. Return ALL @intervals 
+  # and ERRCODE. If ERRCODE == SUCCESS, @INTERVALS is valid in that it pass 
+  # check_time_validity. 
+  def get_intervals_and_check_validity
+    @intervals = []
+    pp @arranged
+    for i in (0..@arranged.length - 2)
+      if @arranged[i]['departafter'] > @arranged[i+1]['arrivebefore']
         puts '===============HAHA======================'
-        pp arranged[i]['departafter']
-        pp arranged[i+1]['arrivebefore']
-        return [], ERR_INVALID_INPUT_TIME
+        pp @arranged[i]['departafter']
+        pp @arranged[i+1]['arrivebefore']
+        @err = ERR_INVALID_INPUT_TIME
+        return
       else
-        intervals << arranged[i+1]['arrivebefore'] - arranged[i]['departafter']
+        @intervals << @arranged[i+1]['arrivebefore'] - @arranged[i]['departafter']
       end
     end 
-    return intervals, check_time_validity(intervals, arranged, mode)  
+    @err = check_time_validity(@intervals, @arranged)
   end
 
-  def check_time_validity(intervals, arranged, mode)
+  # @INTERVALS are a list of Time. @ARRANGED is list of locations. Return 
+  # SUCCESS iff interval i is long enough to travel from loc i to loc i+1.
+  def check_time_validity
     pp '============check_time_validity====================='
-    for i in (0..arranged.length - 2)
-      pp arranged[i]
-      pp arranged[i+1]
-      if get_time(arranged[i], [], arranged[i+1], mode) > intervals[i]
+    for i in (0..@arranged.length - 2)
+      pp @arranged[i]
+      pp @arranged[i+1]
+      if get_time(@arranged[i], [], @arranged[i+1]) > @intervals[i]
         return ERR_NOT_ENOUGH_TIME_FOR_TRAVEL
       end
     end
     return SUCCESS
   end
-  
-  def update_db(orderd_loc)
-    for i in (0..ordered_loc.length - 1)
-      ordered_loc[i].positioninroute = i
-    end
-  end
 
 
   def request_route
     pp '=============inside request route========='
-    pp start
+    pp @start
     pp  dest
     addr = 'http://maps.googleapis.com/maps/api/directions/json?'
     
-    origin = 'origin=%s&' % geocode_to_s(@start['geocode']) 
+    origin = 'origin=%s&' % geocode_to_s(@@start['geocode']) 
     dest = 'destination=%s' % geocode_to_s(@dest['geocode'])
     places = ''
     pp locations
@@ -238,36 +239,36 @@ module Solver
       places += '|' + geocode_to_s(point['geocode'])
     end   
     passby = '&waypoints=optimize:true%s&sensor=false' % places
-    mode = '&mode=%s' % mode
+    mode = '&mode=%s' % @mode
     addr = URI.encode(addr+origin+dest+passby)
 
     require 'net/http'
     return Net::HTTP.get(URI.parse(addr))
   end
 
-  ## requires start['departafter'] and end.startbefore
+  ## requires @start['departafter'] and end.@startbefore
   def classify_loc
     pp '===============Classify loc==================='
-    arranged,unarranged, fuzzy = [],[], []
+    @arranged,@unarranged, fuzzy = [],[], []
     @inp.locationList.each do |point|
       preprocess(point)
       if point["arrivebefore"]
-        arranged << point
+        @arranged << point
       else
-        unarranged << point
+        @unarranged << point
       end
       if point["geocode"] == nil
         fuzzy << point
       end
     end
-    arranged.sort_by!{|x| x["arrivebefore"]}
-    pp arranged
+    @arranged.sort_by!{|x| x["arrivebefore"]}
+    pp @arranged
     
-    if arranged != [] and (arranged.first != @start or arranged.last != @dest)
-      return [], [], [], ERR_NEED_SPECIFY_START_TIME_AND_ARRIVE_TIME
+    if @arranged != [] and (@arranged.first != @@start or @arranged.last != @dest)
+      return [], [], [], ERR_NEED_SPECIFY_@START_TIME_AND_ARRIVE_TIME
     end
 
-    return arranged, unarranged, fuzzy, SUCCESS
+    return @arranged, @unarranged, fuzzy, SUCCESS
   end
 
 
