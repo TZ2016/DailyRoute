@@ -18,7 +18,7 @@ module Solver
   # Use information in @inp. Return a hash includes 
   # keys: errCode, (route), (durations), (mode). 
   # route, durations, mode exist if errCode == SUCCESS
-  def solve
+  def solve(inp)
     initialize() 
     if @err != SUCCESS
       pp ' ========HERE=============== '
@@ -33,7 +33,8 @@ module Solver
   end
 
   # Clear all instance variables. Called in the beginning of any solve.
-  def initialize
+  def initialize(inp)
+    @inp = inp
     @start, @dest, @mode, @arranged, @unarranged, @intervals = nil
     @year = DateTime.now.year
     @month = DateTime.now.month
