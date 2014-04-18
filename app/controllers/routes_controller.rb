@@ -1,21 +1,20 @@
 class RoutesController < ApplicationController
-  # require "solve"
-  # include Solver
+  require "solver"
+  include Solver
   before_action :signed_in_user, only: [:create, :destroy]
   before_action :correct_user,   only: :destroy
 
   def create
-  	result = Route.check_route(route_params)
+  	result = solve(route_params)
     if result[:errCode] == 1
       @routes = []
       build_routes(result[:routes])
       flash[:success] = "Route created!"
-      # render "show"
-      render :json => result
+      puts "==================================="
+      render "show"
     else
       flash[:error] = "errcode is not 1"
-      render :json => result
-	  # redirect_to root_url #FIXME
+	  redirect_to root_url #FIXME
       # render "static_pages/main"
     end
   end
@@ -32,7 +31,7 @@ class RoutesController < ApplicationController
 
     def route_params
       params.require(:route).permit!
-      # puts "====params"
+      # puts "===="
       # puts params.require(:route).permit!
     end
   

@@ -12,29 +12,19 @@ module Solver
   ERR_REQUEST_FAIL = -1
   ERR_INVALID_INPUT_TIME = -2
   ERR_NOT_ENOUGH_TIME_FOR_TRAVEL = -3
-  ERR_NEED_SPECIFY_@START_TIME_AND_ARRIVE_TIME = -4
+  ERR_NEED_SPECIFY_START_TIME_AND_ARRIVE_TIME = -4
   APP_KEY = "AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM"
 
   # Use information in @inp. Return a hash includes 
   # keys: errCode, (route), (durations), (mode). 
   # route, durations, mode exist if errCode == SUCCESS
-  def solve
-    initialize()
-    for loc in @inp.locationList
-      loc['arrivebefore'] = read_time(loc['arrivebefore'])
-      loc['arriveafter'] = read_time(loc['arriveafter'])
-      loc['departbefore'] = read_time(loc['departbefore'])
-      loc['departafter'] = read_time(loc['departafter'])
-    end
-    @start = @inp.locationList.first
-    @mode = @inp.travelMethod
-    @@dest = @inp.locationList.last
-    classify_loc()      #set @arranged @unarranged
+  def solve(inp)
+    init(inp) 
     if @err != SUCCESS
       pp ' ========HERE=============== '
   		return {errCode: @err}
     elsif @fuzzy.empty? and @arranged.empty?
-      return shortest_path
+      return shortest_path(@inp['locationList'])
     elsif @fuzzy.empty?
       return fit_schedule
     else
@@ -43,20 +33,40 @@ module Solver
   end
 
   # Clear all instance variables. Called in the beginning of any solve.
-  def initialize
+  
+
+
+
+  def init(inp)
+    @inp = inp
     @start, @dest, @mode, @arranged, @unarranged, @intervals = nil
+    @year = DateTime.now.year
+    @month = DateTime.now.month
+    @day = DateTime.now.day
+    for loc in @inp['locationList']
+      loc['arrivebefore'] = read_time(loc['arrivebefore'])
+      loc['arriveafter'] = read_time(loc['arriveafter'])
+      loc['departbefore'] = read_time(loc['departbefore'])
+      loc['departafter'] = read_time(loc['departafter'])
+      loc['minduration'] = read_duration(loc['minduration'])
+      loc['maxduration'] = read_duration(loc['maxduration'])
+    end
+    @start = @inp['locationList'].first
+    @mode = @inp['travelMethod']
+    @dest = @inp['locationList'].last
+    classify_loc() #set @arranged @unarranged @err
   end
 
 
 
   # Return a hash describe the shortest route from p1 to p2
   # go through all locs in passby.
-  def shortest_path(p1,p2,passby)
+  def shortest_path(locs)
     # pp '=========in shortest path========='
     # pp @start
     # pp @dest
     # pp locations
-    result = JSON.parse(request_route(p1, p2, passby))
+    result = JSON.parse(request_route(locs))
     if result.has_key? 'Error' or result['status'] != 'OK'
       return {errCode: ERR_REQUEST_FAIL}
     end
@@ -65,7 +75,7 @@ module Solver
     first_step = {}
     first_step[:geocode] = geocode_to_s(p1['geocode'])
     fisrt_step[:departtime] = p1['departafter']
-    fisrt_step[:arrivetime] = fisrt_step[:departtime] + legs[0]["duration"]["value"]}
+    fisrt_step[:arrivetime] = fisrt_step[:departtime] + legs[0]["duration"]["value"]
     routes << first_step
     for leg in result["legs"]
       step = {}
@@ -116,11 +126,11 @@ module Solver
 
 
 
-  def get_time_for_partition(partition, @intervals)
+  def get_time_for_partition(partition)
     order = []
     duration = 0
     for i in (0..@intervals.length - 1)
-      time = get_time(@arranged[i], partition[i], @arranged[i+1], @mode)
+      time = get_time([@arranged[i]]+partition[i]+[@arranged[i+1]])
       if time > @intervals[i]
         return [], 0, false
       else
@@ -136,10 +146,9 @@ module Solver
 
 
 
-  def get_time(p1, pass, p2)
-
+  def get_time(locs)
     pp '============= inside get time =========================='
-    result = shortest_path(p1, pass, p2)
+    result = shortest_path(locs)
     if result[:errCode] == SUCCESS 
         pp '=============result==========='
         pp result
@@ -149,7 +158,7 @@ module Solver
     end
   end
   
-  def partition(i, num, @unarranged)
+  def partition(i, num)
     if num <= 1
       indicator = ''
     else 
@@ -208,20 +217,19 @@ module Solver
   end
 
 
-  def request_route(p1,p2,passby)
+  def request_route(locs)
     pp '=============inside request route========='
 
     addr = 'http://maps.googleapis.com/maps/api/directions/json?'
-    
-    origin = 'origin=%s&' % geocode_to_s(p1['geocode']) 
-    dest = 'destination=%s' % geocode_to_s(p2['geocode'])
+    origin = 'origin=%s&' % geocode_to_s(locs.first['geocode']) 
+    dest = 'destination=%s' % geocode_to_s(locs.last['geocode'])
     places = ''
     locations.each do |point|
       places += '|' + geocode_to_s(point['geocode'])
     end   
     waypoints = '&waypoints=optimize:true%s&sensor=false' % places
     mode = '&mode=%s' % @mode
-    addr = URI.encode(addr+origin+dest+waypoints)
+    addr = URI.encode(addr+origin+dest+waypoints+mode)
 
     require 'net/http'
     return Net::HTTP.get(URI.parse(addr))
@@ -245,8 +253,8 @@ module Solver
     @arranged.sort_by!{|x| x["arrivebefore"]}
     pp @arranged
     
-    if @arranged != [] and (@arranged.first != @@start or @arranged.last != @@dest)
-      return [], [], [], ERR_NEED_SPECIFY_@START_TIME_AND_ARRIVE_TIME
+    if @arranged != [] and (@arranged.first != @start or @arranged.last != @dest)
+      return [], [], [], ERR_NEED_SPECIFY_START_TIME_AND_ARRIVE_TIME
     end
 
     return @arranged, @unarranged, fuzzy, SUCCESS
@@ -281,7 +289,7 @@ module Solver
     elsif ap == 'a' and hour == 12
       hour = 0
     end
-    return Time.new(@year, @month, @day, hour, minute)
+    return DateTime.new(@year, @month, @day, hour, minute)
   end
 
   def read_duration(text)
