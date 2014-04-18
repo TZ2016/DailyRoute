@@ -19,18 +19,7 @@ module Solver
   # keys: errCode, (route), (durations), (mode). 
   # route, durations, mode exist if errCode == SUCCESS
   def solve
-    initialize()
-    for loc in @inp['locationList']
-      loc['arrivebefore'] = read_time(loc['arrivebefore'])
-      loc['arriveafter'] = read_time(loc['arriveafter'])
-      loc['departbefore'] = read_time(loc['departbefore'])
-      loc['departafter'] = read_time(loc['departafter'])
-      loc[]
-    end
-    @start = @inp['locationList'].first
-    @mode = @inp['travelMethod']
-    @dest = @inp['locationList'].last
-    classify_loc()      #set @arranged @unarranged
+    initialize() 
     if @err != SUCCESS
       pp ' ========HERE=============== '
   		return {errCode: @err}
@@ -49,6 +38,18 @@ module Solver
     @year = DateTime.now.year
     @month = DateTime.now.month
     @day = DateTime.now.day
+    for loc in @inp['locationList']
+      loc['arrivebefore'] = read_time(loc['arrivebefore'])
+      loc['arriveafter'] = read_time(loc['arriveafter'])
+      loc['departbefore'] = read_time(loc['departbefore'])
+      loc['departafter'] = read_time(loc['departafter'])
+      loc['minduration'] = read_time(loc['minduration'])
+      loc['maxduration'] = read_time(loc['maxduration'])
+    end
+    @start = @inp['locationList'].first
+    @mode = @inp['travelMethod']
+    @dest = @inp['locationList'].last
+    classify_loc() #set @arranged @unarranged @err
   end
 
 
