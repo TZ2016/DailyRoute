@@ -4,7 +4,6 @@ class RoutesController < ApplicationController
   before_action :correct_user,   only: :destroy
 
   def create
-
   	# result = solve(route_params)
     result = check_route(route_params)
     if result[:errCode] == 1
