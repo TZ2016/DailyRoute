@@ -62,7 +62,6 @@ class TestsController < ApplicationController
 	end
 
 	private 
-
 		def check_user
 			user = User.find_by(email: params[:session][:email].downcase)
 			if user && user.authenticate(params[:session][:password])
