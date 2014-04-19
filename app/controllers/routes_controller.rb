@@ -52,8 +52,13 @@ class RoutesController < ApplicationController
     end
 
     def build_routes(routes_list)
-    	puts "build routes"
-    	puts routes_list
+      # begin
+
+      # rescue exception => e
+
+      # end
+
+
     	routes_list.each do |r|
     		route = current_user.routes.build(name: r[:name], mode: r[:mode])
     		puts route.errors.full_messages unless route.save
@@ -62,7 +67,7 @@ class RoutesController < ApplicationController
     		r[:steps].each do |s|
     			step = route.steps.build(name: s[:name], geocode: s[:geocode],
     					     arrival: s[:arrival], departure: s[:departure])
-    			step.save
+    			puts step.errors.full_messages unless step.save
     		end
     	end
     end
