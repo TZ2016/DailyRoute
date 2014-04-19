@@ -8,7 +8,7 @@ SimpleCov.start do
   # add_filter '/app/assets'
   # add_filter '/app/controllers'
   # add_filter '/app/helpers'
-  # add_filter '/app/views'
+  # add_filter '/app/models'
 end
 
 ENV["RAILS_ENV"] ||= 'test'
