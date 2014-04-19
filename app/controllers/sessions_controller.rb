@@ -15,6 +15,10 @@ class SessionsController < ApplicationController
 
   def destroy
     sign_out
-    render :json => {errCode: 1}
+
+    respond_to do |format|
+      format.html { redirect_to root_url }
+      format.json { render :json => {errCode: 1} }
+    end
   end
 end
