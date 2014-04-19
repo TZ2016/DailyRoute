@@ -6,8 +6,13 @@ import unittest
 import os
 import testLib
 
+def dct_new_user(email='test@dailyroute.com', pw='testpassword', pwcf='testpassword'):
+    user = { 'email': email, 'password': pw, 'password_confirmation': pwcf}
+    return {'user': user}
 
-        
+def dct_test_user():
+    return { 'email': 'test@dailyroute.com', 'password': 'testpassword'}
+
 class TestGenerateRoute(testLib.RestTestCase):
     """Test adding users"""
     def assertResponse(self, respData, errCode = 1, input = None, num = 0):
@@ -23,20 +28,20 @@ class TestGenerateRoute(testLib.RestTestCase):
         self.makeRequest('/tests/resetAll', method="GET")
         locationList = []
         locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
-        self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
-        self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
         respData = self.makeRequest("/tests/add_route_to", method="POST", data = { 'route' : {'mode' : "DRIVING", 'name' : 'testroute'}, 
-            'session' : {'email' : 'test@test.com', 'password' : 'password'}} )
+            'session' : dct_test_user()} )
         self.assertResponse(respData)
 
     def testNoConstrainTwoPlacesError(self):
         locationList = []
         locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
         locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
-        self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
-        self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
         respData = self.makeRequest("/tests/add_route_to", method="POST", data = { 'route' : {'mode' : "DRIVING", 'name' : 'testroute'}, 
-            'session' : {'email' : 'test@test.com', 'password' : 'password'}} )
+            'session' : dct_test_user()} )
         self.assertResponse(respData)
 
     def testNoConstrainMultiPlacesError(self):
@@ -45,10 +50,10 @@ class TestGenerateRoute(testLib.RestTestCase):
         locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
         locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
         locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
-        self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
-        self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
         respData = self.makeRequest("/tests/add_route_to", method="POST", data = { 'route' : {'mode' : "DRIVING", 'name' : 'testroute'}, 
-            'session' : {'email' : 'test@test.com', 'password' : 'password'}} )
+            'session' : dct_test_user()} )
         self.assertResponse(respData)
 
 
@@ -68,35 +73,30 @@ class TestGenerateRoute(testLib.RestTestCase):
     #     self.assertEqual(4, len(respData["route"][0]))
 
     def testDifferentTravelMethod(self):
-        locationList = []
-        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
-        locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
-        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}})
-        locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -121}})
-        self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
-        self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
         respData = self.makeRequest("/tests/add_route_to", method="POST", data = { 'route' : {'mode' : "TRANSIT", 'name' : 'testroute'}, 
-            'session' : {'email' : 'test@test.com', 'password' : 'password'}} )
+            'session' : dct_test_user()} )
         self.assertResponse(respData)
 
 
     def testWithConstriantOnePlaceError(self):
         locationList = []
         locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}, "arriveafter": "10:00pm"})
-        self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
-        self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
         respData = self.makeRequest("/tests/add_route_to", method="POST", data = { 'route' : {'mode' : "DRIVING", 'name' : 'testroute'}, 
-            'session' : {'email' : 'test@test.com', 'password' : 'password'}} )
+            'session' : dct_test_user()} )
         self.assertResponse(respData)
 
 
     def testWithConstrantOnePlaceSize(self):
         locationList = []
         locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}, "arriveafter": "10:00pm"})
-        self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
-        self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
         respData = self.makeRequest("/tests/add_route_to", method="POST", data = { 'route' : {'mode' : "DRIVING", 'name' : 'testroute'}, 
-            'session' : {'email' : 'test@test.com', 'password' : 'password'}} )
+            'session' : dct_test_user()} )
         self.assertResponse(respData)
 
 
@@ -104,10 +104,10 @@ class TestGenerateRoute(testLib.RestTestCase):
         locationList = []
         locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}, "arriveafter": "10:00pm"})
         locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -120}, "arriveafter": "11:00pm"})
-        self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
-        self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
         respData = self.makeRequest("/tests/add_route_to", method="POST", data = { 'route' : {'mode' : "DRIVING", 'name' : 'testroute'}, 
-            'session' : {'email' : 'test@test.com', 'password' : 'password'}} )
+            'session' : dct_test_user()} )
         self.assertResponse(respData)
 
 
@@ -115,10 +115,10 @@ class TestGenerateRoute(testLib.RestTestCase):
         locationList = []
         locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}, "arriveafter": "10:00pm"})
         locationList.append({"searchtext": "random", "geocode": {"lat": 39, "lng": -120}, "arriveafter": "11:00pm"})
-        self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
-        self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
         respData = self.makeRequest("/tests/add_route_to", method="POST", data = { 'route' : {'mode' : "DRIVING", 'name' : 'testroute'}, 
-            'session' : {'email' : 'test@test.com', 'password' : 'password'}} )
+            'session' : dct_test_user()} )
         self.assertResponse(respData)
 
 
@@ -136,14 +136,14 @@ class TestSaveRoute(testLib.RestTestCase):
 
     def testSavedRoutes(self):
         self.makeRequest('/tests/resetAll', method="GET")
-        self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
-        self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
         locationList = []
         locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}, "arriveafter": "10:00pm"})
-        self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
-        self.makeRequest("/signin", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
         respData = self.makeRequest("/tests/add_route_to", method="POST", data = { 'route' : {'mode' : "DRIVING", 'name' : 'testroute'}, 
-            'session' : {'email' : 'test@test.com', 'password' : 'password'}} )
+            'session' : dct_test_user()} )
         self.assertResponse(respData)
 
 
@@ -162,31 +162,31 @@ class TestAddUser(testLib.RestTestCase):
 
     def testAdd(self):
         self.makeRequest('/tests/resetAll', method="GET")
-        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
+        respData = self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
         self.assertResponse(respData)
 
     def testAddMultiple(self):
         self.makeRequest('/tests/resetAll', method="GET")
-        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
-        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password'} )
+        respData = self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        respData = self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
         self.assertResponse(respData, errCode = -1)    
 
     def testAddEmptyUsername(self):
         self.makeRequest('/tests/resetAll', method="GET")
-        respData = self.makeRequest("/signup", method="POST", data = { 'email' : '', 'password' : 'password', 'password_confirmation' : 'password'} )
+        respData = self.makeRequest("/signup_post", method="POST", data = dct_new_user("") )
         self.assertResponse(respData, errCode = -1)
 
     def testAddWrongEmail(self):
         self.makeRequest('/tests/resetAll', method="GET")
-        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'user0', 'password' : 'password', 'password_confirmation' : 'password'} )
+        respData = self.makeRequest("/signup_post", method="POST", data = dct_new_user("wrongemail") )
         self.assertResponse(respData, errCode = -1)    
 
     def testShortPassword(self):
         self.makeRequest('/tests/resetAll', method="GET")
-        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'pass', 'password_confirmation' : 'pass'} )
+        respData = self.makeRequest("/signup_post", method="POST", data = dct_new_user(pw="short") )
         self.assertResponse(respData, errCode = -1)
 
     def inconsistentPassword(self):
         self.makeRequest('/tests/resetAll', method="GET")
-        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password', 'password_confirmation' : 'password1'} )
+        respData = self.makeRequest("/signup_post", method="POST", data = dct_new_user(pwcf="different") )
         self.assertResponse(respData, errCode = -1)

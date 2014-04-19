@@ -43,7 +43,8 @@ class RestTestCase(unittest.TestCase):
         headers = { }
         body = ""  
         if data is not None:
-            headers = { "content-type": "application/json" }
+            headers = { "content-type": "application/json",\
+                        "accept": "application/json" }
             body = json.dumps(data)
 
         try:

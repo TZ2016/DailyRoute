@@ -1,7 +1,6 @@
 // data communication
 var _url_calcroute = "newroute";
 var _url_signup = "signup_post";
-// var _url_saved = "routes";
 var _sendGeo = [];
 var _result = {};
 var _sendData = {};
@@ -193,32 +192,6 @@ function initPage () {
       }
     });
   });
-
-  // $( "#signin-form #signin" ).click( function () {
-  //   credentials = {'email':    $( "#email-field" ).val().toString(),
-  //                  'password': $( "#password-field" ).val().toString()
-  //                 };
-  //   $.ajax({
-  //     type: 'POST',
-  //     url:  _url_login,
-  //     data: JSON.stringify(credentials),
-  //     contentType: "application/json",
-  //     dataType: "json",
-  //     beforeSend: function (jqXHR, settings) {
-  //     },
-  //     success: function (data, status, jqXHR) {
-  //       errCode = data['errCode'];
-  //       if (errCode == 1) {
-  //         location.reload();
-  //       } else {
-  //         $.alertMessage("Invalid combination!");
-  //       }
-  //     },
-  //     error: function (jqXHR, status, error) {
-  //       $.alertMessage("Server Error!");
-  //     }
-  //   });
-  // });
 
 }
 

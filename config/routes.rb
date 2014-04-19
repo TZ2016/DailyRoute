@@ -16,16 +16,16 @@ DailyRouteTest::Application.routes.draw do
   get 'tutorial' => 'static_page#tutorial'
 
   # user management
-  match 'signup_post',  to: 'users#create',            via: 'post'
+  match 'signup_post',  to: 'users#create',    via: 'post'
   match 'signup',  to: 'users#new',            via: 'get'
   match 'signin',  to: 'sessions#new',         via: 'get'
+  match 'signin_post',  to: 'sessions#create',         via: 'post'
   match 'signout', to: 'sessions#destroy',     via: 'delete'
   
   # route
   match 'newroute',  to: 'routes#create', via: 'post'
 
   # testing
-
   post '/main/reset' => "static_page#reset"
   post '/tests/routes_of_user'
   post '/tests/remove_all_routes_of'

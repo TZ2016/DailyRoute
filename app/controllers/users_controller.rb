@@ -27,6 +27,9 @@ class UsersController < ApplicationController
         format.json { render :json => {errCode: 1} }
       end
     else
+      puts "==========create user error========="
+      puts params
+      puts @user.errors.full_messages
       respond_to do |format|
         format.html { render root_path }
         format.json { render :json => {errCode: -1, reasons: @user.errors.full_messages} }
