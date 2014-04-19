@@ -1,9 +1,8 @@
 // data communication
 var _url_calcroute = "newroute";
 var _url_login = "signin";
-var _url_logout = "signout";
 var _url_signup = "signup";
-var _url_saved = "routes";
+// var _url_saved = "routes";
 var _sendGeo = [];
 var _result = {};
 var _sendData = {};
@@ -163,10 +162,11 @@ function initPage () {
   });
 
   $( "#signup-btn" ).click( function () {
-    credentials = {'email':    $( "#signup-email" ).val().toString(),
+    credentials = {'user':
+                {'email':    $( "#signup-email" ).val().toString(),
                  'password': $( "#signup-pw" ).val().toString(),
                  'password_confirmation': $( "#signup-pwcf" ).val().toString()
-                };
+                }};
     $.ajax({
       type: 'POST',
       url:  _url_signup,
@@ -221,20 +221,20 @@ function initPage () {
     });
   });
 
-  $( "#logout-btn" ).click( function () {
-    $.ajax({
-      type: 'DELETE',
-      url:  _url_logout,
-      beforeSend: function (jqXHR, settings) {
-      },
-      success: function (data, status, jqXHR) {
-        location.reload();
-      },
-      error: function (jqXHR, status, error) {
-        $.alertMessage("Server Error!");
-      }
-    });
-  });
+  // $( "#logout-btn" ).click( function () {
+  //   $.ajax({
+  //     type: 'DELETE',
+  //     url:  _url_logout,
+  //     beforeSend: function (jqXHR, settings) {
+  //     },
+  //     success: function (data, status, jqXHR) {
+  //       location.reload();
+  //     },
+  //     error: function (jqXHR, status, error) {
+  //       $.alertMessage("Server Error!");
+  //     }
+  //   });
+  // });
 
   // $( "#routes-btn" ).click( function () {
   //   $( "#sidebar-main" ).hide();

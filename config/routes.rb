@@ -27,9 +27,14 @@ DailyRouteTest::Application.routes.draw do
   match 'newroute',  to: 'routes#create', via: 'post'
 
   # testing
+
   post '/main/reset' => "static_page#reset"
-  get  '/main/test'  => "static_page#tests"
-  # post '/main/parseRoute' => 'main#parseRoute'
-  # post '/main/master'     => 'main#master'
+  post '/tests/routes_of_user'
+  post '/tests/remove_all_routes_of'
+  post '/tests/add_route_to'
+  get  '/tests/resetAll'
+  get  '/tests/resetUser'
+  get  '/tests/resetRoute'
+  get  '/tests/resetStep'
 
 end

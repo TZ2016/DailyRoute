@@ -11,7 +11,7 @@
   <p class="navbar-text navbar-right">Signed in as
     <%= current_user.email %>
     <%= link_to "My Routes", current_user, type: "button", class: "btn btn-link btn-sm" %>
-    <%= link_to "Update", current_user, type: "button", class: "btn btn-link btn-sm" %>
-    <button id="logout-btn" type="button" class="btn btn-link btn-sm">LogOut</button>
+    <%= link_to "Settings", edit_user_path(current_user), type: "button", class: "btn btn-link btn-sm" %>
+    <%= link_to "Log Out", signout_path, method: :delete, type: "button", class: "btn btn-link btn-sm" %>
   </p>
 <% end %>

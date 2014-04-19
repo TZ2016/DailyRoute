@@ -25,7 +25,6 @@ class UsersController < ApplicationController
       render :json => {errCode: 1} # FIXME
     else
       # render 'new' # FIXME 
-      puts @user.errors.messages
       render :json => {errCode: -1, reasons: @user.errors.full_messages}
     end
   end
@@ -34,6 +33,9 @@ class UsersController < ApplicationController
   end
 
   def update
+    puts "==========="
+    puts @user.email
+    puts user_params
     if @user.update_attributes(user_params)
       flash[:success] = "Profile updated"
       redirect_to @user
@@ -50,10 +52,10 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.permit(:email, :password,
-                    :password_confirmation)
-      # params.require(:user).permit(:email, :password,
-      #                              :password_confirmation)
+      # params.permit(:email, :password,
+      #               :password_confirmation)
+      params.require(:user).permit(:email, :password,
+                                   :password_confirmation)
     end
 
     def correct_user
