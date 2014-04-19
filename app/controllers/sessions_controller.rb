@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:session][:password])
       sign_in user
       respond_to do |format|
-        format.html { redirect_back_or user }
+        format.html { redirect_back_or root_path }
         format.json { render :json => {errCode: 1, user: current_user.email} }
       end
     else

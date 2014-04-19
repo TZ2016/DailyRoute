@@ -1,12 +1,14 @@
 <% if !signed_in? %>
-  <form class="navbar-form navbar-right" id="signin-form" >
+
+  <%= form_for(:session, url: sessions_path, html: { class: "navbar-form navbar-right" }) do |f| %>
     <div class="form-group">
-      <input id="email-field" type="email" class="form-control" placeholder="Email">
-      <input id="password-field" type="password" class="form-control" placeholder="Password">
+      <%= f.email_field :email, class: "form-control", placeholder: "Email" %>
+      <%= f.password_field :password, class: "form-control", placeholder: "Password" %>
     </div>
-    <button id="signup" type="button" class="btn btn-default btn-sm">SignUp</button>
-    <button id="signin" type="button" class="btn btn-default btn-sm">LogIn</button>
-  </form>
+    <%= link_to "SignUp", "#", type: "button", class: "btn btn-default btn-sm", id: "signup" %>
+    <%= f.submit "LogIn", class: "btn btn-default btn-sm" %>
+  <% end %>
+
 <% elsif signed_in? %>
   <p class="navbar-text navbar-right">Signed in as
     <%= current_user.email %>

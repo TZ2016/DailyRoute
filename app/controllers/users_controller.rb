@@ -13,7 +13,10 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = params[:user] ? User.new(user_params) : User.new_guest
+    puts "=========="
+    puts params
+    @user = User.new(user_params)
+    # @user = params[:user] ? User.new(user_params) : User.new_guest
     
     if @user.save
       # current_user.move_to(@user) if current_user and current_user.guest?
@@ -25,7 +28,7 @@ class UsersController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { render 'new' }
+        format.html { render root_path }
         format.json { render :json => {errCode: -1, reasons: @user.errors.full_messages} }
       end
     end

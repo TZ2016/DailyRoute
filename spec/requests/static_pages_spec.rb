@@ -52,8 +52,8 @@ describe "Static pages" do
       it { should have_button("LogIn") }
       it { should have_button("SignUp") }
       it { should_not have_button("LogOut") }
-      it { should have_field("email-field") }
-      it { should have_field("password-field") }
+      it { should have_field("Email") }
+      it { should have_field("Password") }
     end
 
     describe "for signed-in users" do

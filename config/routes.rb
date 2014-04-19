@@ -16,10 +16,9 @@ DailyRouteTest::Application.routes.draw do
   get 'tutorial' => 'static_page#tutorial'
 
   # user management
-  match 'signup',  to: 'users#create',            via: 'post'
-  # match 'signup',  to: 'users#new',            via: 'get'
-  match 'signin',  to: 'sessions#create',         via: 'post'
-  # match 'signin',  to: 'sessions#new',         via: 'get'
+  match 'signup_post',  to: 'users#create',            via: 'post'
+  match 'signup',  to: 'users#new',            via: 'get'
+  match 'signin',  to: 'sessions#new',         via: 'get'
   match 'signout', to: 'sessions#destroy',     via: 'delete'
   
   # route
