@@ -69,16 +69,17 @@ module RoutesHelper
     legs = result['routes'][0]["legs"]
     route1 = {steps:[], mode:@mode, name:'route'}
     first_step = {}
-    # pp legs
+    pp '=============legs==================='
+    pp legs
     first_step[:geocode] = geocode_to_s(legs[0]["start_location"])
     first_step[:departure] = locs[0]['departafter']
-    first_step[:arrival] = first_step[:departure] + legs[0]["duration"]["value"]
+    first_step[:arrival] = locs[0]['departafter']
     route1[:steps]<< first_step
     for leg in legs
       step = {}
       step[:geocode] = geocode_to_s(leg["end_location"])
-      step[:departure] = route1[:steps].last[:arrival]
-      step[:arrival] = step[:departure] + leg["duration"]["value"]
+      step[:arrival] = route1[:steps].last[:departure] + leg["duration"]["value"]
+      step[:departure] = step[:arrival]
       route1[:steps] << step
     end
     # order = result['routes'][0]['waypoint_order']
@@ -102,8 +103,8 @@ module RoutesHelper
 
     for i in (0.. @intervals.length ** @unarranged.length-1)
       parts = partition(i, num, @unarranged)
-      order, dur, ifsuccess =  get_time_for_partition(parts, @intervals, @arranged, @mode)
-      if ifsuccess
+      route =  get_route_for_partition(parts, @intervals, @arranged, @mode)
+      if route != {}
         routes << order
         durations << dur
       end
@@ -122,23 +123,24 @@ module RoutesHelper
 
 
 
-
-  def get_time_for_partition(partition)
-    order = []
-    duration = 0
+  #Return the shortest route for this PARTITION.
+  #Return {} if there is no legal route for this PARTITION
+  def get_route_for_partition(partition)
+    traveltime = 0
+    steps = []
     for i in (0..@intervals.length - 1)
-      time = get_time([@arranged[i]]+partition[i]+[@arranged[i+1]])
-      if time > @intervals[i]
-        return [], 0, false
+      result = shortest_path([@arranged[i]]+partition[i]+[@arranged[i+1]])
+      if result[:routes][0][:traveltime] > @intervals[i]
+        return {}
       else
-        order << @arranged[i]
+        step << @arranged[i]
         order = order + partition[i]
-        duration += time
+        traveltime += time
       end
     end
     order << @arranged.last
     order = order.map{|x| x['geocode']}
-    return order, duration, true
+    return {mode: @mode, name: 'route', traveltime:traveltime}
   end
 
 
@@ -195,6 +197,17 @@ module RoutesHelper
     end
   end
 
+  def get_time_and_steps(locs)
+    result = shortest_path(locs)
+    pp '    =============result==========='
+    pp result
+    if result[:errCode] == SUCCESS 
+        return result[:routes][0][:traveltime]
+    else
+        return Float::INFINITY, []
+    end
+  end
+
   def request_route(locs)
     pp '=============inside request route========='
 
@@ -204,8 +217,8 @@ module RoutesHelper
     waypoints = ''
     if locs.length >= 3
       waypoints = '&waypoints=optimize:true'
-      for i in (2..locs.length - 2)
-        waypoints += '|' + geocode_to_s(loc[i]['geocode'])
+      for i in (1..locs.length - 2)
+        waypoints += '|' + geocode_to_s(locs[i]['geocode'])
       end
     end   
     sensor = "&sensor=false"
@@ -313,8 +326,6 @@ module RoutesHelper
   end
 
   def geocode_to_s(geocode)
-    pp '===========inside geocode_to_s=============='
-    pp geocode
     return geocode['lat'].to_s + ',' + geocode['lng'].to_s
   end 
   
