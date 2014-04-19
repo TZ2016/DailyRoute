@@ -7,9 +7,16 @@ class SessionsController < ApplicationController
     user = User.find_by(email: params[:session][:email].downcase)
     if user && user.authenticate(params[:session][:password])
       sign_in user
-      render :json => {errCode: 1, user: current_user.email}
+      respond_to do |format|
+        format.html { redirect_back_or user }
+        format.json { render :json => {errCode: 1, user: current_user.email} }
+      end
     else
-      render :json => {errCode: -1}
+      respond_to do |format|
+        flash.now[:error] = 'Invalid email/password combination'
+        format.html { render 'new' }
+        format.json { render :json => {errCode: -1} }
+      end
     end
   end
 

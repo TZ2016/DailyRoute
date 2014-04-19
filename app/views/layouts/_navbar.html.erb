@@ -13,21 +13,15 @@
     <!-- content -->
     <div id="navbar-btn" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-
-        <% if @pagehelper_active == "Main" %>
-          <li class="active"><a>Main</a></li>
-        <% else %>
-          <li><a href="/main">Main</a></li>
-        <% end %>
-
-        <li <% if @pagehelper_active == "Tutorial" %>
-            class="active"
-            <% end %>
-          ><a href="/tutorial">Tutorial</a></li>
-        <li <% if @pagehelper_active == "About" %>
-            class="active"
-            <% end %>
-          ><a href="/about">About</a></li>
+        <li>
+          <%= link_to_unless_current "Main", main_path %>
+        </li>
+        <li>
+          <%= link_to_unless_current "Tutorial", tutorial_path %>
+        </li>
+        <li>
+          <%= link_to_unless_current "About", about_path %>
+        </li>
       </ul>
 
       <!-- user login logout -->

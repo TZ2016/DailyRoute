@@ -1,19 +1,11 @@
 <div class="container">
   <div class="row">
-    <!-- Sidebar Level 1 -->
+
     <div class="col-md-4 sidebar">
+      <div class="row">
 
-      <!-- Title -->
-      <h4>All Your Searched Routes!</h4>
-
-      <!-- Directions Panel starts -->
-      <!-- <%= render 'shared/panel_direction' %> -->
-
-    </div>
-
-    <div id="sidebar-saved" class="col-md-4 sidebar">
-      <div id="savedroutes-row" class="row">
         <h4 class="col-md-12">Your Saved Routes</h4>
+
         <div id="savedroutes-ins" class="col-md-12">
           <h3>Instructions</h3>
           <div>
@@ -21,14 +13,14 @@
             <%= link_to "Delete All Routes", remove_all_routes_user_path(current_user), type: 'button', class: 'btn btn-warning' %>
           </div>
         </div>
+
         <div id="savedroutes-acc" class="col-md-12">
           <% @routes.each_with_index do |r, i| %>
+            <div class="route-panel">
 
-            <% i = i.to_s %>
-            <div id= <%= "savedroutes-"+i %> class="route-panel">
-              <h3 class="savedroutes-title" id= <%= "savedroutes-"+i+"-title" %> > <%= "Route "+i %> </h3>
+              <h3 class="route-title"> <%= "Route "+i.to_s %> </h3>
 
-              <div class="savedroutes-content" id= <%= "savedroutes-"+i+"-content" %>>
+              <div class="route-content">
                 <p>
                   <%= "Name: " + r.name %><br>
                   <%= "Mode: " + r.mode %><br>
@@ -39,13 +31,14 @@
                     <%= "arrival: " + s.arrival.inspect %><br>
                   <% end %>
                 </p>
-                <%= link_to "Display", '#', type: 'button', class: 'btn btn-info', id: "savedroutes-btn-"+i %>
+                <%= link_to "Display", '#', type: 'button', class: 'btn btn-info' %>
                 <%= link_to "Delete", r, method: :delete, type: 'button', class: 'btn btn-warning' %>
               </div>
-            </div>
 
+            </div>
           <% end %>
         </div>
+        
       </div>
       <hr>
       <%= link_to "Return", root_path, type: 'button', class: 'btn btn-warning' %>

@@ -5,8 +5,8 @@ DailyRouteTest::Application.routes.draw do
       get 'remove_all_routes'
     end
   end
-  resources :routes, only: [:create, :destroy]
-  resources :sessions,      only: [:new, :create, :destroy]
+  resources :routes
+  resources :sessions, only: [:new, :create, :destroy]
 
   root 'static_page#main'
 
@@ -17,13 +17,12 @@ DailyRouteTest::Application.routes.draw do
 
   # user management
   match 'signup',  to: 'users#create',            via: 'post'
-  match 'signup',  to: 'users#new',            via: 'get'
+  # match 'signup',  to: 'users#new',            via: 'get'
   match 'signin',  to: 'sessions#create',         via: 'post'
-  match 'signin',  to: 'sessions#new',         via: 'get'
+  # match 'signin',  to: 'sessions#new',         via: 'get'
   match 'signout', to: 'sessions#destroy',     via: 'delete'
   
   # route
-  match 'routes', to: 'users#show', via: 'get'
   match 'newroute',  to: 'routes#create', via: 'post'
 
   # testing

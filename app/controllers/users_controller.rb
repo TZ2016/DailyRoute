@@ -1,14 +1,11 @@
 class UsersController < ApplicationController
+
   before_action :signed_in_user,
-                only: [:show, :edit, :update, :destroy, :remove_all_routes]
-  before_action :correct_user,   only: [:show, :edit, :update, :remove_all_routes]
+                only: [:edit, :update, :destroy, :remove_all_routes]
+  before_action :correct_user,   only: [:edit, :update, :remove_all_routes]
 
-  # def index
-  #   @users = User.paginate(page: params[:page])
-  # end
-
-  def show
-    @routes = current_user.routes
+  def index
+    @users = User.paginate(page: params[:page])
   end
 
   def new
@@ -16,16 +13,21 @@ class UsersController < ApplicationController
   end
 
   def create
-    puts user_params
-    @user = User.new(user_params)
+    @user = params[:user] ? User.new(user_params) : User.new_guest
+    
     if @user.save
+      # current_user.move_to(@user) if current_user and current_user.guest?
       sign_in @user
       flash[:success] = "You are logged in!"
-      # redirect_to @user
-      render :json => {errCode: 1} # FIXME
+      respond_to do |format|
+        format.html { redirect_to @user }
+        format.json { render :json => {errCode: 1} }
+      end
     else
-      # render 'new' # FIXME 
-      render :json => {errCode: -1, reasons: @user.errors.full_messages}
+      respond_to do |format|
+        format.html { render 'new' }
+        format.json { render :json => {errCode: -1, reasons: @user.errors.full_messages} }
+      end
     end
   end
 
@@ -33,27 +35,34 @@ class UsersController < ApplicationController
   end
 
   def update
-    puts "==========="
-    puts @user.email
-    puts user_params
     if @user.update_attributes(user_params)
       flash[:success] = "Profile updated"
-      redirect_to @user
+      respond_to do |format|
+        format.html { redirect_to @user }
+        format.json { render :json => {errCode: 1} }
+      end
     else
-      render 'edit'
+      respond_to do |format|
+        format.html { render 'edit' }
+        format.json { render :json => {errCode: -1, reasons: @user.errors.full_messages} }
+      end
     end
   end
 
   def remove_all_routes
     @current_user.routes.destroy_all
-    redirect_to @current_user
+    redirect_to routes_path
   end
+
+  # def destroy
+  #   User.find(params[:id]).destroy
+  #   flash[:success] = "User destroyed."
+  #   redirect_to users_url
+  # end
 
   private
 
     def user_params
-      # params.permit(:email, :password,
-      #               :password_confirmation)
       params.require(:user).permit(:email, :password,
                                    :password_confirmation)
     end

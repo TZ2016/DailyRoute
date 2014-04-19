@@ -1,4 +1,4 @@
-<% if !signed_in? and @pagehelper_active == "Main"%>
+<% if !signed_in? %>
   <form class="navbar-form navbar-right" id="signin-form" >
     <div class="form-group">
       <input id="email-field" type="email" class="form-control" placeholder="Email">
@@ -10,7 +10,7 @@
 <% elsif signed_in? %>
   <p class="navbar-text navbar-right">Signed in as
     <%= current_user.email %>
-    <%= link_to "My Routes", current_user, type: "button", class: "btn btn-link btn-sm" %>
+    <%= link_to "My Routes", routes_path, type: "button", class: "btn btn-link btn-sm" %>
     <%= link_to "Settings", edit_user_path(current_user), type: "button", class: "btn btn-link btn-sm" %>
     <%= link_to "Log Out", signout_path, method: :delete, type: "button", class: "btn btn-link btn-sm" %>
   </p>

@@ -221,47 +221,6 @@ function initPage () {
     });
   });
 
-  // $( "#logout-btn" ).click( function () {
-  //   $.ajax({
-  //     type: 'DELETE',
-  //     url:  _url_logout,
-  //     beforeSend: function (jqXHR, settings) {
-  //     },
-  //     success: function (data, status, jqXHR) {
-  //       location.reload();
-  //     },
-  //     error: function (jqXHR, status, error) {
-  //       $.alertMessage("Server Error!");
-  //     }
-  //   });
-  // });
-
-  // $( "#routes-btn" ).click( function () {
-  //   $( "#sidebar-main" ).hide();
-  //   $( "#sidebar-saved" ).show();
-
-  //   //FIXME
-  //   $.ajax({
-  //     type: 'GET',
-  //     url:  _url_saved,
-  //     contentType: "application/json",
-  //     dataType: "json",
-  //     beforeSend: function (jqXHR, settings) {
-  //     },
-  //     success: function (data, status, jqXHR) {
-  //       // data = {errCode: , route: []}
-  //       handleResult(data, "savedroutes", "savedroutes-acc");
-  //     },
-  //     error: function (jqXHR, status, error) {
-  //     }
-  //     });
-  // });
-
-  // $( "#return-btn" ).click( function () {
-  //   $( "#sidebar-main" ).show();
-  //   $( "#sidebar-saved" ).hide();
-  // });
-
 }
 
 // Adding location
