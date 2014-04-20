@@ -4,32 +4,33 @@ class UsersController < ApplicationController
                 only: [:edit, :update, :destroy, :remove_all_routes]
   before_action :correct_user,   only: [:edit, :update, :remove_all_routes]
 
-  def index
-    @users = User.paginate(page: params[:page])
-  end
+  # def index
+  #   @users = User.paginate(page: params[:page])
+  # end
 
   def new
     @user = User.new
   end
 
   def create
-    puts "=========="
-    puts params
-    @user = User.new(user_params)
-    # @user = params[:user] ? User.new(user_params) : User.new_guest
+    # @user = User.new(user_params)
+    puts "==========="
+    puts user_params[:email].empty?
+    @user = user_params[:email].empty? ? User.new_guest : User.new(user_params)
     
     if @user.save
-      # current_user.move_to(@user) if current_user and current_user.guest?
+      current_user.move_to(@user) if current_user and current_user.guest?
       sign_in @user
       flash[:success] = "You are logged in!"
       respond_to do |format|
-        format.html { redirect_to @user }
+        format.html { redirect_to root_path }
         format.json { render :json => {errCode: 1} }
       end
     else
       puts "==========create user error========="
       puts params
       puts @user.errors.full_messages
+      puts format
       respond_to do |format|
         format.html { render root_path }
         format.json { render :json => {errCode: -1, reasons: @user.errors.full_messages} }

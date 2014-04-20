@@ -13,6 +13,7 @@ class SessionsController < ApplicationController
       end
     else
       respond_to do |format|
+        flash.now.alert = "test alert"
         flash.now[:error] = 'Invalid email/password combination'
         format.html { render 'new' }
         format.json { render :json => {errCode: -1} }
