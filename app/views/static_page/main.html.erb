@@ -1,51 +1,32 @@
 <% provide(:has_map, true) %>
 
-<div class="container">
-
-  <div class="row">
-    <!-- Sidebar Level 1 -->
-    <div class="col-md-4 sidebar">  
-
-      <% flash.each do |key, value| %>
-        <div class="alert alert-<%= key %> alert-dismissable">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-          <strong>Warning!</strong> <%= value %>
-        </div>
-      <% end %>
-
-      <!-- Title -->
-      <h4>Start your route now!</h4>
-
-      <!-- To add new location -->
-      <%= render 'static_page/panel_add' %>
-      <br>
-
-      <!-- mode of transportation -->
-      <%= render 'static_page/panel_mode' %>
-
-      <!-- Locations added so far -->
-      <h4>Selected Locations</h4>
-      <%= render 'static_page/panel_location' %>
-      <hr>
-
-      <button id="calc-btn" type="button" class="btn btn-warning">
-        Calculate Routes
-      </button>
-      <hr>
-
-      <!-- Directions Panel starts -->
-      <%= render 'shared/panel_direction' %>
-
+<% flash.each do |key, value| %>
+    <div class="alert alert-<%= key %> alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <strong>Warning!</strong> <%= value %>
     </div>
+<% end %>
 
-    <%= render 'shared/google_map' %>
+<!-- Title -->
+<h4>Start your route now!</h4>
 
-  </div>
+<!-- To add new location -->
+<%= render 'static_page/panel_add' %>
+<br>
 
-  <!-- Refine Location Dialog -->
-  <%= render 'static_page/dialog_refine' %>
-  
-  <!-- User SignUp -->
-  <%= render 'shared/dialog_signup' %>
+<!-- mode of transportation -->
+<%= render 'static_page/panel_mode' %>
 
-</div>
+<!-- Locations added so far -->
+<h4>Selected Locations</h4>
+<%= render 'static_page/panel_location' %>
+<hr>
+
+<button id="calc-btn" type="button" class="btn btn-warning">
+  Calculate Routes
+</button>
+<hr>
+
+<!-- Directions Panel starts -->
+<%= render 'shared/panel_direction' %>
+

@@ -21,7 +21,7 @@
       <%= javascript_include_tag 'map' %>
   <% end %>
 
-  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
 
@@ -29,8 +29,26 @@
 <body>
 
 <%= render 'layouts/navbar' %>
+<%= render 'shared/dialog_signup' %>
 
-<%= yield %>
+<!-- Refine Location Dialog -->
+<%= render 'static_page/dialog_refine' %>
+
+<div class="container">
+  <div class="row">
+    <% if content_for?(:has_map) %>
+        <div class="col-md-4 sidebar">
+          <%= yield %>
+        </div>
+        <div class="col-md-8 col-md-offset-4 main">
+          <div id="map-canvas" class="map-container">
+          </div>
+        </div>
+    <% else %>
+        <%= yield %>
+    <% end %>
+  </div>
+</div>
 
 </body>
 </html>
