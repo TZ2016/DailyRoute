@@ -1,5 +1,9 @@
 class StaticPageController < ApplicationController
-	
+
+  def root
+    redirect_to :main
+  end
+
 	def main
 	end
 
@@ -7,13 +11,6 @@ class StaticPageController < ApplicationController
 	end
 
 	def tutorial
-	end
-
-	def resetAll
-		User.destroy_all
-		Route.destroy_all
-		Step.destroy_all
-		render :json => { errCode: 1 }
 	end
 
 end
