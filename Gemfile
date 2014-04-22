@@ -15,7 +15,7 @@ gem 'sass-rails', '>= 3.2'
 
 # paginate
 gem 'will_paginate', '3.0.4'
-gem 'bootstrap-will_paginate', '0.0.9'
+gem 'will_paginate-bootstrap'
 
 # for has secure password
 gem 'bcrypt-ruby', '3.1.2'

@@ -1,12 +1,8 @@
 class RoutesController < ApplicationController
 
-  before_action :signed_in_user, only: [:index, :create, :destroy]
+  before_action :signed_in_user, only: [:create, :destroy]
   before_action :correct_route,  only: [:destroy]
 
-  # list all routes that belong to the current user
-  def index
-    @routes = current_user.routes
-  end
 
   # create a list of routes from a single request
   def create
@@ -53,7 +49,7 @@ class RoutesController < ApplicationController
   # to remove a route
   def destroy
     @route.destroy
-    redirect_to routes_path
+    redirect_to current_user
   end
 
   private

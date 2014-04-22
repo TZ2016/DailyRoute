@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
-
   before_action :signed_in_user,
-                only: [:edit, :update, :destroy, :remove_all_routes]
+                only: [:show, :edit, :update, :destroy, :remove_all_routes]
   before_action :correct_user, only: [:edit, :update, :remove_all_routes]
 
   # def index
@@ -10,6 +9,10 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
+  end
+
+  def show
+    @routes = current_user.routes.paginate(:page => params[:page], :per_page => 2)
   end
 
   def create
@@ -54,7 +57,7 @@ class UsersController < ApplicationController
 
   def remove_all_routes
     @current_user.routes.destroy_all
-    redirect_to routes_path
+    redirect_to current_user
   end
 
   def destroy
