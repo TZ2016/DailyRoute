@@ -13,6 +13,11 @@ end
 # Use SCSS for stylesheets
 gem 'sass-rails', '>= 3.2'
 
+# paginate
+gem 'will_paginate', '3.0.4'
+gem 'bootstrap-will_paginate', '0.0.9'
+
+# for has secure password
 gem 'bcrypt-ruby', '3.1.2'
 
 # Use Uglifier as compressor for JavaScript assets

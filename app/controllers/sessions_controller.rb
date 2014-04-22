@@ -9,14 +9,14 @@ class SessionsController < ApplicationController
       sign_in user
       respond_to do |format|
         format.html { redirect_back_or root_path }
-        format.json { render :json => {errCode: 1, user: current_user.email} }
+        format.json { render :json => { errCode: 1, user: current_user.email } }
       end
     else
       respond_to do |format|
-        flash.now.alert = "test alert"
+        flash.now.alert   = "test alert"
         flash.now[:error] = 'Invalid email/password combination'
         format.html { render 'new' }
-        format.json { render :json => {errCode: -1} }
+        format.json { render :json => { errCode: -1 } }
       end
     end
   end
@@ -26,7 +26,7 @@ class SessionsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to root_url }
-      format.json { render :json => {errCode: 1} }
+      format.json { render :json => { errCode: 1 } }
     end
   end
 end

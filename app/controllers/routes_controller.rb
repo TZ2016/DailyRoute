@@ -1,7 +1,7 @@
 class RoutesController < ApplicationController
 
-  before_action :signed_in_user, only: [:index, :create, :destroy, :destroy_all]
-  before_action :correct_route,   only: [:destroy]
+  before_action :signed_in_user, only: [:index, :create, :destroy]
+  before_action :correct_route,  only: [:destroy]
 
   # list all routes that belong to the current user
   def index
@@ -20,7 +20,7 @@ class RoutesController < ApplicationController
         format.json { render :json => result }
       end
     elsif result[:errCode] == 1
-      flash[:error] = "Route generated but encounter errors while saving"
+      flash[:error] = 'Route generated but encounter errors while saving'
       respond_to do |format|
         format.html { redirect_to root_url } #FIXME
         format.json { render :json => result }
