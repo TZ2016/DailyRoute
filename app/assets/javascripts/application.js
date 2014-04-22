@@ -16,5 +16,4 @@
 //= require bootstrap
 //= require jquery.ui.all
 //= require jquery.timepicker
-//= require jquery.cookie
-//= require_tree .
+//= require jq

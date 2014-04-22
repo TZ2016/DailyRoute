@@ -7,9 +7,13 @@
 
 <title><%= content_for?(:title) ? yield(:title) : "Daily Route" %></title>
 
-<!-- Google Maps API -->
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM&sensor=false&language=en">
-</script>
+
+<% if content_for?(:has_map) %>
+    <!-- Google Maps API -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM&sensor=false&language=en">
+    </script>
+<% end %>
+
 
 <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
 <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
