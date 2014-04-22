@@ -12,26 +12,24 @@ class UsersController < ApplicationController
   end
 
   def show
-    @routes = current_user.routes.paginate(:page => params[:page], :per_page => 2)
+    @routes = current_user.routes.paginate(:page => params[:page], :per_page => 5)
   end
 
   def create
-    @user = user_params[:email].empty? ? User.new_guest : User.new(user_params)
+    @user = User.new(user_params)
+    # @user = user_params[:email].empty? ? User.new_guest : User.new(user_params)
 
-    if @user.save
+      if @user.save
       current_user.move_to(@user) if current_user and current_user.guest?
       sign_in @user
-      flash[:success] = "You are logged in!"
+      flash[:success] = "Welcome to Daily Route, " + @user.email + '!'
       respond_to do |format|
         format.html { redirect_to root_path }
         format.json { render :json => { errCode: 1 } }
       end
     else
-      puts "==========create user error========="
-      puts params
-      puts @user.errors.full_messages
       respond_to do |format|
-        format.html { render root_path }
+        format.html { render 'new' }
         format.json { render :json => { errCode: -1, reasons: @user.errors.full_messages } }
       end
     end
@@ -56,6 +54,7 @@ class UsersController < ApplicationController
   end
 
   def remove_all_routes
+    flash[:success] = "Your routes are purged!"
     @current_user.routes.destroy_all
     redirect_to current_user
   end

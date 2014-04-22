@@ -38,6 +38,7 @@
   <div class="row">
     <% if content_for?(:has_map) %>
         <div class="col-md-4 sidebar">
+          <%= render 'shared/alert_message' %>
           <%= yield %>
         </div>
         <div class="col-md-8 col-md-offset-4 main">
@@ -45,6 +46,7 @@
           </div>
         </div>
     <% else %>
+        <%= render 'shared/alert_message' %>
         <%= yield %>
     <% end %>
   </div>

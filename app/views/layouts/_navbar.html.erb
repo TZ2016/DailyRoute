@@ -30,7 +30,7 @@
                 <%= f.email_field :email, class: "form-control", placeholder: "Email" %>
                 <%= f.password_field :password, class: "form-control", placeholder: "Password" %>
               </div>
-              <%= link_to "SignUp", "#", type: "button", class: "btn btn-default btn-sm", id: "signup" %>
+              <%= link_to "SignUp", '#', type: "button", class: "btn btn-default btn-sm", id: "signup" %>
               <%= f.submit "LogIn", class: "btn btn-default btn-sm" %>
           <% end %>
       <% elsif signed_in? %>

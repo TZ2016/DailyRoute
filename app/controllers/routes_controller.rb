@@ -10,19 +10,19 @@ class RoutesController < ApplicationController
     @messages = []
   	result = solve(route_params)
     if result[:errCode] == 1 and build_routes(result[:routes])
-      flash[:success] = "Route created!"
+      flash.now[:success] = "Route created!"
       respond_to do |format|
         format.html { render "show_list" } #FIXME
         format.json { render :json => result }
       end
     elsif result[:errCode] == 1
-      flash[:error] = 'Route generated but encounter errors while saving'
+      flash.now[:error] = 'Route generated but encounter errors while saving'
       respond_to do |format|
         format.html { redirect_to root_url } #FIXME
         format.json { render :json => result }
       end
     else
-      flash[:error] = "route is not generated, reason to be specified"
+      flash.now[:error] = "route is not generated, reason to be specified"
       respond_to do |format|
         format.html { redirect_to root_url } #FIXME
         format.json { render :json => result }
@@ -48,6 +48,7 @@ class RoutesController < ApplicationController
 
   # to remove a route
   def destroy
+    flash[:success] = "Route:" + @route.name + "(id=" + @route.id.to_s + ") is deleted."
     @route.destroy
     redirect_to current_user
   end
