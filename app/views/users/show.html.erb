@@ -13,8 +13,9 @@
             <%= link_to "Delete All Routes", remove_all_routes_user_path(current_user), type: 'button', class: 'btn btn-warning' %>
           </div>
         </div>
-
-        <%= will_paginate @routes, renderer: BootstrapPagination::Rails %>
+        <div class="col-md-12">
+          <%= will_paginate @routes, renderer: BootstrapPagination::Rails %>
+        </div>
         <div id="savedroutes-acc" class="col-md-12">
           <%= render @routes %>
         </div>

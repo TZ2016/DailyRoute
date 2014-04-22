@@ -171,9 +171,9 @@ class TestAddUser(testLib.RestTestCase):
         respData = self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
         self.assertResponse(respData, errCode = -1)    
 
-    def testAddEmptyUsername(self):
+    def testAddBlankUsername(self):
         self.makeRequest('/tests/resetAll', method="GET")
-        respData = self.makeRequest("/signup_post", method="POST", data = dct_new_user("") )
+        respData = self.makeRequest("/signup_post", method="POST", data = dct_new_user(" ") )
         self.assertResponse(respData, errCode = -1)
 
     def testAddWrongEmail(self):
