@@ -8,6 +8,7 @@ module RoutesHelper
   ERR_INVALID_INPUT_TIME = -2
   ERR_NOT_ENOUGH_TIME_FOR_TRAVEL = -3
   ERR_IN_SPECIFY_START_TIME_AND_ARRIVE_TIME = -4
+  ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE = -5
   APP_KEY = "AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM"
 
   # Use information in @inp. Return a hash includes 
@@ -28,7 +29,10 @@ module RoutesHelper
     end
     
     pp '===================formatted solution======================'
+    pp '====before'
+    pp solution
     format(solution)
+    pp '=====after'
     pp solution
     return solution
   end
@@ -98,27 +102,21 @@ module RoutesHelper
       return {errCode: @err}
     end
     num = @intervals.length
-    durations = []
     routes = []
 
     for i in (0.. @intervals.length ** @unarranged.length-1)
-      parts = partition(i, num, @unarranged)
-      route =  get_route_for_partition(parts, @intervals, @arranged, @mode)
+      parts = partition(i, num)
+      route =  get_route_for_partition(parts)
       if route != {}
-        routes << order
-        durations << dur
+        routes << route
       end
     end
-    result = []
-    for i in (0..routes.length-1)
-      result << [routes[i], durations[i]] 
+    if routes.empty?
+      return {errCode:ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE}
+    else
+      routes.sort_by!{|x| x[:traveltime]}
+      return {errCode: SUCCESS, routes: routes}
     end
-    result.sort_by!{|x| x[1]}
-    routes = result.map{|x| x[0]}
-    durations = result.map{|x| x[1]}
-    # pp '============TO RETURN==============='
-    # pp result
-    return {errCode: SUCCESS, route: routes, duration: durations, mode: @mode}
   end
 
 
@@ -127,22 +125,20 @@ module RoutesHelper
   #Return {} if there is no legal route for this PARTITION
   def get_route_for_partition(partition)
     traveltime = 0
-    steps = []
+    all_steps = []
     for i in (0..@intervals.length - 1)
-      result = shortest_path([@arranged[i]]+partition[i]+[@arranged[i+1]])
-      if result[:routes][0][:traveltime] > @intervals[i]
+      locs = [@arranged[i]]+partition[i]+[@arranged[i+1]]
+      time, partial_steps = get_time_and_steps(locs)
+      if time > @intervals[i]
         return {}
       else
-        step << @arranged[i]
-        order = order + partition[i]
+        all_steps += partial_steps
         traveltime += time
       end
     end
-    order << @arranged.last
-    order = order.map{|x| x['geocode']}
-    return {mode: @mode, name: 'route', traveltime:traveltime}
+    return {mode: @mode, name: 'route', \
+      traveltime:traveltime, steps: all_steps}
   end
-
 
 
   
@@ -190,6 +186,10 @@ module RoutesHelper
     result = shortest_path(locs)
     pp '    =============result==========='
     pp result
+    return wrap_time(result)
+  end
+
+  def wrap_time(result)
     if result[:errCode] == SUCCESS 
         return result[:routes][0][:traveltime]
     else
@@ -199,12 +199,11 @@ module RoutesHelper
 
   def get_time_and_steps(locs)
     result = shortest_path(locs)
-    pp '    =============result==========='
-    pp result
-    if result[:errCode] == SUCCESS 
-        return result[:routes][0][:traveltime]
+    time = wrap_time(result)
+    if time < Float::INFINITY
+      return time, result[:routes][0][:steps]
     else
-        return Float::INFINITY, []
+      return time, []
     end
   end
 
@@ -233,6 +232,7 @@ module RoutesHelper
   def classify_loc
     pp '===============Classify loc==================='
     @arranged,@unarranged, @fuzzy = [],[], []
+    add_time(@inp['locationList'])
     for point in @inp['locationList']
       preprocess(point)
       if point["arrivebefore"]
@@ -257,8 +257,19 @@ module RoutesHelper
     else
       @err = SUCCESS
     end
-    pp @err
   end
+
+  def add_time(locationList)
+
+    if not locationList.first['departafter']
+      locationList.first['departafter'] = Time.now
+    end
+    if not locationList.last['arrivebefore']
+      locationList.last['arrivebefore'] = Time.now.end_of_day
+    end
+  end
+
+
 
 
   def preprocess(point)
