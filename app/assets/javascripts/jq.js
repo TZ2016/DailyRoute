@@ -344,7 +344,7 @@ function genSendData () {
   _dataToSend['groups'] = [];
   $(".multi-field-wrapper .loc-group").each(function(i,e) {
     var selected = $( e ).val();
-    if (selected.length !== 0) {
+    if (selected !== null && selected.length !== 0) {
       _dataToSend['groups'].push( selected );
     }
   });
