@@ -11,10 +11,24 @@ module RoutesHelper
   ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE = -5
   APP_KEY = "AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM"
 
-  # Use information in @inp. Return a hash includes 
+  def solve(inp)
+    for _ in inp['locationList'].length
+      solution = solve_no_priority(inp)[:errCode]
+      if solution[:errCode] == SUCCESS
+        return solution
+      end
+      remove_min_priority(inp)
+    end
+  end
+
+  def remove_min_priority(inp)
+
+  end
+  
+  # Use information in INP. Return a hash includes 
   # keys: errCode, (route), (durations), (mode). 
   # route, durations, mode exist if errCode == SUCCESS
-  def solve(inp)
+  def solve_no_priority(inp)
     pp '================In solve ===================='
     init(inp) 
     if @err != SUCCESS
@@ -52,6 +66,7 @@ module RoutesHelper
       loc['departafter'] = read_time(loc['departafter'])
       loc['minduration'] = read_duration(loc['minduration'])
       loc['maxduration'] = read_duration(loc['maxduration'])
+      loc['priority'] = loc['priority'].to_i
     end
     @start = @inp['locationList'].first
     @mode = @inp['travelMethod']
@@ -126,13 +141,19 @@ module RoutesHelper
   def get_route_for_partition(partition)
     traveltime = 0
     all_steps = []
+    first_step = {}
+    first_step[:geocode] = geocode_to_s(@start['geocode'])
+    first_step[:departure] = @start['departafter']
+    first_step[:arrival] = first_step[:departure]
+    all_steps << first_step
+
     for i in (0..@intervals.length - 1)
       locs = [@arranged[i]]+partition[i]+[@arranged[i+1]]
       time, partial_steps = get_time_and_steps(locs)
       if time > @intervals[i]
         return {}
       else
-        all_steps += partial_steps
+        all_steps += partial_steps[1..-1]
         traveltime += time
       end
     end
