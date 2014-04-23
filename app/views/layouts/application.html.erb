@@ -37,11 +37,11 @@
 <div class="container">
   <div class="row">
     <% if content_for?(:has_map) %>
-        <div class="col-md-4 sidebar">
+        <div class="col-xs-7 col-sm-6 col-md-5 col-lg-4 sidebar">
           <%= render 'shared/alert_message' %>
           <%= yield %>
         </div>
-        <div class="col-md-8 col-md-offset-4 main">
+        <div class="col-xs-5 col-xs-offset-7 col-sm-6 col-sm-offset-6 col-md-7 col-md-offset-5 col-lg-8 col-lg-offset-4 main">
           <div id="map-canvas" class="map-container">
           </div>
         </div>
