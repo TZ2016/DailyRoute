@@ -26,6 +26,7 @@ DailyRouteTest::Application.routes.draw do
   match 'newroute', to: 'routes#create', via: 'post'
 
   # testing
+  get 'test' => 'static_page#form_test'
   post '/tests/routes_of_user'
   post '/tests/remove_all_routes_of'
   post '/tests/add_route_to'

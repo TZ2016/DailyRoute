@@ -8,7 +8,6 @@ var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 var directionsService = new google.maps.DirectionsService();
 var markers = [];
 var _tempmarker;
-var marker_geo;
 var infowindow = new google.maps.InfoWindow();
 
 function initialize() {
