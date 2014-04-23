@@ -50,3 +50,9 @@ legend {
 #trans-mode {
 	font-size: 65%;
 }
+
+/* navbar form margin */
+.navbar-collapse .navbar-text {
+    margin: 0;
+    margin-top: 10px;
+}

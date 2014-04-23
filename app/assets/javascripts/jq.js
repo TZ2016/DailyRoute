@@ -326,6 +326,7 @@ function handleResult (data, baseID, accID) {
       $( "#"+accID ).append( $newpanel );
       $( "#"+newid+" > .route-title" ).text("Route " + index).attr("id", newid+"-title");
       $( "#"+newid+" > .route-content" ).attr("id", newid+"-content");
+      $( "#"+newid+" > .route-content" ).text("test");
     });
     $( "#"+accID ).accordion("refresh");
   } else {
