@@ -153,7 +153,6 @@ function initPage () {
       var $lst = $toadd.find(".loc-group").empty();
 
       markers.forEach( function (m) {
-        console.log(m.title);
         var opt = "<option>"+m.title+"</option>";
         $( opt ).prependTo( $lst );
       });
@@ -311,7 +310,6 @@ jQuery.sendQuery = function () {
 };
 
 function handleResult (data, baseID, accID) {
-  console.log(data);
   if (data["errCode"] == 1) {
     _data = data;
     var index = 0;
@@ -342,7 +340,15 @@ function genSendData () {
   var entry;
   var _dataToSend = {};
 
-  _dataToSend['locationList'] = [];
+  // group
+  _dataToSend['groups'] = [];
+  $(".multi-field-wrapper .loc-group").each(function(i,e) {
+    var selected = $( e ).val();
+    if (selected.length !== 0) {
+      _dataToSend['groups'].push( selected );
+    }
+  });
+  // mode
   switch($('#trans-mode :checked').attr("id")) {
     case "mode-d":
       _dataToSend['travelMethod'] = "driving";
@@ -357,9 +363,9 @@ function genSendData () {
       _dataToSend['travelMethod'] = "transit";
       break;
   }
-
+  _dataToSend['locationList'] = [];
+  // list
   for (var i = 1; i < $locs.length; i++) {
-
     var $loc = $($locs[i]);
     var entryid = $loc.attr('id');
     var id = Number(entryid.split("-").pop());
@@ -377,6 +383,7 @@ function genSendData () {
     entry['priority'] = Number($( "#"+entryid+" .priority" ).val());
     _dataToSend['locationList'].push(entry);
   }
+  // encapsulate
   _sendData["route"] = _dataToSend;
 }
 
