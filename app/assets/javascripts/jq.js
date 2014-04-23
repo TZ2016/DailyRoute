@@ -145,6 +145,26 @@ function initPage () {
     $.sendQuery();
   });
 
+  // group location
+  $('.multi-field-wrapper').each(function() {
+    var $wrapper = $('.multi-fields', this);
+    $(".add-field", $(this)).click(function(e) {
+      var $toadd = $('.multi-field:first-child', $wrapper).clone(true).removeAttr("style");
+      var $lst = $toadd.find(".loc-group").empty();
+
+      markers.forEach( function (m) {
+        console.log(m.title);
+        var opt = "<option>"+m.title+"</option>";
+        $( opt ).prependTo( $lst );
+      });
+      $toadd.appendTo($wrapper);
+    });
+    $('.multi-field .remove-field', $wrapper).click(function() {
+      if ($('.multi-field', $wrapper).length > 1)
+        $(this).parent('.multi-field').remove();
+    });
+  });
+
   /////////////////////////////////////////////////////////
 
   $( "#signup" ).click( function () {
@@ -202,7 +222,7 @@ jQuery.addLocation = function (location) {
   // add a constraint entry
 
   var address = getTagForAddress(location);
-  var markerid = addMarker(location);
+  var markerid = addMarker(location, address);
   var newlocid = "#loc-acc-" + markerid;
   var $newlocelem = $( "#loc-acc-tmp" ).clone().attr("id", newlocid.slice(1));
   

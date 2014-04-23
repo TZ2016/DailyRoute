@@ -1,0 +1,22 @@
+<form role="form" action="/wohoo" method="POST">
+  <label>Groups</label>
+  <p>
+    Only one location from each group will be used.<br>
+    Use Ctrl/Cmd to select multiple locations.<br>
+  </p>
+    <div class="multi-field-wrapper">
+      <div class="multi-fields">
+        <div class="multi-field" style="display:none">
+          <select multiple class="form-control loc-group">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+          <button type="button" class="remove-field">Remove</button>
+        </div>
+      </div>
+    <button type="button" class="add-field">Add Group</button>
+  </div>
+</form>
