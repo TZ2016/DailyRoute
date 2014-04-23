@@ -12,27 +12,28 @@ module RoutesHelper
   APP_KEY = "AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM"
 
   def solve(inp)
-    for _ in inp['locationList'].length
-      solution = solve_no_priority(inp)[:errCode]
+    parse_format(inp)
+    for _ in inp['locationList']
+      solution = solve_no_priority(inp)
       if solution[:errCode] == SUCCESS
         return solution
       end
       remove_min_priority(inp)
     end
+    return {errCode: ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE}
   end
 
   def remove_min_priority(inp)
-
+    p = inp['locationList'].map{|x| x['priority']}
+    inp['locationList'].delete_at(p.index(p.max))
   end
   
   # Use information in INP. Return a hash includes 
   # keys: errCode, (route), (durations), (mode). 
   # route, durations, mode exist if errCode == SUCCESS
   def solve_no_priority(inp)
-    pp '================In solve ===================='
-    init(inp) 
+    init(inp)
     if @err != SUCCESS
-      pp ' ========Error in classify=============== '
   		solution = {errCode: @err}
     elsif @fuzzy.empty? and @arranged.length == 2
       solution = shortest_path(@inp['locationList'])
@@ -41,25 +42,15 @@ module RoutesHelper
     else
       solution = general_search
     end
-    
-    pp '===================formatted solution======================'
-    pp '====before'
-    pp solution
     format(solution)
-    pp '=====after'
-    pp solution
     return solution
   end
 
-  #Change the time representation in the sol from Time to DateTime.
-  
-  def init(inp)
-    @inp = inp
-    @start, @dest, @mode, @arranged, @unarranged, @fuzzy, @intervals = nil
-    @year = DateTime.now.year
-    @month = DateTime.now.month
-    @day = DateTime.now.day
-    for loc in @inp['locationList']
+  def parse_format(inp)
+    @year = Time.now.year
+    @month = Time.now.month
+    @day = Time.now.day
+    for loc in inp['locationList']
       loc['arrivebefore'] = read_time(loc['arrivebefore'])
       loc['arriveafter'] = read_time(loc['arriveafter'])
       loc['departbefore'] = read_time(loc['departbefore'])
@@ -68,6 +59,13 @@ module RoutesHelper
       loc['maxduration'] = read_duration(loc['maxduration'])
       loc['priority'] = loc['priority'].to_i
     end
+  end
+
+  #Change the time representation in the sol from Time to DateTime.
+  def init(inp)
+    @inp = inp
+    @err = nil
+    @start, @dest, @mode, @arranged, @unarranged, @fuzzy, @intervals = nil
     @start = @inp['locationList'].first
     @mode = @inp['travelMethod']
     @dest = @inp['locationList'].last
