@@ -6,11 +6,10 @@
   <h4 class="col-xs-12 col-sm-12 col-md-12 col-lg-12">Your Saved Routes</h4>
 
   <div id="savedroutes-ins" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <h3>Instructions</h3>
+    <h3>Control Panel</h3>
 
     <div>
-      <p>Click to view.</p>
-      <%= link_to "Delete All Routes", remove_all_routes_user_path(current_user), type: 'button', class: 'btn btn-warning' %>
+      <%= link_to "Delete All Routes", remove_all_routes_user_path(current_user), data: { confirm: 'Are you sure?' }, type: 'button', class: 'btn btn-warning' %>
     </div>
   </div>
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

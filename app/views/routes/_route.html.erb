@@ -4,6 +4,7 @@
 
   <div class="route-content">
     <p>
+      <%= 'Created at: ' + route.created_at.to_s(:db) %><br>
       <%= 'Name: ' + route.name %><br>
       <%= 'Mode: ' + route.mode %><br>
       <% route.steps.each_with_index do |s, i| %>
@@ -13,8 +14,8 @@
         <%= 'arrival: ' + s.arrival.to_s(:db) %><br>
       <% end %>
     </p>
-    <%= link_to 'Display', draw_route_path(route), remote: true, type: 'button', class: 'btn btn-info' %>
-    <%= link_to 'Delete', route, method: :delete, type: 'button', class: 'btn btn-warning' %>
+    <%= link_to 'Display', draw_route_path, remote: true, type: 'button', class: 'btn btn-info' %>
+    <%= link_to 'Delete', route, method: :delete, data: { confirm: 'Are you sure?' }, type: 'button', class: 'btn btn-warning' %>
   </div>
 
 </div>
