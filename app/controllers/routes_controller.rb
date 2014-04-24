@@ -1,6 +1,6 @@
 class RoutesController < ApplicationController
 
-  before_action :signed_in_user, only: [:create, :destroy]
+  before_action :signed_in_user, only: [:destroy]
   before_action :correct_route,  only: [:destroy]
 
 
@@ -9,20 +9,22 @@ class RoutesController < ApplicationController
     @routes = []
     @messages = []
   	result = solve(route_params)
-    if result[:errCode] == 1 and build_routes(result[:routes])
-      flash.now[:success] = "Route created!"
-      respond_to do |format|
-        format.html { render "show_list" } #FIXME
-        format.json { render :json => result }
-      end
-    elsif result[:errCode] == 1
-      flash.now[:error] = 'Route generated but encounter errors while saving'
-      respond_to do |format|
-        format.html { redirect_to root_url } #FIXME
-        format.json { render :json => result }
+    if result[:errCode] == 1
+      if build_routes(result[:routes])
+        flash.now[:success] = 'Route created!'
+        respond_to do |format|
+          format.html { render 'show_list' } #FIXME
+          format.json { render :json => result }
+        end
+      else
+        flash.now[:error] = 'Route generated but encounter errors while saving'
+        respond_to do |format|
+          format.html { redirect_to root_url } #FIXME
+          format.json { render :json => result }
+        end
       end
     else
-      flash.now[:error] = "route is not generated, reason to be specified"
+      flash.now[:error] = 'route is not generated, reason to be specified'
       respond_to do |format|
         format.html { redirect_to root_url } #FIXME
         format.json { render :json => result }
@@ -48,7 +50,7 @@ class RoutesController < ApplicationController
 
   # to remove a route
   def destroy
-    flash[:success] = "Route:" + @route.name + "(id=" + @route.id.to_s + ") is deleted."
+    flash[:success] = 'Route:' + @route.name + '(id=' + @route.id.to_s + ') is deleted.'
     @route.destroy
     redirect_to current_user
   end
@@ -64,26 +66,25 @@ class RoutesController < ApplicationController
       redirect_to root_url if @route.nil?
     end
 
-    def build_routes(routes_list) #FIXME
-      begin
-      	routes_list.each_with_index do |r, i_r|
-      		route = current_user.routes.build(name: r[:name], mode: r[:mode])
-      		route.save!
-      		@routes << route
-
-          begin
-        		r[:steps].each_with_index do |s, i_s|
-        			step = route.steps.build(name: s[:name], geocode: s[:geocode],
-        					     arrival: s[:arrival], departure: s[:departure])
-        			step.save!
-            end
-          rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => invalid
-            puts invalid.record.errors
-          end
-      	end
-      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => invalid
-        puts invalid.record.errors
+    def build_routes(routes_list)
+      user_id = signed_in? ? current_user.id : 0
+      routes_list.each do |r|
+        route_params = { name: r[:name],
+                         mode: r[:mode],
+                         user_id: user_id,
+                         steps_attributes: [] }
+        r[:steps].each do |s|
+          route_params[:steps_attributes] << { name: s[:name],
+                                               geocode: s[:geocode],
+                                               arrival: s[:arrival],
+                                               departure: s[:departure]}
+        end
+        @routes << Route.new(route_params)  # nested attributes
       end
+      @routes.each do |r|
+        return false unless r.save
+      end
+      true
     end
 
 end
