@@ -2,21 +2,7 @@
 var _url_calcroute = "newroute";
 var _url_signup = "signup_post";
 var _sendGeo = [];
-var _result = {};
 var _sendData = {};
-// var _sendData["route"] = {'travelMethod': undefined,
-//                  'locationList':
-//                    [{ 'searchtext': undefined,
-//                       'geocode': ('lat', 'lng'),
-//                       'minduration': undefined,
-//                       'maxduration': undefined,
-//                       'arrivebefore': undefined,
-//                       'arriveafter': undefined,
-//                       'departbefore': undefined,
-//                       'departafter': undefined,
-//                       'priority': undefined
-//                     }]
-//              };
 
 // global temporary variables
 var _locToRefine = [];

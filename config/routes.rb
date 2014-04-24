@@ -5,7 +5,11 @@ DailyRouteTest::Application.routes.draw do
       get 'remove_all_routes'
     end
   end
-  resources :routes
+  resources :routes do
+    member do
+      get 'draw'
+    end
+  end
   resources :sessions, only: [:new, :create, :destroy]
 
   root 'static_page#root'

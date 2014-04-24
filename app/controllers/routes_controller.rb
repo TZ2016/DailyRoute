@@ -40,6 +40,14 @@ class RoutesController < ApplicationController
   def show_list #FIXME
   end
 
+  # return javascript to expand the accordion
+  def draw
+    @route = Route.find(params[:id])
+    respond_to do |format|
+      format.js
+    end
+  end
+
   # render the view to edit a route
   def edit
   end
@@ -82,7 +90,7 @@ class RoutesController < ApplicationController
         @routes << Route.new(route_params)  # nested attributes
       end
       @routes.each do |r|
-        return false unless r.save
+        return false unless r.valid?
       end
       true
     end

@@ -1,0 +1,37 @@
+alert("<%= j @route.name %>"); //FIXME
+alert(parGeoLat("3.23, 234.3"));
+
+// the accordion holding the route has id="route-"+@route.id.to_s
+
+//directionsDisplay.setPanel(document.getElementById(panelid));
+//
+//var data = _data['routes'][num-1];
+//var size = data["steps"].length;
+//var start = new google.maps.LatLng(
+//        parGeoLat(data["steps"][0]["geocode"]), parGeoLng(data["steps"][0]["geocode"]));
+//var end = new google.maps.LatLng(
+//        parGeoLat(data["steps"][size-1]["geocode"]), parGeoLng(data["steps"][size-1]["geocode"]));
+//var selectedMode = data['mode'].toUpperCase();
+//var waypts = [];
+//var loc;
+//for (var i = 1; i < size-1; i++) {
+//    loc = new google.maps.LatLng(
+//            parGeoLat(data["steps"][i]["geocode"]), parGeoLng(data["steps"][i]["geocode"]));
+//    waypts.push({
+//        location: loc,
+//        stopover: true
+//    });
+//}
+//var request = {
+//    origin:start,
+//    destination:end,
+//    travelMode: google.maps.TravelMode[selectedMode],
+//    optimizeWaypoints: false,
+//    waypoints: waypts
+//};
+//
+//directionsService.route(request, function(response, status) {
+//    if (status == google.maps.DirectionsStatus.OK) {
+//        directionsDisplay.setDirections(response);
+//    }
+//});
