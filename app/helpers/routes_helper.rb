@@ -61,7 +61,7 @@ module RoutesHelper
     init(inp)
     if @err != SUCCESS
   		solution = {errCode: @err}
-    elsif @fuzzy.empty? and @arranged.length == 2
+    elsif @fuzzy.empty? and @arranged.length <= 2
       solution = shortest_path(@inp['locationList'])
     elsif @fuzzy.empty?
       solution = fit_schedule
@@ -109,18 +109,19 @@ module RoutesHelper
     end
     legs = result['routes'][0]["legs"]
     order = result['routes'][0]['waypoint_order']
+    order.map!{|x| x+1}
     order << locs.length-1
     route1 = {steps:[], mode:@mode, name:'route'}
     first_step = {}
     first_step[:geocode] = geocode_to_s(legs[0]["start_location"])
-    first_step[:name] = locs[0]['searchText']
+    first_step[:name] = locs[0]['searchtext']
     first_step[:departure] = locs[0]['departafter']
     first_step[:arrival] = locs[0]['departafter']
     route1[:steps]<< first_step
     legs.each_with_index do |leg, i|
       step = {}
       step[:geocode] = geocode_to_s(leg["end_location"])
-      step[:name] = locs[i]['searchText']
+      step[:name] = locs[order[i]]['searchtext']
       step[:arrival] = route1[:steps].last[:departure] + leg["duration"]["value"]
       step[:departure] = step[:arrival]
       route1[:steps] << step
