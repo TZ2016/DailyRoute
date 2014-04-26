@@ -109,7 +109,7 @@ module RoutesHelper
     end
     legs = result['routes'][0]["legs"]
     order = result['routes'][0]['waypoint_order']
-    order << locs.length
+    order << locs.length-1
     route1 = {steps:[], mode:@mode, name:'route'}
     first_step = {}
     first_step[:geocode] = geocode_to_s(legs[0]["start_location"])
