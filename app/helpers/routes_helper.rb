@@ -3,6 +3,7 @@ module RoutesHelper
   require 'json'
   require 'net/http'
   require 'pp'
+  require 'group'
   SUCCESS = 1
   ERR_REQUEST_FAIL = -1
   ERR_INVALID_INPUT_TIME = -2
@@ -13,6 +14,36 @@ module RoutesHelper
 
   def solve(inp)
     parse_format(inp)
+    if inp['groups']
+      return solve_group(inp)
+    else
+      return solve_priority(inp)
+    end
+  end
+
+  def solve_group(inp)
+    all_routes = []
+    g = Group.new(inp['groups'], inp['locationList'])
+    g.get_groups.each do |comb|
+      result = solve_no_priority({'locationList'=>comb, 'travelMethod'=>inp['travelMethod']})
+      if result[:errCode] == SUCCESS
+        all_routes += result[:routes]
+      end
+    end
+    if all_routes.empty?
+      return {errCode: ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE}
+    end
+
+    all_routes.sort_by!{|r| r[:traveltime] + r[:priority] * 1e10}
+
+    return {errCode: SUCCESS, routes: all_routes}
+
+  end
+
+
+
+    
+  def solve_priority(inp)
     for _ in inp['locationList']
       solution = solve_no_priority(inp)
       if solution[:errCode] == SUCCESS
@@ -131,6 +162,8 @@ module RoutesHelper
       return {errCode: SUCCESS, routes: routes}
     end
   end
+
+
 
 
 
@@ -367,6 +400,8 @@ module RoutesHelper
           step[:arrival] = step[:arrival].to_datetime
         end
       end
+      route[:priority] = @inp['locationList'].map{|x| x['priority']}.reduce(:+)
+
     end
   end
 
@@ -385,6 +420,9 @@ module RoutesHelper
     address = URI.encode(address + query + key + sensor + location + radius)
     require 'net/http'
     return Net::HTTP.get(URI.parse(address))
+  end
+
+  def sort_route(routes)
   end
 
 end
