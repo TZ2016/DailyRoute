@@ -2,7 +2,6 @@ module RoutesHelper
   require 'rubygems'
   require 'json'
   require 'net/http'
-  require 'pp'
   require 'group'
   SUCCESS = 1
   ERR_REQUEST_FAIL = -1
@@ -104,24 +103,24 @@ module RoutesHelper
   # Return a hash describe the shortest route from p1 to p2
   # go through all locs in passby.
   def shortest_path(locs)
-    pp '=========in shortest path========='
-
     result = JSON.parse(request_route(locs))
     if result.has_key? 'Error' or result['status'] != 'OK'
       return {errCode: ERR_REQUEST_FAIL}
     end
     legs = result['routes'][0]["legs"]
+    order = result['routes'][0]['waypoint_order']
+    order << locs.length
     route1 = {steps:[], mode:@mode, name:'route'}
     first_step = {}
-    pp '=============legs==================='
-    pp legs
     first_step[:geocode] = geocode_to_s(legs[0]["start_location"])
+    first_step[:name] = locs[0]['searchText']
     first_step[:departure] = locs[0]['departafter']
     first_step[:arrival] = locs[0]['departafter']
     route1[:steps]<< first_step
-    for leg in legs
+    legs.each_with_index do |leg, i|
       step = {}
       step[:geocode] = geocode_to_s(leg["end_location"])
+      step[:name] = locs[i]['searchText']
       step[:arrival] = route1[:steps].last[:departure] + leg["duration"]["value"]
       step[:departure] = step[:arrival]
       route1[:steps] << step
@@ -136,7 +135,6 @@ module RoutesHelper
 
 
   def fit_schedule
-    # puts '================= inside fitschd ====================='
     get_intervals_and_check_validity  #set @interval, @err
     if @err != SUCCESS
       return {errCode: @err}
@@ -195,13 +193,9 @@ module RoutesHelper
   # and ERRCODE. If ERRCODE == SUCCESS, @INTERVALS is valid in that it pass 
   # check_time_validity. 
   def get_intervals_and_check_validity
-    puts '===============inside get_intervals_and_check_validity======================'
     @intervals = []
-    pp @arranged
     for i in (0..@arranged.length - 2)
       if @arranged[i]['departafter'] > @arranged[i+1]['arrivebefore']
-        pp @arranged[i]['departafter']
-        pp @arranged[i+1]['arrivebefore']
         @err = ERR_INVALID_INPUT_TIME
         return
       else
@@ -214,15 +208,8 @@ module RoutesHelper
   # @INTERVALS is a list of time in second. @ARRANGED is list of locations. Return 
   # SUCCESS iff interval i is long enough to travel from loc i to loc i+1.
   def check_time_validity
-    pp '============check_time_validity====================='
     for i in (0..@arranged.length - 2)
-      pp @arranged[i]
-      pp @arranged[i+1]
       if get_time([@arranged[i],@arranged[i+1]]) > @intervals[i]
-        pp '==============interval length==========='
-        pp @intervals
-        pp '=========cost time============='
-        pp get_time([@arranged[i],@arranged[i+1]])
         return ERR_NOT_ENOUGH_TIME_FOR_TRAVEL
       end
     end
@@ -230,10 +217,7 @@ module RoutesHelper
   end
 
   def get_time(locs)
-    pp '============= inside get time =========================='
     result = shortest_path(locs)
-    pp '    =============result==========='
-    pp result
     return wrap_time(result)
   end
 
@@ -256,7 +240,6 @@ module RoutesHelper
   end
 
   def request_route(locs)
-    pp '=============inside request route========='
 
     addr = 'http://maps.googleapis.com/maps/api/directions/json?'
     origin = 'origin=%s&' % geocode_to_s(locs.first['geocode'])
@@ -271,14 +254,12 @@ module RoutesHelper
     sensor = "&sensor=false"
     mode = '&mode=%s' % @mode
     addr = URI.encode(addr+origin+dest+waypoints+sensor+mode)
-    pp addr
     require 'net/http'
     return Net::HTTP.get(URI.parse(addr))
   end
 
   ## requires @start['departafter'] and end.@startbefore
   def classify_loc
-    pp '===============Classify loc==================='
     @arranged,@unarranged, @fuzzy = [],[], []
     add_time(@inp['locationList'])
     for point in @inp['locationList']
@@ -293,12 +274,6 @@ module RoutesHelper
       end
     end
     @arranged.sort_by!{|x| x["arrivebefore"]}
-    pp '=====first===='
-    pp @arranged.first
-    pp @start
-    pp '=====last===='
-    pp @arranged.last
-    pp @dest
 
     if @arranged.first != @start or @arranged.last != @dest
       @err = ERR_IN_SPECIFY_START_TIME_AND_ARRIVE_TIME
@@ -321,8 +296,6 @@ module RoutesHelper
 
 
   def preprocess(point)
-    puts '==================preprocess==========================='
-    pp point
     if (point['arrivebefore'] and point['departafter']) or \
      ((not point['arrivebefore']) and (not point['departafter']))
       return
@@ -341,21 +314,14 @@ module RoutesHelper
     else
       indicator = i.to_s(num)
     end
-    pp [i, num, indicator]
     indicator = '0' * (num - indicator.length) + indicator
     result = []
     for _ in (1..num)
       result << []
     end
-    pp '============PARTITION================'
-    pp @unarranged.length
-    pp indicator
-    pp result
     for j in (0..@unarranged.length - 1)
-        puts '========= Indicator ==================='
         result[indicator[j].to_i] << @unarranged[j]
     end
-    pp result
     return result
   end
 
