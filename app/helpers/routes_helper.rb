@@ -13,6 +13,36 @@ module RoutesHelper
 
   def solve(inp)
     parse_format(inp)
+    if inp['groups']
+      return solve_group(inp)
+    else
+      return solve_priority(inp)
+    end
+  end
+
+  def solve_group(inp)
+    all_routes = []
+    g = new Group(inp['groups'], inp['locationList'])
+    g.group_iter.each do |comb|
+      retult = solve_no_priority(comb)
+      if result[:errCode] == SUCCESS
+        all_routes += solve_no_priority(comb)[:routes]
+      end
+    end
+    if a_routes.empty?
+      return {errCode: ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE}
+    end
+
+    all_routes.sort_by!{|r| r[:traveltime] + r[:priority] * 1e10}
+
+    return {errCode: SUCCESS, routes: all_routes}
+
+  end
+
+
+
+    
+  def solve_priority(inp)
     for _ in inp['locationList']
       solution = solve_no_priority(inp)
       if solution[:errCode] == SUCCESS
@@ -131,6 +161,8 @@ module RoutesHelper
       return {errCode: SUCCESS, routes: routes}
     end
   end
+
+
 
 
 
@@ -367,6 +399,8 @@ module RoutesHelper
           step[:arrival] = step[:arrival].to_datetime
         end
       end
+      route[:priority] = @inp['locationList'].map{|x| x['priority']}.reduce(:+)
+
     end
   end
 
@@ -385,6 +419,9 @@ module RoutesHelper
     address = URI.encode(address + query + key + sensor + location + radius)
     require 'net/http'
     return Net::HTTP.get(URI.parse(address))
+  end
+
+  def sort_route(routes)
   end
 
 end
