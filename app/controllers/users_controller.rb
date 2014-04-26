@@ -19,7 +19,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     # @user = user_params[:email].empty? ? User.new_guest : User.new(user_params)
 
-      if @user.save
+    if @user.save
       current_user.move_to(@user) if current_user and current_user.guest?
       sign_in @user
       flash[:success] = "Welcome to Daily Route, " + @user.email + '!'

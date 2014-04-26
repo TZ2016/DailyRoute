@@ -25,17 +25,17 @@ class User < ActiveRecord::Base
   def User.new_guest
     new { |u| u.guest = true }
   end
-  
+
   def name
     guest ? "Guest" : email
   end
-  
+
   def move_to(user)
     routes.update_all(user_id: user.id)
   end
 
   private
-    def create_remember_token
-      self.remember_token = User.hash(User.new_remember_token)
-    end
+  def create_remember_token
+    self.remember_token = User.hash(User.new_remember_token)
+  end
 end

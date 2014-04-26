@@ -9,7 +9,7 @@ class RoutesController < ApplicationController
     @routes   = []
     @messages = []
     result    = solve(route_params)
-    @result = result
+    @result   = result
     if result[:errCode] == 1
       if build_routes(result[:routes])
         flash.now[:success] = 'Route created!'
