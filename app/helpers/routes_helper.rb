@@ -14,11 +14,7 @@ module RoutesHelper
 
   def solve(inp)
     parse_format(inp)
-    if inp['groups']
-      return solve_group(inp)
-    else
-      return solve_priority(inp)
-    end
+    inp['groups'] ? solve_group(inp) : solve_priority(inp)
   end
 
   def solve_group(inp)
@@ -42,7 +38,7 @@ module RoutesHelper
 
 
 
-    
+
   def solve_priority(inp)
     for _ in inp['locationList']
       solution = solve_no_priority(inp)
@@ -58,7 +54,7 @@ module RoutesHelper
     p = inp['locationList'].map{|x| x['priority']}
     inp['locationList'].delete_at(p.index(p.max))
   end
-  
+
   # Use information in INP. Return a hash includes 
   # keys: errCode, (route), (durations), (mode). 
   # route, durations, mode exist if errCode == SUCCESS
@@ -109,7 +105,7 @@ module RoutesHelper
   # go through all locs in passby.
   def shortest_path(locs)
     pp '=========in shortest path========='
-    
+
     result = JSON.parse(request_route(locs))
     if result.has_key? 'Error' or result['status'] != 'OK'
       return {errCode: ERR_REQUEST_FAIL}
@@ -138,7 +134,7 @@ module RoutesHelper
   end
 
 
-  
+
   def fit_schedule
     # puts '================= inside fitschd ====================='
     get_intervals_and_check_validity  #set @interval, @err
@@ -193,9 +189,9 @@ module RoutesHelper
   end
 
 
-  
 
-  # Get @intervals for each two consectutive locs in ARRANDED. Return ALL @intervals 
+
+  # Get @intervals for each two consectutive locs in ARRANDED. Return ALL @intervals
   # and ERRCODE. If ERRCODE == SUCCESS, @INTERVALS is valid in that it pass 
   # check_time_validity. 
   def get_intervals_and_check_validity
@@ -211,7 +207,7 @@ module RoutesHelper
       else
         @intervals << @arranged[i+1]['arrivebefore'] - @arranged[i]['departafter']
       end
-    end 
+    end
     @err = check_time_validity
   end
 
@@ -242,7 +238,7 @@ module RoutesHelper
   end
 
   def wrap_time(result)
-    if result[:errCode] == SUCCESS 
+    if result[:errCode] == SUCCESS
         return result[:routes][0][:traveltime]
     else
         return Float::INFINITY
@@ -263,7 +259,7 @@ module RoutesHelper
     pp '=============inside request route========='
 
     addr = 'http://maps.googleapis.com/maps/api/directions/json?'
-    origin = 'origin=%s&' % geocode_to_s(locs.first['geocode']) 
+    origin = 'origin=%s&' % geocode_to_s(locs.first['geocode'])
     dest = 'destination=%s' % geocode_to_s(locs.last['geocode'])
     waypoints = ''
     if locs.length >= 3
@@ -271,7 +267,7 @@ module RoutesHelper
       for i in (1..locs.length - 2)
         waypoints += '|' + geocode_to_s(locs[i]['geocode'])
       end
-    end   
+    end
     sensor = "&sensor=false"
     mode = '&mode=%s' % @mode
     addr = URI.encode(addr+origin+dest+waypoints+sensor+mode)
@@ -298,12 +294,12 @@ module RoutesHelper
     end
     @arranged.sort_by!{|x| x["arrivebefore"]}
     pp '=====first===='
-    pp @arranged.first 
-    pp @start 
+    pp @arranged.first
+    pp @start
     pp '=====last===='
     pp @arranged.last
     pp @dest
-    
+
     if @arranged.first != @start or @arranged.last != @dest
       @err = ERR_IN_SPECIFY_START_TIME_AND_ARRIVE_TIME
     else
@@ -342,7 +338,7 @@ module RoutesHelper
   def partition(i, num)
     if num <= 1
       indicator = ''
-    else 
+    else
       indicator = i.to_s(num)
     end
     pp [i, num, indicator]
@@ -362,7 +358,7 @@ module RoutesHelper
     pp result
     return result
   end
-  
+
   def read_time(text)
     if text == '' or text == nil
       return nil
@@ -390,8 +386,8 @@ module RoutesHelper
 
   def geocode_to_s(geocode)
     return geocode['lat'].to_s + ',' + geocode['lng'].to_s
-  end 
-  
+  end
+
   def format(sol)
     if sol[:errCode] == SUCCESS
       for route in sol[:routes]
@@ -408,7 +404,7 @@ module RoutesHelper
   def general_search
   end
 
-   # 
+   #
   def search_nearby(query, type, radius, center)
     address = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
     query = 'query=' + query

@@ -13,7 +13,7 @@ $(function () {
 $(window).bind('page:change', function () {
   initPage();
 });
-function initPage () {
+function initPage() {
 
   // auto complete
   var availableTags = [
@@ -21,60 +21,58 @@ function initPage () {
     "New York",
     "Berkeley"
   ];
-  $( "#newloc" ).autocomplete({
+  $("#newloc").autocomplete({
     source: availableTags
   });
 
   // add loc
-  $('#newloc').bind('keypress', function(e) {
-    if(e.keyCode==13){
+  $('#newloc').bind('keypress', function (e) {
+    if (e.keyCode == 13) {
       $.handleAddLocation();
     }
   });
 
-  $( '#addloc-btn' ).click( $.handleAddLocation );
+  $('#addloc-btn').click($.handleAddLocation);
 
   // dropdown
-  $( "#addloc-dp-clear" ).click( function() {
-    $( "#newloc" ).val("");
+  $("#addloc-dp-clear").click(function () {
+    $("#newloc").val("");
   });
 
   // mode
-  $( "#trans-mode" ).buttonset();
+  $("#trans-mode").buttonset();
 
   // remove loc
-  $( '#loc-acc' ).on("click", ".remove-btn", function () {
-    $.removeLocation(this);
-  });
-
-  // accordion main
-  $( "#loc-acc" )
-    .accordion({
-      header: "> div > h3",
-      collapsible: true
-    })
-    .sortable({
-      axis: "y",
-      handle: "h3",
-      stop: function( event, ui ) {
-        // IE doesn't register the blur when sorting
-        // so trigger focusout handlers to remove .ui-state-focus
-        ui.item.children( "h3" ).triggerHandler( "focusout" );
-      }
-  });
+  $('#loc-acc')
+      .on("click", ".remove-btn", function () {
+        $.removeLocation(this);
+      })
+      .accordion({
+        header: "> div > h3",
+        collapsible: true
+      })
+      .sortable({
+        axis: "y",
+        handle: "h3",
+        stop: function (event, ui) {
+          // IE doesn't register the blur when sorting
+          // so trigger focusout handlers to remove .ui-state-focus
+          ui.item.children("h3").triggerHandler("focusout");
+        }
+      });
 
   // accordion instruction
-  $( "#loc-acc-ins" ).accordion({
+  $("#loc-acc-ins").accordion({
     header: "> div > h3",
     heightStyle: 'content',
     collapsible: true
   });
 
   // direction panel
-  $( "#dir-ins" ).accordion({
+  $("#dir-ins").accordion({
     heightStyle: "content"
   });
-  $( "#dir-acc" ).accordion({
+  $("#dir-acc").accordion({
     header: "> div > h3",
     collapsible: true,
     active: false,
@@ -83,10 +81,10 @@ function initPage () {
   });
 
   // saved routes panel
-  $( "#savedroutes-ins" ).accordion({
+  $("#savedroutes-ins").accordion({
     heightStyle: "content"
   });
-  $( "#savedroutes-acc" ).accordion({
+  $("#savedroutes-acc").accordion({
     header: "> div > h3",
     collapsible: true,
     active: false,
@@ -94,27 +92,27 @@ function initPage () {
   });
 
   // refine location dialog
-  $( "#refineloc-lst" ).selectable();
+  $("#refineloc-lst").selectable();
 
-  $( "#refineloc-none" ).click( function () {
+  $("#refineloc-none").click(function () {
     $.alertMessage("Oops! Please try with a different input.");
-    $( "#refineloc-dlg" ).modal("hide");
+    $("#refineloc-dlg").modal("hide");
   });
 
-  $( "#refineloc-select" ).click( function () {
-    var $selected = $( "#refineloc-lst > .ui-selected" );
+  $("#refineloc-select").click(function () {
+    var $selected = $("#refineloc-lst > .ui-selected");
     if ($selected.length === 0) {
       $.alertMessage("No location is yet selected!");
     } else {
-      var index = $( "#refineloc-lst li" ).index($selected[0]);
+      var index = $("#refineloc-lst li").index($selected[0]);
       $.addLocation(_locToRefine[index]);
-      $( "#refineloc-dlg" ).modal("hide");
+      $("#refineloc-dlg").modal("hide");
     }
   });
 
   // time picker
-  $( "#loc-acc" ).on("mousemove", ".time-start-A, .time-start-B, .time-end-A, .time-end-B", function() {
-    $( this ).timepicker({
+  $("#loc-acc").on("mousemove", ".time-start-A, .time-start-B, .time-end-A, .time-end-B", function () {
+    $(this).timepicker({
       'step': 30,
       'forceRoundTime': true,
       'scrollDefaultNow': true
@@ -122,9 +120,9 @@ function initPage () {
   });
 
   // view result button and utilities
-  $( "#calc-btn" ).click( function () {
+  $("#calc-btn").click(function () {
     // $( "#dir-acc" ).attr("style", "display: none;");
-    $( "#dir-acc" ).accordion( "option", "active", false );
+    $("#dir-acc").accordion("option", "active", false);
 
     genSendData();
     $.sendQuery();
@@ -132,11 +130,11 @@ function initPage () {
 
   // rails ajax button
   $('#calc-btn2')
-      .bind("ajax:before", function(evt, xhr, settings){
-        $( "#dir-acc" ).accordion( "option", "active", false );
-        $( "#dir-row" ).removeAttr("style");
-        $( "#dir-ins > h3" ).text("Calculating...");
-        $( "#dir-ins > div" ).text("Your query data was sent.");
+      .bind("ajax:before", function (evt, xhr, settings) {
+        $("#dir-acc").accordion("option", "active", false);
+        $("#dir-row").removeAttr("style");
+        $("#dir-ins > h3").text("Calculating...");
+        $("#dir-ins > div").text("Your query data was sent.");
         genSendData();
         $(this).data('params', JSON.stringify(_sendData));
         console.log(_sendData);
@@ -145,26 +143,26 @@ function initPage () {
         xhr.setRequestHeader('content-type', 'application/json');
       })
       .bind("ajax:error", function (jqXHR, status, error) {
-        $( "#dir-row" ).attr("style", "display: none;");
+        $("#dir-row").attr("style", "display: none;");
         $.alertMessage("Your query failed.");
         console.log(status);
         console.log(error);
       });
 
   // group location
-  $('.multi-field-wrapper').each(function() {
+  $('.multi-field-wrapper').each(function () {
     var $wrapper = $('.multi-fields', this);
-    $(".add-field", $(this)).click(function(e) {
+    $(".add-field", $(this)).click(function (e) {
       var $toadd = $('.multi-field:first-child', $wrapper).clone(true).removeAttr("style");
       var $lst = $toadd.find(".loc-group").empty();
 
-      markers.forEach( function (m) {
-        var opt = "<option>"+m.title+"</option>";
-        $( opt ).prependTo( $lst );
+      markers.forEach(function (m) {
+        var opt = "<option>" + m.title + "</option>";
+        $(opt).prependTo($lst);
       });
       $toadd.appendTo($wrapper);
     });
-    $('.multi-field .remove-field', $wrapper).click(function() {
+    $('.multi-field .remove-field', $wrapper).click(function () {
       if ($('.multi-field', $wrapper).length > 1)
         $(this).parent('.multi-field').remove();
     });
@@ -172,27 +170,26 @@ function initPage () {
 
   /////////////////////////////////////////////////////////
 
-  $( "#signup" ).click( function () {
-    $( "#signup-dlg" ).modal({
+  $("#signup").click(function () {
+    $("#signup-dlg").modal({
       show: true,
       keyboard: false,
       backdrop: "static"
     });
   });
 
-  $( "#signup-cancel" ).click( function () {
-    $( "#signup-dlg" ).modal("hide");
+  $("#signup-cancel").click(function () {
+    $("#signup-dlg").modal("hide");
   });
 
-  $( "#signup-btn" ).click( function () {
-    credentials = {'user':
-                {'email':    $( "#signup-email" ).val().toString(),
-                 'password': $( "#signup-pw" ).val().toString(),
-                 'password_confirmation': $( "#signup-pwcf" ).val().toString()
-                }};
+  $("#signup-btn").click(function () {
+    credentials = {'user': {'email': $("#signup-email").val().toString(),
+      'password': $("#signup-pw").val().toString(),
+      'password_confirmation': $("#signup-pwcf").val().toString()
+    }};
     $.ajax({
       type: 'POST',
-      url:  _url_signup,
+      url: _url_signup,
       data: JSON.stringify(credentials),
       contentType: "application/json",
       dataType: "json",
@@ -205,7 +202,7 @@ function initPage () {
         } else {
           var i = 1;
           var msg = "Your credentials were rejected due to: \n";
-          data['reasons'].forEach( function (r) {
+          data['reasons'].forEach(function (r) {
             msg += i + ". " + r.toString() + "\n";
             i += 1;
           });
@@ -229,21 +226,21 @@ jQuery.addLocation = function (location) {
   var address = getTagForAddress(location);
   var markerid = addMarker(location, address);
   var newlocid = "#loc-acc-" + markerid;
-  var $newlocelem = $( "#loc-acc-tmp" ).clone().attr("id", newlocid.slice(1));
-  
+  var $newlocelem = $("#loc-acc-tmp").clone().attr("id", newlocid.slice(1));
+
   _sendGeo[markerid] = location;
 
-  $( "#newloc" ).val("");
-  $( "#loc-acc" ).append($newlocelem);
-  $( newlocid + " > h3" ).text(address);
-  $( newlocid ).removeAttr("style");
-  $( "#loc-acc" ).accordion("refresh");
-  $( "#loc-acc" ).accordion({ active: markerid+1 });
+  $("#newloc").val("");
+  $("#loc-acc").append($newlocelem);
+  $(newlocid + " > h3").text(address);
+  $(newlocid).removeAttr("style");
+  $("#loc-acc").accordion("refresh");
+  $("#loc-acc").accordion({ active: markerid + 1 });
 };
 
 jQuery.handleAddLocation = function () {
-  var address = $( "#newloc" ).val().toString();
-  $( "#loc-acc-ins" ).attr("style", "display: none;");
+  var address = $("#newloc").val().toString();
+  $("#loc-acc-ins").attr("style", "display: none;");
   codeAddress(address, $.refineLocations);
 };
 
@@ -257,17 +254,17 @@ jQuery.refineLocations = function (locations) {
   } else {
     // refineloc-lst refineloc-lst-tmp refineloc-dlg
     _locToRefine = [];
-    $( "#refineloc-lst" ).empty();
-    
+    $("#refineloc-lst").empty();
+
     locations.forEach(function (location) {
       var name = getNameOfAddress(location);
-      var $temp = $( "#refineloc-lst-tmp" ).clone().removeAttr("id");
+      var $temp = $("#refineloc-lst-tmp").clone().removeAttr("id");
 
       _locToRefine.push(location);
-      $( "#refineloc-lst" ).append( $temp.clone().text(name));
+      $("#refineloc-lst").append($temp.clone().text(name));
     });
 
-    $( "#refineloc-dlg" ).modal({
+    $("#refineloc-dlg").modal({
       show: true,
       keyboard: false,
       backdrop: "static"
@@ -277,16 +274,16 @@ jQuery.refineLocations = function (locations) {
 };
 
 jQuery.removeLocation = function (rmvobj) {
-    var $accentry = $( rmvobj ).parent().parent().parent().parent().parent().parent(); //ERRORPRONE
-    var markerid = Number($accentry.attr("id").split("-").pop());
+  var $accentry = $(rmvobj).parent().parent().parent().parent().parent().parent(); //ERRORPRONE
+  var markerid = Number($accentry.attr("id").split("-").pop());
 
-    $accentry.remove();
-    deleteMarker(markerid);
-    delete _sendGeo[markerid];
+  $accentry.remove();
+  deleteMarker(markerid);
+  delete _sendGeo[markerid];
 
-    if ($("#loc-acc > div").length == 1) {
-      $( "#loc-acc-ins" ).removeAttr("style");
-    }
+  if ($("#loc-acc > div").length == 1) {
+    $("#loc-acc-ins").removeAttr("style");
+  }
 };
 
 // view result
@@ -294,69 +291,69 @@ jQuery.removeLocation = function (rmvobj) {
 jQuery.sendQuery = function () {
   $.ajax({
     type: 'POST',
-    url:  _url_calcroute,
+    url: _url_calcroute,
     data: JSON.stringify(_sendData),
     contentType: "application/json",
     dataType: "json",
     beforeSend: function (jqXHR, settings) {
-      $( "#dir-row" ).removeAttr("style");
-      $( "#dir-ins > h3" ).text("Calculating...");
-      $( "#dir-ins > div" ).text("Your query data was sent.");
+      $("#dir-row").removeAttr("style");
+      $("#dir-ins > h3").text("Calculating...");
+      $("#dir-ins > div").text("Your query data was sent.");
     },
     success: function (data, status, jqXHR) {
-      $( "#dir-ins > h3" ).text("Instruction");
-      $( "#dir-ins > div" ).text("Your routes are ready.");
+      $("#dir-ins > h3").text("Instruction");
+      $("#dir-ins > div").text("Your routes are ready.");
       handleResult(data, "route", "dir-acc");
     },
     error: function (jqXHR, status, error) {
-      $( "#dir-row" ).attr("style", "display: none;");
+      $("#dir-row").attr("style", "display: none;");
       $.alertMessage("Your query failed.");
     }
   });
 };
 
-function handleResult (data, baseID, accID) {
+function handleResult(data, baseID, accID) {
   if (data["errCode"] == 1) {
     _data = data;
     var index = 0;
-    var $temppanel = $( "#"+baseID+"-temp" ).clone().removeAttr("style");
-    
-    $( "#"+accID ).empty();
-    $( "#"+accID ).append( $temppanel.clone().attr("style", "display:none;") );
+    var $temppanel = $("#" + baseID + "-temp").clone().removeAttr("style");
 
-    _data['routes'].forEach( function (route) {
+    $("#" + accID).empty();
+    $("#" + accID).append($temppanel.clone().attr("style", "display:none;"));
+
+    _data['routes'].forEach(function (route) {
       index += 1;
       var newid = baseID + "-" + index;
       var $newpanel = $temppanel.clone().attr("id", newid);
 
-      $( "#"+accID ).append( $newpanel );
-      $( "#"+newid+" > .route-title" ).text("Route " + index).attr("id", newid+"-title");
-      $( "#"+newid+" > .route-content" ).attr("id", newid+"-content");
-      $( "#"+newid+" > .route-content" ).text("test");
+      $("#" + accID).append($newpanel);
+      $("#" + newid + " > .route-title").text("Route " + index).attr("id", newid + "-title");
+      $("#" + newid + " > .route-content").attr("id", newid + "-content");
+      $("#" + newid + " > .route-content").text("test");
     });
-    $( "#"+accID ).accordion("refresh");
+    $("#" + accID).accordion("refresh");
   } else {
     _data = [];
-    $.alertMessage("Google server denied your request!(code="+data['errCode']+")");
+    $.alertMessage("Google server denied your request!(code=" + data['errCode'] + ")");
   }
 }
 
-function genSendData () {
+function genSendData() {
   // _sendData
-  var $locs = $( "#loc-acc" ).children();
+  var $locs = $("#loc-acc").children();
   var entry;
   var _dataToSend = {};
 
   // group
   _dataToSend['groups'] = [];
-  $(".multi-field-wrapper .loc-group").each(function(i,e) {
-    var selected = $( e ).val();
+  $(".multi-field-wrapper .loc-group").each(function (i, e) {
+    var selected = $(e).val();
     if (selected !== null && selected.length !== 0) {
-      _dataToSend['groups'].push( selected );
+      _dataToSend['groups'].push(selected);
     }
   });
   // mode
-  switch($('#trans-mode :checked').attr("id")) {
+  switch ($('#trans-mode :checked').attr("id")) {
     case "mode-d":
       _dataToSend['travelMethod'] = "driving";
       break;
@@ -381,13 +378,13 @@ function genSendData () {
     entry = {};
     entry['geocode'] = {'lat': coord.lat(), 'lng': coord.lng()};
     entry['searchtext'] = getTagForAddress(_sendGeo[id]);
-    entry['minduration'] = $( "#"+entryid+" .dur-A" ).val().toString();
-    entry['maxduration'] = $( "#"+entryid+" .dur-B" ).val().toString();
-    entry['arriveafter'] = $( "#"+entryid+" .time-start-A" ).val().toString();
-    entry['arrivebefore'] = $( "#"+entryid+" .time-start-B" ).val().toString();
-    entry['departafter'] = $( "#"+entryid+" .time-end-A" ).val().toString();
-    entry['departbefore'] = $( "#"+entryid+" .time-end-B" ).val().toString();
-    entry['priority'] = Number($( "#"+entryid+" .priority" ).val());
+    entry['minduration'] = $("#" + entryid + " .dur-A").val().toString();
+    entry['maxduration'] = $("#" + entryid + " .dur-B").val().toString();
+    entry['arriveafter'] = $("#" + entryid + " .time-start-A").val().toString();
+    entry['arrivebefore'] = $("#" + entryid + " .time-start-B").val().toString();
+    entry['departafter'] = $("#" + entryid + " .time-end-A").val().toString();
+    entry['departbefore'] = $("#" + entryid + " .time-end-B").val().toString();
+    entry['priority'] = Number($("#" + entryid + " .priority").val());
     _dataToSend['locationList'].push(entry);
   }
   // encapsulate
