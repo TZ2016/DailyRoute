@@ -24,7 +24,7 @@ class UsersController < ApplicationController
       sign_in @user
       flash[:success] = "Welcome to Daily Route, " + @user.email + '!'
       respond_to do |format|
-        format.html { redirect_to root_path }
+        format.html { redirect_to main_path }
         format.json { render :json => { errCode: 1 } }
       end
     else

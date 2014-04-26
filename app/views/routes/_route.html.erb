@@ -1,20 +1,20 @@
-<div class="route-panel">
+<div class="route-panel" id=<%= "route-"+route.id.to_s %>>
 
-  <h3 class="route-title"> <%= "Route " + route.name + "(id=" + route.id.to_s + ")" %> </h3>
+  <h3 class="route-title"> <%= 'Route ' + route.name + '(id=' + route.id.to_s + ')' %></h3>
 
   <div class="route-content">
     <p>
-      <%= "Name: " + route.name %><br>
-      <%= "Mode: " + route.mode %><br>
+      <%= 'Name: ' + route.name %><br>
+      <%= 'Mode: ' + route.mode %><br>
       <% route.steps.each_with_index do |s, i| %>
-      <%= "=== Location No. " + i.to_s + "===" %>
-        <%= "Geocode: " + s.geocode %><br>
-        <%= "departure: " + s.departure.to_s %><br>
-        <%= "arrival: " + s.arrival.inspect %><br>
+        <%= '=== Location No. ' + i.to_s + '===' %><br>
+        <%= 'Geocode: ' + s.geocode %><br>
+        <%= 'departure: ' + s.departure.to_s(:db) %><br>
+        <%= 'arrival: ' + s.arrival.to_s(:db) %><br>
       <% end %>
     </p>
-    <%= link_to "Display", '#', type: 'button', class: 'btn btn-info' %>
-    <%= link_to "Delete", route, method: :delete, type: 'button', class: 'btn btn-warning' %>
+    <%= link_to 'Display', draw_route_path(route), remote: true, type: 'button', class: 'btn btn-info' %>
+    <%= link_to 'Delete', route, method: :delete, type: 'button', class: 'btn btn-warning' %>
   </div>
 
 </div>

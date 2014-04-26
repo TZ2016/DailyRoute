@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
       sign_in user
       flash[:success] = 'Welcome back, ' + user.email + '!'
       respond_to do |format|
-        format.html { redirect_back_or root_path }
+        format.html { redirect_back_or main_path }
         format.json { render :json => { errCode: 1, user: current_user.email } }
       end
     else
@@ -25,7 +25,7 @@ class SessionsController < ApplicationController
     sign_out
     flash[:success] = 'You are logged out.'
     respond_to do |format|
-      format.html { redirect_to root_url }
+      format.html { redirect_to main_path }
       format.json { render :json => { errCode: 1 } }
     end
   end
