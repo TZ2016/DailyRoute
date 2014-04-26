@@ -12,14 +12,11 @@
           <%= f.label :password %>
           <%= f.password_field :password, class: 'form-control', placeholder: 'Password' %>
         </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox"> Remember Me?
-          </label>
-        </div>
-        <%= f.submit "Sign in", type: 'button', class: "btn btn-large btn-primary" %>
+
+        <%= f.submit "Sign in", class: "btn btn-large btn-primary" %>
     <% end %>
-    <hr>
     <p>New user? <%= link_to "Sign up now!", signup_path %></p>
   </div>
 </div>
+
+
