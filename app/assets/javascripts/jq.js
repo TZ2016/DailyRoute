@@ -92,7 +92,6 @@ function initPage () {
     active: false,
     heightStyle: 'content'
   });
-    // beforeActivate: $.displayRoute
 
   // refine location dialog
   $( "#refineloc-lst" ).selectable();
@@ -130,6 +129,27 @@ function initPage () {
     genSendData();
     $.sendQuery();
   });
+
+  // rails ajax button
+  $('#calc-btn2')
+      .bind("ajax:before", function(evt, xhr, settings){
+        $( "#dir-acc" ).accordion( "option", "active", false );
+        $( "#dir-row" ).removeAttr("style");
+        $( "#dir-ins > h3" ).text("Calculating...");
+        $( "#dir-ins > div" ).text("Your query data was sent.");
+        genSendData();
+        $(this).data('params', JSON.stringify(_sendData));
+        console.log(_sendData);
+      })
+      .bind("ajax:beforeSend", function (ent, xhr, settings) {
+        xhr.setRequestHeader('content-type', 'application/json');
+      })
+      .bind("ajax:error", function (jqXHR, status, error) {
+        $( "#dir-row" ).attr("style", "display: none;");
+        $.alertMessage("Your query failed.");
+        console.log(status);
+        console.log(error);
+      });
 
   // group location
   $('.multi-field-wrapper').each(function() {
@@ -198,7 +218,7 @@ function initPage () {
     });
   });
 
-}
+};
 
 // Adding location
 

@@ -9,10 +9,12 @@ class RoutesController < ApplicationController
     @routes   = []
     @messages = []
     result    = solve(route_params)
+    @result = result
     if result[:errCode] == 1
       if build_routes(result[:routes])
         flash.now[:success] = 'Route created!'
         respond_to do |format|
+          format.js
           format.html { render 'show_list' } #FIXME
           format.json { render :json => result }
         end

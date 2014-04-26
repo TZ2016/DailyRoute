@@ -24,7 +24,7 @@
 <button id="calc-btn" type="button" class="btn btn-warning">
   Calculate Routes
 </button>
-<%= link_to 'Calculate Routes via Rails', '#', method: :post, type: 'button', class: 'btn btn-warning' %>
+<%= link_to 'Calculate Routes via Rails', newroute_path, method: :post, remote: true, type: 'button', id: 'calc-btn2', class: 'btn btn-warning', style: 'display:none' %>
 <hr>
 
 <!-- Directions Panel starts -->
