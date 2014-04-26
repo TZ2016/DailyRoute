@@ -9,6 +9,7 @@
       <%= 'Mode: ' + route.mode %><br>
       <% route.steps.each_with_index do |s, i| %>
           <%= '=== Location No. ' + i.to_s + '===' %><br>
+          <%= 'Name: ' + s.name %><br>
           <%= 'Geocode: ' + s.geocode %><br>
           <%= 'departure: ' + s.departure.to_s(:db) %><br>
           <%= 'arrival: ' + s.arrival.to_s(:db) %><br>

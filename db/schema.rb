@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20140420063609) do
 
   create_table "routes", force: true do |t|
     t.integer  "user_id"
-    t.string   "name"
+    t.string   "name",       default: "unnamed_route"
     t.string   "location"
     t.string   "mode"
     t.datetime "created_at"
@@ -34,10 +34,13 @@ ActiveRecord::Schema.define(version: 20140420063609) do
 
   create_table "steps", force: true do |t|
     t.integer  "route_id"
-    t.string   "name"
+    t.string   "name",       default: "unnamed_location"
     t.string   "geocode"
     t.datetime "arrival"
     t.datetime "departure"
+    t.boolean  "lockedin"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "steps", ["route_id", "arrival"], name: "index_steps_on_route_id_and_arrival"
@@ -48,7 +51,7 @@ ActiveRecord::Schema.define(version: 20140420063609) do
     t.string   "remember_token"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "guest"
+    t.boolean  "guest",           default: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
