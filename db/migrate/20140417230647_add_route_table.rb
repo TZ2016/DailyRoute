@@ -2,7 +2,7 @@ class AddRouteTable < ActiveRecord::Migration
 	def change
 		create_table :routes do |t|
 			t.integer  :user_id
-			t.string   :name
+			t.string   :name, default: 'unnamed_route'
 			t.string   :location
 			t.string   :mode
 
