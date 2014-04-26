@@ -29,7 +29,7 @@ module RoutesHelper
       return {errCode: ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE}
     end
 
-    all_routes.sort_by!{|r| r[:traveltime] + r[:priority] * 1e10}
+    sort_route(all_routes)
 
     return {errCode: SUCCESS, routes: all_routes}
 
@@ -123,13 +123,10 @@ module RoutesHelper
       step[:geocode] = geocode_to_s(leg["end_location"])
       step[:name] = locs[order[i]]['searchtext']
       step[:arrival] = route1[:steps].last[:departure] + leg["duration"]["value"]
-      step[:departure] = step[:arrival]
+      step[:departure] = step[:arrival] + locs[order[i]]['minduration']
       route1[:steps] << step
     end
-    # order = result['routes'][0]['waypoint_order']
-    # ordered_loc = order.map{|x| locations[x]}
-    # ordered_loc = (@start+ordered_loc+@dest).map{|x| x['geocode']}
-    route1[:traveltime] = result['routes'][0]['legs'].map{|x| x['duration']['value']}.inject(:+)
+    route1[:traveltime] = route1[:steps].last[:arrival] -  route1[:steps].first[:departure]
     return {errCode: SUCCESS, routes: [route1]}
   end
 
@@ -386,6 +383,7 @@ module RoutesHelper
   end
 
   def sort_route(routes)
+    routes.sort_by!{|r| r[:traveltime] + r[:priority] * 1e10}
   end
 
 end
