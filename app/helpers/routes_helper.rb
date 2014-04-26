@@ -3,6 +3,7 @@ module RoutesHelper
   require 'json'
   require 'net/http'
   require 'pp'
+  require 'group'
   SUCCESS = 1
   ERR_REQUEST_FAIL = -1
   ERR_INVALID_INPUT_TIME = -2
@@ -22,14 +23,14 @@ module RoutesHelper
 
   def solve_group(inp)
     all_routes = []
-    g = new Group(inp['groups'], inp['locationList'])
-    g.group_iter.each do |comb|
-      retult = solve_no_priority(comb)
+    g = Group.new(inp['groups'], inp['locationList'])
+    g.get_groups.each do |comb|
+      result = solve_no_priority({'locationList'=>comb, 'travelMethod'=>inp['travelMethod']})
       if result[:errCode] == SUCCESS
-        all_routes += solve_no_priority(comb)[:routes]
+        all_routes += result[:routes]
       end
     end
-    if a_routes.empty?
+    if all_routes.empty?
       return {errCode: ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE}
     end
 
