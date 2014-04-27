@@ -3,15 +3,20 @@ module RoutesHelper
   require 'json'
   require 'net/http'
   require 'group'
+  require 'fuzzy_search'
   SUCCESS = 1
   ERR_REQUEST_FAIL = -1
   ERR_INVALID_INPUT_TIME = -2
   ERR_NOT_ENOUGH_TIME_FOR_TRAVEL = -3
   ERR_IN_SPECIFY_START_TIME_AND_ARRIVE_TIME = -4
   ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE = -5
+  ERR_IN_CHECK_INPUT = -6
   APP_KEY = "AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM"
 
   def solve(inp)
+    unless check_input(inp)
+      return {errCode:ERR_IN_CHECK_INPUT}
+    end
     parse_format(inp)
     inp['groups'] ? solve_group(inp) : solve_priority(inp)
   end
@@ -28,15 +33,10 @@ module RoutesHelper
     if all_routes.empty?
       return {errCode: ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE}
     end
-
     sort_route(all_routes)
-
     return {errCode: SUCCESS, routes: all_routes}
 
   end
-
-
-
 
   def solve_priority(inp)
     for _ in inp['locationList']
@@ -368,22 +368,23 @@ module RoutesHelper
   def general_search
   end
 
-   #
-  def search_nearby(query, type, radius, center)
-    address = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
-    query = 'query=' + query
-    key = '&key=' + APP_KEY
-    sensor = '&sensor=' + 'false'
-    location = '&location=' + geocode_to_s(center['geocode'])
-    radius = '&radius=' + radius.to_s
-    # types = 'types=' + type
-    address = URI.encode(address + query + key + sensor + location + radius)
-    require 'net/http'
-    return Net::HTTP.get(URI.parse(address))
-  end
 
   def sort_route(routes)
     routes.sort_by!{|r| r[:traveltime] + r[:priority] * 1e10}
   end
+
+  def check_input(inp)
+    if inp['locationList'].length < 2
+      false
+    else
+      true
+    end
+  end
+
+
+
+
+
+
 
 end
