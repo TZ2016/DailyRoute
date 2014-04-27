@@ -7,6 +7,7 @@ class Step < ActiveRecord::Base
 
   default_scope -> { order('arrival DESC') }
 
+  validates :name, presence: true
   validates :route, presence: true
   validates :geocode, presence: true, format: { with: VALID_GEOCODE_REGEX }
   # validates for arrival time
