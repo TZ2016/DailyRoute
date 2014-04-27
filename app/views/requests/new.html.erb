@@ -11,10 +11,13 @@
           <%= r.label :mode %><br>
           <%= r.text_field :mode %><br>
         </p>
-        <%= r.fields_for :constraints do |fields| %>
-            <%= render "constraint_fields", f: fields %>
-        <% end %>
-        <%= link_to_add_fields "Add Constraint", r, :constraints %>
+
+        <div id="loc-acc" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <%= r.fields_for :constraints do |fields| %>
+              <%= render "constraint_fields", f: fields %>
+          <% end %>
+          <%= link_to_add_fields "Add Constraint", r, :constraints %>
+        </div>
         <p><%= r.submit "Submit" %></p>
     <% end %>
   </div>

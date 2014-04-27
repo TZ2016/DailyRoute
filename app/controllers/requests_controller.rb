@@ -1,6 +1,6 @@
 class RequestsController < ApplicationController
   def new
-    @request = Request.new
+    @request = Request.new(constraints: [Constraint.new])
   end
 
   def create
