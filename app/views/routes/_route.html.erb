@@ -11,8 +11,8 @@
           <%= '=== Location No. ' + i.to_s + '===' %><br>
           <%= 'Name: ' + s.name %><br>
           <%= 'Geocode: ' + s.geocode %><br>
-          <%= 'departure: ' + s.departure.to_s(:db) %><br>
-          <%= 'arrival: ' + s.arrival.to_s(:db) %><br>
+          <%= 'arrival: ' + s.arrival.to_time.to_s(:db) %><br>
+          <%= 'departure: ' + s.departure.to_time.to_s(:db) %><br>
       <% end %>
     </p>
     <%= link_to 'Display', draw_route_path, remote: true, type: 'button', class: 'btn btn-info' %>
