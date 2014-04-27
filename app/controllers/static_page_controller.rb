@@ -15,7 +15,4 @@ class StaticPageController < ApplicationController
   def tutorial
   end
 
-  def form_test
-  end
-
 end

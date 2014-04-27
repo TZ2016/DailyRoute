@@ -1,0 +1,29 @@
+$( "#dir-ins > h3" ).text("Instruction");
+$( "#dir-ins > div" ).text("Your routes are ready.");
+handleResult(@result, "route", "dir-acc");
+
+function handleResult (data, baseID, accID) {
+  if (data["errCode"] == 1) {
+    _data = data;
+    var index = 0;
+    var $temppanel = $( "#"+baseID+"-temp" ).clone().removeAttr("style");
+    
+    $( "#"+accID ).empty();
+    $( "#"+accID ).append( $temppanel.clone().attr("style", "display:none;") );
+
+    _data['routes'].forEach( function (route) {
+      index += 1;
+      var newid = baseID + "-" + index;
+      var $newpanel = $temppanel.clone().attr("id", newid);
+
+      $( "#"+accID ).append( $newpanel );
+      $( "#"+newid+" > .route-title" ).text("Route " + index).attr("id", newid+"-title");
+      $( "#"+newid+" > .route-content" ).attr("id", newid+"-content");
+      $( "#"+newid+" > .route-content" ).text("test");
+    });
+    $( "#"+accID ).accordion("refresh");
+  } else {
+    _data = [];
+    $.alertMessage("Google server denied your request!(code="+data['errCode']+")");
+  }
+}

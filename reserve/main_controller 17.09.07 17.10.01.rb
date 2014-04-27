@@ -76,7 +76,7 @@ class MainController < ApplicationController
 	def updateRoute
 		params[:locationList].each do |point|
 			if point.blacklisted == true
-				@location = Location.new
+				@location = Constraint.new
 				@location.routeid = @route.id
 				@location.searchtext = point.searchtext
 				@location.minduration = point.minduration
@@ -92,7 +92,7 @@ class MainController < ApplicationController
 				@location.save
 			end
 			if point.lockedin = true
-				Location.update(params[:locationid], :locationname => point.locationname)
+				Constraint.update(params[:locationid], :locationname => point.locationname)
 			end
 		end
 	end
@@ -134,7 +134,7 @@ class MainController < ApplicationController
 	#returns array of location object in correct route order
  	def getRoute ()
 		id = @route.id
-		currRoute = Location.where(routeid: id).to_a
+		currRoute = Constraint.where(routeid: id).to_a
 		tempLoc = Array.new
 		tempOrder = Array.new
 		count = 0
