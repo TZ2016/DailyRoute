@@ -39,6 +39,9 @@ function initPage() {
     $("#newloc").val("");
   });
 
+  // fuzzy add
+  $("#fuzzy-btn").click($.handleFuzzyAdd);
+
   // mode
   $("#trans-mode").buttonset();
 
@@ -215,15 +218,23 @@ function initPage() {
     });
   });
 
-};
+}
 
 // Adding location
 
-jQuery.addLocation = function (location) {
+jQuery.addLocation = function (location, tag) {
   // add to the list of locations
   // add a constraint entry
 
-  var address = getTagForAddress(location);
+  var address;
+  if (typeof location === 'string') {
+    // address = typeof tag !== 'undefined' ? tag : 'Unnamed Fuzzy Add Category';
+    address = location;
+    location = null;
+  } else {
+    address = getTagForAddress(location);
+  }
+
   var markerid = addMarker(location, address);
   var newlocid = "#loc-acc-" + markerid;
   var $newlocelem = $("#loc-acc-tmp").clone().attr("id", newlocid.slice(1));
@@ -243,6 +254,13 @@ jQuery.handleAddLocation = function () {
   $("#loc-acc-ins").attr("style", "display: none;");
   codeAddress(address, $.refineLocations);
 };
+
+jQuery.handleFuzzyAdd = function () {
+  var address = $("#newloc").val().toString();
+  $("#loc-acc-ins").attr("style", "display: none;");
+  $.addLocation(address);
+};
+
 
 jQuery.refineLocations = function (locations) {
   // called when more than one results are found
@@ -370,14 +388,20 @@ function genSendData() {
   _dataToSend['locationList'] = [];
   // list
   for (var i = 1; i < $locs.length; i++) {
+    entry = {};
+
     var $loc = $($locs[i]);
     var entryid = $loc.attr('id');
     var id = Number(entryid.split("-").pop());
-    var coord = _sendGeo[id].geometry.location;
 
-    entry = {};
-    entry['geocode'] = {'lat': coord.lat(), 'lng': coord.lng()};
-    entry['searchtext'] = getTagForAddress(_sendGeo[id]);
+    if (_sendGeo[id] === null) {
+      entry['geocode'] = null;
+      entry['searchtext'] = $('#' + entryid + " > h3").text();
+    } else {
+      var coord = _sendGeo[id].geometry.location;
+      entry['geocode'] = {'lat': coord.lat(), 'lng': coord.lng()};
+      entry['searchtext'] = getTagForAddress(_sendGeo[id]);
+    }
     entry['minduration'] = $("#" + entryid + " .dur-A").val().toString();
     entry['maxduration'] = $("#" + entryid + " .dur-B").val().toString();
     entry['arriveafter'] = $("#" + entryid + " .time-start-A").val().toString();
