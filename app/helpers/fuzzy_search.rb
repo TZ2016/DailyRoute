@@ -18,13 +18,15 @@ class FuzzySearch
     radius = 3
     params = {radius: radius, center:@center}
     temp = @fuzzy.map{|l| l['searchtext']}
-    temp.map do |t|
+    locations = []
+    temp.each do |t|
       params[:query] = t
-      matches = search_nearby(params)
-      matches.map{|p| p['geometry']}
-      matches(1..min(3,matches.length))
+      matches = FuzzySearch.search_nearby(params)
+      matches = matches['results']
+      matches = matches.map{|p| p['geometry']['location']}
+      locations << matches[1..[3,matches.length].min]
     end
-    temp[0].product(temp.drop(1))
+    locations[0].product(*locations.drop(1))
 
 
 

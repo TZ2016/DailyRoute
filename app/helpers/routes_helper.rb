@@ -39,14 +39,17 @@ module RoutesHelper
   end
 
   def solve_priority(inp)
+    deleted = []
     for _ in 0..inp['locationList'].length - 2
       solution = solve_no_priority(inp)
       if solution[:errCode] == SUCCESS
+        sort_route(solution[:routes])
+        solution[:routes].each{|r| r[:delated] = deleted}
         return solution
       end
       inp['locationList'].first['priority']=-1.0/0.0 
       inp['locationList'].last['priority']=-1.0/0.0 
-      remove_min_priority(inp)
+      deleted << remove_min_priority(inp)['searchtext']
     end
     return {errCode: ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE}
   end
@@ -263,7 +266,8 @@ module RoutesHelper
 
   ## requires @start['departafter'] and end.@startbefore
   def classify_loc
-    @arranged,@unarranged, @fuzzy = [],[], []
+    @arranged,@unarranged = [],[]
+    @nonfuzzy, @fuzzy = [],[]
     add_time(@inp['locationList'])
     for point in @inp['locationList']
       preprocess(point)
@@ -360,31 +364,32 @@ module RoutesHelper
   end
 
   def format(sol)
+    priority = @inp['locationList'].map{|x| x['priority']}.reduce(:+)
     if sol[:errCode] == SUCCESS
       for route in sol[:routes]
         for step in route[:steps]
           step[:departure] = step[:departure].to_datetime
           step[:arrival] = step[:arrival].to_datetime
         end
+      route[:priority] = priority
       end
-      route[:priority] = @inp['locationList'].map{|x| x['priority']}.reduce(:+)
 
     end
   end
 
   def general_search
     routes = []
-    for a in FuzzySearch.new(@fuzzy, @unfuzzy).assign_geocode
+    for a in FuzzySearch.new(@fuzzy, @nonfuzzy).assign_geocode
       @fuzzy.each_with_index  do |l,i|
         l['geocode'] = a[i]
       end
       if @arranged.length <= 2
-        solution = shortest_path(inp['locationslist'])
+        solution = shortest_path(@inp['locationList'])
       else
         solution = fit_schedule
       end
       if solution[:errCode] == SUCCESS
-        routes << solution[:routes]
+        routes = routes + solution[:routes]
       end
 
     end
