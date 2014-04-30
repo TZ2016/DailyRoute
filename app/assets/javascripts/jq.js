@@ -159,9 +159,13 @@ function initPage() {
       var $toadd = $('.multi-field:first-child', $wrapper).clone(true).removeAttr("style");
       var $lst = $toadd.find(".loc-group").empty();
 
-      markers.forEach(function (m) {
-        var opt = "<option>" + m.title + "</option>";
-        $(opt).prependTo($lst);
+      markers.map(function (_, i) {
+        if (i > 0 && i < markers.length - 1) {
+          var newlocid = "#loc-acc-" + i + " > h3";
+          var title = $(newlocid).text();
+          var opt = "<option>" + title + "</option>";
+          $(opt).prependTo($lst);
+        }
       });
       $toadd.appendTo($wrapper);
     });
