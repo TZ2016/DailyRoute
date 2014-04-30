@@ -4,16 +4,17 @@
 
   <div class="route-content">
     <p>
-      <%= 'Created at: ' + route.created_at.to_s(:db) %><br>
-      <%= 'Name: ' + route.name %><br>
-      <%= 'Mode: ' + route.mode %><br>
+      <strong>Mode: </strong><%= route.mode %><br>
       <% route.steps.each_with_index do |s, i| %>
-          <%= '=== Location No. ' + i.to_s + '===' %><br>
-          <%= 'Name: ' + s.name %><br>
-          <%= 'Geocode: ' + s.geocode %><br>
-          <%= 'Arrival: ' + s.arrival.to_time.to_s(:db) %><br>
-          <%= 'Departure: ' + s.departure.to_time.to_s(:db) %><br>
+          <p><strong><%= s.name %></strong></p>
+          <ul>
+            <li><em>Longitude: </em><%= s.geocode.split(',')[0] %></li>
+            <li><em>Latitude: </em><%= s.geocode.split(',')[1] %></li>
+            <li><em>Arrival: </em><%= s.arrival.to_time.to_s(:db) %></li>
+            <li><em>Departure: </em><%= s.departure.to_time.to_s(:db) %></li>
+          </ul>
       <% end %>
+      <var>Created At: <%= route.created_at.to_s(:db) %></var><br>
     </p>
     <%= link_to 'Display', draw_route_path, remote: true, type: 'button', class: 'btn btn-info' %>
     <%= link_to 'Delete', route, method: :delete, data: { confirm: 'Are you sure?' }, type: 'button', class: 'btn btn-warning' %>
