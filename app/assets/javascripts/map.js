@@ -51,7 +51,9 @@ function addMarker(loc, msg) {
 
 function hideMarkers() {
   markers.forEach(function(marker) {
-    marker.setMap(null);
+    if (marker !== null) {
+      marker.setMap(null);
+    }
   });
 }
 
