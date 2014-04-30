@@ -330,6 +330,26 @@ jQuery.sendQuery = function () {
   });
 };
 
+function formatTime(seconds) {
+  var s = seconds % 60;
+  var minutes = Math.floor(seconds / 60);
+  var m = minutes % 60;
+  var hours = Math.floor(minutes / 60);
+  var h = hours % 60;
+  var d = Math.floor(hours / 24);
+
+  if (d !== 0) {
+    return d+' d '+h+' h ';
+  }
+  if (h !== 0) {
+    return h+' h '+m+' m ';
+  }
+  if (m !== 0) {
+    return m+' m '+s+' s ';
+  }
+  return s+' s ';
+}
+
 function handleResult(data, baseID, accID) {
   if (data["errCode"] == 1) {
     _data = data;
@@ -343,10 +363,15 @@ function handleResult(data, baseID, accID) {
       index += 1;
       var newid = baseID + "-" + index;
       var $newpanel = $temppanel.clone().attr("id", newid);
+      var notice = '';
+
+      notice += '';
+      notice += '<strong>Travel Time</strong>: ' + formatTime(route['traveltime']) + "<br>";
+      notice += '<strong>Route itinerary</strong>: <br>';
 
       $("#" + accID).append($newpanel);
       $("#" + newid + " > .route-title").text("Route " + index).attr("id", newid + "-title");
-      $("#" + newid + " > .route-content").attr("id", newid + "-content");
+      $("#" + newid + " > .route-content").attr("id", newid + "-content").html(notice);
     });
     $("#" + accID).accordion("refresh");
   } else {
