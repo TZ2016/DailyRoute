@@ -39,11 +39,13 @@ module RoutesHelper
   end
 
   def solve_priority(inp)
-    for _ in inp['locationList']
+    for _ in 0..inp['locationList'].length - 2
       solution = solve_no_priority(inp)
       if solution[:errCode] == SUCCESS
         return solution
       end
+      inp['locationList'].first['priority']=-1.0/0.0 
+      inp['locationList'].last['priority']=-1.0/0.0 
       remove_min_priority(inp)
     end
     return {errCode: ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE}
@@ -128,6 +130,9 @@ module RoutesHelper
       route1[:steps] << step
     end
     route1[:traveltime] = route1[:steps].last[:arrival] -  route1[:steps].first[:departure]
+    if route1[:steps].last[:arrival] > locs.last['arrivebefore']
+      return {errCode: ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE}
+    end
     return {errCode: SUCCESS, routes: [route1]}
   end
 
@@ -404,11 +409,5 @@ module RoutesHelper
       true
     end
   end
-
-
-
-
-
-
 
 end

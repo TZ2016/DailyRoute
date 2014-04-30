@@ -31,17 +31,28 @@ function initialize() {
 function addMarker(loc, msg) {
   // return the index of the new marker
   if (msg === undefined) msg = 'marker ' + (markers.length + 1);
-  var location = loc.geometry.location;
-  map.setCenter(location);
-  var marker = new google.maps.Marker({
-    position: location,
-    map: map,
-    title: msg
-  });
-  infowindow.setContent(loc.formatted_address);
-  infowindow.open(map, marker);
+  var marker;
+  if (loc !== null) {
+    var location = loc.geometry.location;
+    map.setCenter(location);
+    marker = new google.maps.Marker({
+      position: location,
+      map: map,
+      title: msg
+    });
+    infowindow.setContent(loc.formatted_address);
+    infowindow.open(map, marker);
+  } else {
+    marker = null; // smoke
+  }
   markers.push(marker);
   return markers.length - 1;
+}
+
+function hideMarkers() {
+  markers.forEach(function(marker) {
+    marker.setMap(null);
+  });
 }
 
 function deleteMarker(index) {
@@ -78,7 +89,8 @@ function getNameOfAddress(geores) {
 }
 
 function drawRoute(num, panelid) {
-  directionsDisplay.setPanel(document.getElementById(panelid));
+  hideMarkers();
+    directionsDisplay.setPanel(document.getElementById(panelid));
 
   var data = _data['routes'][num-1];
   var size = data["steps"].length;
