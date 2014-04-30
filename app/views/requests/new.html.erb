@@ -3,22 +3,22 @@
     <%= stylesheet_link_tag params[:controller] %>
 <% end %>
 
+<% provide(:has_map, true) %>
+
 <div class="row">
-  <div class="span6 offset3">
 
-    <%= form_for @request do |r| %>
-        <p>
-          <%= r.label :mode %><br>
-          <%= r.text_field :mode %><br>
-        </p>
+  <%= form_for @request do |r| %>
+      <p>
+        <%= r.label :mode %><br>
+        <%= r.text_field :mode %><br>
+      </p>
 
-        <div id="loc-acc" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-          <%= r.fields_for :constraints do |fields| %>
-              <%= render "constraint_fields", f: fields %>
-          <% end %>
-          <%= link_to_add_fields "Add Constraint", r, :constraints %>
-        </div>
-        <p><%= r.submit "Submit" %></p>
-    <% end %>
-  </div>
+      <div id="loc-acc" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <%= r.fields_for :constraints do |fields| %>
+            <%= render "constraint_fields", f: fields %>
+        <% end %>
+        <%= link_to_add_fields "Add Constraint", r, :constraints %>
+      </div>
+      <p><%= r.submit "Submit" %></p>
+  <% end %>
 </div>
