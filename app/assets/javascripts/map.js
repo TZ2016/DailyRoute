@@ -49,6 +49,12 @@ function addMarker(loc, msg) {
   return markers.length - 1;
 }
 
+function hideMarkers() {
+  markers.forEach(function(marker) {
+    marker.setMap(null);
+  });
+}
+
 function deleteMarker(index) {
   // delete the marker at index
   if (index in markers) {
@@ -83,7 +89,8 @@ function getNameOfAddress(geores) {
 }
 
 function drawRoute(num, panelid) {
-  directionsDisplay.setPanel(document.getElementById(panelid));
+  hideMarkers();
+    directionsDisplay.setPanel(document.getElementById(panelid));
 
   var data = _data['routes'][num-1];
   var size = data["steps"].length;

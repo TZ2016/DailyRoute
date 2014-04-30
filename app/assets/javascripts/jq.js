@@ -116,7 +116,7 @@ function initPage() {
   // time picker
   $("#loc-acc").on("mousemove", ".time-start-A, .time-start-B, .time-end-A, .time-end-B", function () {
     $(this).timepicker({
-      'step': 30,
+      'step': 15,
       'forceRoundTime': true,
       'scrollDefaultNow': true
     });

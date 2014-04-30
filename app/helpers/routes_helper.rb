@@ -39,7 +39,7 @@ module RoutesHelper
   end
 
   def solve_priority(inp)
-    for _ in 1..inp['locationList'].length - 2
+    for _ in 0..inp['locationList'].length - 2
       solution = solve_no_priority(inp)
       if solution[:errCode] == SUCCESS
         return solution
