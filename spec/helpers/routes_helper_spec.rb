@@ -12,4 +12,16 @@ require 'spec_helper'
 # end
 describe RoutesHelper do
   # pending "add some examples to (or delete) #{__FILE__}"
+  describe 'search_nearby' do
+    it 'returns a list of nearby matches' do
+      a = {}
+      a[:query]= 'supermarket'
+      a[:radius]=3
+      a[:center]={'lat' => 37.8696154, 'lng' => -122.25849}
+      b = FuzzySearch.search_nearby(a)
+      b.should have_key('results')
+    end
+  end
 end
+
+

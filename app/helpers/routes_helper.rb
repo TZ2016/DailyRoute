@@ -91,7 +91,8 @@ module RoutesHelper
   def init(inp)
     @inp = inp
     @err = nil
-    @start, @dest, @mode, @arranged, @unarranged, @fuzzy, @intervals = nil
+    @start, @dest, @arranged, @unarranged = nil
+    @nonfuzzy, @fuzzy, @intervals, @mode = nil
     @start = @inp['locationList'].first
     @mode = @inp['travelMethod']
     @dest = @inp['locationList'].last
@@ -252,7 +253,6 @@ module RoutesHelper
     sensor = "&sensor=false"
     mode = '&mode=%s' % @mode
     addr = URI.encode(addr+origin+dest+waypoints+sensor+mode)
-    require 'net/http'
     return Net::HTTP.get(URI.parse(addr))
   end
 
@@ -269,6 +269,8 @@ module RoutesHelper
       end
       if point["geocode"] == nil
         @fuzzy << point
+      else
+        @nonfuzzy << point
       end
     end
     @arranged.sort_by!{|x| x["arrivebefore"]}
@@ -366,6 +368,28 @@ module RoutesHelper
   end
 
   def general_search
+    routes = []
+    for a in FuzzySearch.new(@fuzzy, @unfuzzy).assign_geocode
+      @fuzzy.each_with_index  do |l,i|
+        l['geocode'] = a[i]
+      end
+      if @arranged.length <= 2
+        solution = shortest_path(inp['locationslist'])
+      else
+        solution = fit_schedule
+      end
+      if solution[:errCode] == SUCCESS
+        routes << solution[:routes]
+      end
+
+    end
+
+    if routes
+      return {errCode: SUCCESS, routes: routes}
+    else
+      return {errCode: ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE}
+    end
+
   end
 
 
