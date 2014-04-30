@@ -9,8 +9,8 @@ class FuzzySearch
   def initialize(fuzzy, nonfuzzy)
     @fuzzy = fuzzy
     @center  = {}
-    @center['lat'] = nonfuzzy.inject{|sum, n| sum + n['geocode']['lat']}
-    @center['lng'] = nonfuzzy.inject{|sum, n| sum + n['geocode']['lng']}
+    @center['lat'] = nonfuzzy.map{|n| n['geocode']['lat']}.reduce(:+)/nonfuzzy.length
+    @center['lng'] = nonfuzzy.map{|n| n['geocode']['lng']}.reduce(:+)/nonfuzzy.length
   end
 
   def assign_geocode
