@@ -8,19 +8,31 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Daily Route</a>
+      <%= link_to "Daily Route", {action: 'main'}, class: 'navbar-brand' %>
     </div>
     <!-- content -->
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li>
-          <%= link_to_unless_current "Main", main_path %>
+        <li class=<%= is_active?('main') %>>
+          <%=
+              link_to_unless_current("Main", { action: "main" }) do
+                link_to "Main", "#"
+              end
+          %>
         </li>
-        <li>
-          <%= link_to_unless_current "Tutorial", tutorial_path %>
+        <li class=<%= is_active?('tutorial') %>>
+          <%=
+              link_to_unless_current("Tutorial", { action: "tutorial" }) do
+                link_to "Tutorial", "#"
+              end
+          %>
         </li>
-        <li>
-          <%= link_to_unless_current "About", about_path %>
+        <li class=<%= is_active?('about') %>>
+          <%=
+              link_to_unless_current("About", { action: "about" }) do
+                link_to "About", "#"
+              end
+          %>
         </li>
       </ul>
       <!-- user login logout -->
@@ -30,7 +42,7 @@
                 <%= f.email_field :email, class: "form-control", placeholder: "Email" %>
                 <%= f.password_field :password, class: "form-control", placeholder: "Password" %>
               </div>
-              <%= link_to "SignUp", '#', type: "button", class: "btn btn-default btn-sm", id: "signup" %>
+              <%= link_to "SignUp", signup_path, type: 'button', class: 'btn btn-default btn-sm' %>
               <%= f.submit "LogIn", class: "btn btn-default btn-sm" %>
           <% end %>
       <% elsif signed_in? %>
