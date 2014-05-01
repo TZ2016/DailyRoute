@@ -1,20 +1,22 @@
 
 <% data = @route %>;
-<% size = data.steps.length %>;
 var start = new google.maps.LatLng(<%= j data.steps[0].geocode%>);
 console.log("2")
-var end = new google.maps.LatLng(<%= j data.steps[size-1].geocode%>);
+var end = new google.maps.LatLng(<%= j data.steps[-1].geocode%>);
+console.log("------")
 console.log(typeof(gon.mode))
 var selectedMode = gon.mode.toUpperCase();
 console.log("3")
 var waypts = [];
 var loc;
-<% data.steps.each do |step| %>
-	loc = new google.maps.LatLng(<%= j step.geocode%>);
-	waypts.push({
-	    location: loc,
-	    stopover: true
-	});
+<% if data.steps[1,-1] != nil %>
+	<% data.steps[1,-1].each do |step| %>
+		loc = new google.maps.LatLng(<%= j step.geocode%>);
+		waypts.push({
+		    location: loc,
+		    stopover: true
+		});
+	<%end%>
 <%end%>
 var request = {
 	origin:start,
