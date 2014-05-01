@@ -1,33 +1,16 @@
-alert("<%= j @route.name %>"); //FIXME
-alert(parGeoLat("3.23, 234.3"));
-
-var geocoder;
-var map;
-var rendererOptions = {
-  // draggable: true
-  draggable: false
-};
-var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
-var directionsService = new google.maps.DirectionsService();
-var markers = [];
-var _tempmarker;
-var infowindow = new google.maps.InfoWindow();
-
 
 <% data = @route %>;
-<% size = @route.steps.length %>
-var start = new google.maps.LatLng(
-		parGeoLat(<%= j data.steps[0].geocode%>), parGeoLng(<%= j data.steps[0].geocode%>));
-console.log(start)
-console.log("======")
-var end = new google.maps.LatLng(
-		parGeoLat(<%= j data.steps[size-1].geocode%>), parGeoLng(<%= j data.steps[size-1].geocode%>));
-var selectedMode = <%= j data.mode%>.toUpperCase();
+<% size = data.steps.length %>;
+var start = new google.maps.LatLng(<%= j data.steps[0].geocode%>);
+console.log("2")
+var end = new google.maps.LatLng(<%= j data.steps[size-1].geocode%>);
+console.log(typeof(gon.mode))
+var selectedMode = gon.mode.toUpperCase();
+console.log("3")
 var waypts = [];
 var loc;
 <% data.steps.each do |step| %>
-	loc = new google.maps.LatLng(
-			parGeoLat(<%= j step.geocode%>), parGeoLng(<%= j step.geocode%>));
+	loc = new google.maps.LatLng(<%= j step.geocode%>);
 	waypts.push({
 	    location: loc,
 	    stopover: true
