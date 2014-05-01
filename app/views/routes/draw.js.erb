@@ -1,37 +1,46 @@
 alert("<%= j @route.name %>"); //FIXME
 alert(parGeoLat("3.23, 234.3"));
 
-// the accordion holding the route has id="route-"+@route.id.to_s
+var geocoder;
+var map;
+var rendererOptions = {
+  // draggable: true
+  draggable: false
+};
+var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+var directionsService = new google.maps.DirectionsService();
+var markers = [];
+var _tempmarker;
+var infowindow = new google.maps.InfoWindow();
 
-//directionsDisplay.setPanel(document.getElementById(panelid));
-//
-//var data = _data['routes'][num-1];
-//var size = data["steps"].length;
-//var start = new google.maps.LatLng(
-//        parGeoLat(data["steps"][0]["geocode"]), parGeoLng(data["steps"][0]["geocode"]));
-//var end = new google.maps.LatLng(
-//        parGeoLat(data["steps"][size-1]["geocode"]), parGeoLng(data["steps"][size-1]["geocode"]));
-//var selectedMode = data['mode'].toUpperCase();
-//var waypts = [];
-//var loc;
-//for (var i = 1; i < size-1; i++) {
-//    loc = new google.maps.LatLng(
-//            parGeoLat(data["steps"][i]["geocode"]), parGeoLng(data["steps"][i]["geocode"]));
-//    waypts.push({
-//        location: loc,
-//        stopover: true
-//    });
-//}
-//var request = {
-//    origin:start,
-//    destination:end,
-//    travelMode: google.maps.TravelMode[selectedMode],
-//    optimizeWaypoints: false,
-//    waypoints: waypts
-//};
-//
-//directionsService.route(request, function(response, status) {
-//    if (status == google.maps.DirectionsStatus.OK) {
-//        directionsDisplay.setDirections(response);
-//    }
-//});
+
+<% data = @route %>;
+<% size =  data.steps.length %>;
+var start = new google.maps.LatLng(
+parGeoLat(<%= j data.steps[0].geocode%>), parGeoLng(<%= j data.steps[0].geocode%>));
+var end = new google.maps.LatLng(
+parGeoLat(<%= j data.steps[size-1].geocode%>), parGeoLng(<%= j data.steps[size-1].geocode%>));
+var selectedMode = <%= j data.mode%>.toUpperCase();
+var waypts = [];
+var loc;
+for (<% i = 1%>; <%= j i%> < size-1; <% i+=1 %>) {
+loc = new google.maps.LatLng(
+  parGeoLat(<%= j data.steps[i].geocode%>), parGeoLng(<%= j data.steps[i].geocode%>));
+waypts.push({
+    location: loc,
+    stopover: true
+});
+}
+var request = {
+origin:start,
+destination:end,
+travelMode: google.maps.TravelMode[selectedMode],
+optimizeWaypoints: false,
+waypoints: waypts
+};
+
+directionsService.route(request, function(response, status) {
+if (status == google.maps.DirectionsStatus.OK) {
+  directionsDisplay.setDirections(response);
+}
+});
