@@ -15,32 +15,34 @@ var infowindow = new google.maps.InfoWindow();
 
 
 <% data = @route %>;
-<% size =  data.steps.length %>;
+<% size = @route.steps.length %>
 var start = new google.maps.LatLng(
-parGeoLat(<%= j data.steps[0].geocode%>), parGeoLng(<%= j data.steps[0].geocode%>));
+		parGeoLat(<%= j data.steps[0].geocode%>), parGeoLng(<%= j data.steps[0].geocode%>));
+console.log(start)
+console.log("======")
 var end = new google.maps.LatLng(
-parGeoLat(<%= j data.steps[size-1].geocode%>), parGeoLng(<%= j data.steps[size-1].geocode%>));
+		parGeoLat(<%= j data.steps[size-1].geocode%>), parGeoLng(<%= j data.steps[size-1].geocode%>));
 var selectedMode = <%= j data.mode%>.toUpperCase();
 var waypts = [];
 var loc;
-for (<% i = 1%>; <%= j i%> < size-1; <% i+=1 %>) {
-loc = new google.maps.LatLng(
-  parGeoLat(<%= j data.steps[i].geocode%>), parGeoLng(<%= j data.steps[i].geocode%>));
-waypts.push({
-    location: loc,
-    stopover: true
-});
-}
+<% data.steps.each do |step| %>
+	loc = new google.maps.LatLng(
+			parGeoLat(<%= j step.geocode%>), parGeoLng(<%= j step.geocode%>));
+	waypts.push({
+	    location: loc,
+	    stopover: true
+	});
+<%end%>
 var request = {
-origin:start,
-destination:end,
-travelMode: google.maps.TravelMode[selectedMode],
-optimizeWaypoints: false,
-waypoints: waypts
+	origin:start,
+	destination:end,
+	travelMode: google.maps.TravelMode[selectedMode],
+	optimizeWaypoints: false,
+	waypoints: waypts
 };
 
 directionsService.route(request, function(response, status) {
-if (status == google.maps.DirectionsStatus.OK) {
-  directionsDisplay.setDirections(response);
-}
+	if (status == google.maps.DirectionsStatus.OK) {
+	  directionsDisplay.setDirections(response);
+	}
 });
