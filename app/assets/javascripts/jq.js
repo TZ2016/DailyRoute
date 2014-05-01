@@ -177,13 +177,13 @@ function initPage() {
 
   /////////////////////////////////////////////////////////
 
-  $("#signup").click(function () {
-    $("#signup-dlg").modal({
-      show: true,
-      keyboard: false,
-      backdrop: "static"
-    });
-  });
+//  $("#signup").click(function () {
+//    $("#signup-dlg").modal({
+//      show: true,
+//      keyboard: false,
+//      backdrop: "static"
+//    });
+//  });
 
   $("#signup-cancel").click(function () {
     $("#signup-dlg").modal("hide");

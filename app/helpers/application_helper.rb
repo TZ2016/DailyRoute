@@ -7,4 +7,8 @@ module ApplicationHelper
     end
     link_to(name, '#', class: "add_fields", data: { id: id, fields: fields.gsub("\n", "") })
   end
+
+  def is_active?(page_name)
+    "active" if params[:action] == page_name
+  end
 end

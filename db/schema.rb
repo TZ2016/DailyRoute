@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20140420063609) do
 
   create_table "routes", force: true do |t|
     t.integer  "user_id"
-    t.string   "name"
+    t.string   "name",       default: "unnamed_route"
     t.string   "location"
     t.string   "mode"
     t.datetime "created_at"
@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 20140420063609) do
 
   create_table "steps", force: true do |t|
     t.integer  "route_id"
-    t.string   "name"
+    t.string   "name",       default: "unnamed_location"
     t.string   "geocode"
     t.datetime "arrival"
     t.datetime "departure"
