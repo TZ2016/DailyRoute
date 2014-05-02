@@ -1,25 +1,11 @@
-//719699764753215
-
-// This is called with the results from from FB.getLoginStatus().
-function statusChangeCallback(response) {
-  console.log('statusChangeCallback');
-  console.log(response);
-  // The response object is returned with a status field that lets the
-  // app know the current login status of the person.
-  // Full docs on the response object can be found in the documentation
-  // for FB.getLoginStatus().
+function statusChangeCallback2(response) {
   if (response.status === 'connected') {
-    // Logged into your app and Facebook.
-    testAPI();
+    console.log("fixme: you are logged in!");
+    fbLogin(response.authResponse);
   } else if (response.status === 'not_authorized') {
-    // The person is logged into Facebook, but not your app.
-    document.getElementById('status').innerHTML = 'Please log ' +
-        'into this app.';
+    console.log("fixme: dialog user not authorized");
   } else {
-    // The person is not logged into Facebook, so we're not sure if
-    // they are logged into this app or not.
-    document.getElementById('status').innerHTML = 'Please log ' +
-        'into Facebook.';
+    console.log("fixme: you are not logged into facebook");
   }
 }
 
@@ -28,7 +14,7 @@ function statusChangeCallback(response) {
 // code below.
 function checkLoginState() {
   FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
+    statusChangeCallback2(response);
   });
 }
 
@@ -40,22 +26,10 @@ window.fbAsyncInit = function() {
     xfbml      : true,  // parse social plugins on this page
     version    : 'v2.0' // use version 2.0
   });
-
-  // Now that we've initialized the JavaScript SDK, we call
-  // FB.getLoginStatus().  This function gets the state of the
-  // person visiting this page and can return one of three states to
-  // the callback you provide.  They can be:
-  //
-  // 1. Logged into your app ('connected')
-  // 2. Logged into Facebook, but not your app ('not_authorized')
-  // 3. Not logged into Facebook and can't tell if they are logged into
-  //    your app or not.
-  //
-  // These three cases are handled in the callback function.
-
-  FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-  });
+//
+//  FB.getLoginStatus(function(response) {
+//    statusChangeCallback2(response);
+//  });
 
 };
 
@@ -69,10 +43,31 @@ window.fbAsyncInit = function() {
 }(document, 'script', 'facebook-jssdk'));
 
 // successful.  See statusChangeCallback() for when this call is made.
-function testAPI() {
+function fbLogin(authResponse) {
   console.log('Welcome!  Fetching your information.... ');
   FB.api('/me', function(response) {
     console.log('Good to see you, ' + response.name + '.');
     console.log(JSON.stringify(response));
+
+    // authReponse: accessToken, expiresIn, signedRequest, userID
+    // response: id, email, first_name, gender, last_name, link, locale, name, timezone, updated_time, verified
+    console.log("json-ified response");
+    console.log(JSON.stringify(response));
+
+    var _data = {'email': response.email }
+
+    $.ajax({
+      type: 'POST',
+      url: 'signin_fb',
+      data: JSON.stringify(_data),
+      contentType: "application/json",
+      dataType: "script",
+      success: function (data, status, jqXHR) {
+        console.log("success");
+      },
+      error: function (jqXHR, status, error) {
+        $.alertMessage("internal error.");
+      }
+    });
   });
 }

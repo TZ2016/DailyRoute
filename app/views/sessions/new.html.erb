@@ -17,7 +17,8 @@
             <input type="checkbox"> Remember Me?
           </label>
         </div>
-        <%= f.submit "Sign in", class: "btn btn-large btn-primary" %>
+        <%= f.submit "Sign in", class: "btn btn-large btn-primary" %> or
+        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
     <% end %>
     <p>New user? <%= link_to "Sign up now!", signup_path %></p>
   </div>

@@ -44,7 +44,6 @@
               </div>
               <%= f.submit "LogIn", class: "btn btn-default btn-sm" %>
               <%= link_to "SignUp", signup_path, type: 'button', class: 'btn btn-default btn-sm' %>
-              <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
           <% end %>
       <% elsif signed_in? %>
           <p class="navbar-text navbar-right">Signed in as
