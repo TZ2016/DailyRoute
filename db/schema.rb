@@ -53,6 +53,7 @@ ActiveRecord::Schema.define(version: 20140502180142) do
   create_table "routes", force: true do |t|
     t.integer  "user_id"
     t.string   "name",       default: "unnamed_route"
+    t.string   "location"
     t.string   "mode"
     t.datetime "created_at"
     t.datetime "updated_at"

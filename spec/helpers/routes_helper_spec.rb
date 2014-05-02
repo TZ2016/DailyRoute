@@ -56,63 +56,6 @@ describe RoutesHelper do
     end
 
 
-    describe 'search_nearby' do
-      before do
-        a         = {}
-        a[:query] = 'supermarket'
-        a[:radius]=3
-        a[:center]={ 'lat' => 37.8696154, 'lng' => -122.25849 }
-        @result   = FuzzySearch.search_nearby(a)
-      end
-      it 'returns a list of nearby matches' do
-        @result.should have_key('results')
-      end
-      it 'has geometry' do
-        @result['results'].each do |r|
-          r.should have_key('geometry')
-        end
-      end
-
-    end
-
-    describe 'assign_geocode' do
-      describe '1 fuzzy location' do
-        before do
-          @result = FuzzySearch.new([@supermarket], @nonfuzzy).assign_geocode
-        end
-        it 'return 3 closest place' do
-          @result.should have_at_most(3).items
-        end
-        it 'return a list of geocode' do
-          @result.each do |a|
-            a.each do |g|
-              g.should have_key('lat')
-              g.should have_key('lng')
-            end
-          end
-        end
-      end
-
-
-      describe '2 fuzzy location' do
-        before do
-          @result = FuzzySearch.new([@supermarket, @restaurant], @nonfuzzy).assign_geocode
-        end
-        it 'return 3 closest place' do
-          @result.should have_at_most(9).items
-        end
-        it 'return a list of geocode' do
-          @result.each do |a|
-            a.each do |g|
-              g.should have_key('lat')
-              g.should have_key('lng')
-            end
-          end
-        end
-      end
-
-
-    end
 
 
   end
