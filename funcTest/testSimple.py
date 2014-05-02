@@ -146,6 +146,58 @@ class TestSaveRoute(testLib.RestTestCase):
             'session' : dct_test_user()} )
         self.assertResponse(respData)
 
+    def testSavedRoutesSize(self):
+        self.makeRequest('/tests/resetAll', method="GET")
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        locationList = []
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}, "arriveafter": "10:00pm"})
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.makeRequest("/tests/add_route_to", method="POST", data = { 'route' : {'mode' : "DRIVING", 'name' : 'testroute'}, 
+            'session' : dct_test_user()} )
+        respData=self.makeRequest('/tests/routes_of_user', method="POST", data={'session' : dct_test_user()})
+        self.assertEqual(0,len(respData['routes']))
+
+    def testRemoveRoutes(self):
+        self.makeRequest('/tests/resetAll', method="GET")
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        locationList = []
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}, "arriveafter": "10:00pm"})
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.makeRequest("/tests/add_route_to", method="POST", data = { 'route' : {'mode' : "DRIVING", 'name' : 'testroute'}, 
+            'session' : dct_test_user()} )
+        respData=self.makeRequest('/tests/remove_all_routes_of', method="POST", data={'session' : dct_test_user()})
+        self.assertResponse(respData)
+
+    def testAfterRemoveRoutes(self):
+        self.makeRequest('/tests/resetAll', method="GET")
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        locationList = []
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}, "arriveafter": "10:00pm"})
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.makeRequest("/tests/add_route_to", method="POST", data = { 'route' : {'mode' : "DRIVING", 'name' : 'testroute'}, 
+            'session' : dct_test_user()} )
+        respData=self.makeRequest('/tests/routes_of_user', method="POST", data={'session' : dct_test_user()})
+        self.assertResponse(respData)
+
+
+    def testRemoveRoutesSize(self):
+        self.makeRequest('/tests/resetAll', method="GET")
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        locationList = []
+        locationList.append({"searchtext": "random", "geocode": {"lat": 38, "lng": -120}, "arriveafter": "10:00pm"})
+        self.makeRequest("/signup_post", method="POST", data = dct_new_user() )
+        self.makeRequest("/signin_post", method="POST", data = { 'email' : 'test@test.com', 'password' : 'password'} )
+        self.makeRequest("/tests/add_route_to", method="POST", data = { 'route' : {'mode' : "DRIVING", 'name' : 'testroute'}, 
+            'session' : dct_test_user()} )
+        respData=self.makeRequest('/tests/routes_of_user', method="POST", data={'session' : dct_test_user()})
+        self.assertEqual(0,len(respData['routes']))
 
 
 
