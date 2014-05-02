@@ -42,8 +42,9 @@
                 <%= f.email_field :email, class: "form-control", placeholder: "Email" %>
                 <%= f.password_field :password, class: "form-control", placeholder: "Password" %>
               </div>
-              <%= link_to "SignUp", signup_path, type: 'button', class: 'btn btn-default btn-sm' %>
               <%= f.submit "LogIn", class: "btn btn-default btn-sm" %>
+              <%= link_to "SignUp", signup_path, type: 'button', class: 'btn btn-default btn-sm' %>
+              <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
           <% end %>
       <% elsif signed_in? %>
           <p class="navbar-text navbar-right">Signed in as

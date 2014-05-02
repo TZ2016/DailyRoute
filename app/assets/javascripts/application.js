@@ -17,3 +17,4 @@
 //= require jquery.ui.all
 //= require jquery.timepicker
 //= require jq
+//= require fb
