@@ -27,7 +27,6 @@ function dropMarkerSwitch(s) {
   // listeners
   if (s === true && markerListener === null) {
       markerListener = google.maps.event.addListener(map, 'click', function(e) {
-        console.log(e);
         revGeoAndMarker(e.latLng);
     });
   }
