@@ -42,6 +42,11 @@ function initPage() {
   // fuzzy add
   $("#fuzzy-btn").click($.handleFuzzyAdd);
 
+  // drop add
+  $("#drop-btn").click(function () {
+    dropMarkerSwitch(true);
+  });
+
   // mode
   $("#trans-mode").buttonset();
 
@@ -257,6 +262,7 @@ jQuery.handleAddLocation = function () {
   var address = $("#newloc").val().toString();
   $("#loc-acc-ins").attr("style", "display: none;");
   codeAddress(address, $.refineLocations);
+  dropMarkerSwitch(false);
 };
 
 jQuery.handleFuzzyAdd = function () {
