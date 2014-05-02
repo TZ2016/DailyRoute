@@ -3,9 +3,6 @@ require 'spec_helper'
 describe Route do
 	
 	before do
-		User.destroy_all
-		Route.destroy_all
-		Step.destroy_all
 		@user = User.create(email: "test@test.com", password: "password", password_confirmation: "password")
 		@route = Route.new(user_id: @user.id, name: "test_route", mode: "driving")
 	end
@@ -92,9 +89,4 @@ describe Route do
 	
 	end
 
-	after(:each) do
-  		User.destroy_all
-		Route.destroy_all
-		Step.destroy_all
-	end
 end

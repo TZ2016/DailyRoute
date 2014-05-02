@@ -5,7 +5,7 @@ describe "Static pages" do
   subject { page }
 
   describe "Main page" do
-    before { visit root_path }
+    before { visit main_path }
 
     it { should have_content('Start your route now!') }
     it { should have_button('Add') }
@@ -27,7 +27,7 @@ describe "Static pages" do
   end
 
   describe "Navigation bar" do
-    before { visit root_path }
+    before { visit main_path }
 
     it "should have title" do
       page.source.should have_selector("title", text: "Daily Route")
@@ -46,7 +46,7 @@ describe "Static pages" do
     describe "for not signed-in users" do
       before do
         sign_out
-        visit root_path
+        visit main_path
       end
 
       it { should have_button("LogIn") }
@@ -62,7 +62,7 @@ describe "Static pages" do
       end
       before do
         sign_in user
-        visit root_path
+        visit main_path
       end
 
       # it { should have_button("LogOut")}

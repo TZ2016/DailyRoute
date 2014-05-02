@@ -28,6 +28,8 @@
         </div>
 
         <%= f.submit 'Sign Up', class: 'btn btn-large btn-primary' %>
+        or
+        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
     <% end %>
   </div>
 </div>
