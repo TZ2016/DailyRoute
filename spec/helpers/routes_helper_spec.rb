@@ -56,118 +56,175 @@ describe RoutesHelper do
     end
 
 
-
-
-  end
-
-  describe Group do
-    before do
-      @a    = { 'searchtext' => 'a' }
-      @b    = { 'searchtext' => 'b' }
-      @c    = { 'searchtext' => 'c' }
-      @d    = { 'searchtext' => 'd' }
-      @e    = { 'searchtext' => 'e' }
-      @f    = { 'searchtext' => 'f' }
-      @g    = { 'searchtext' => 'g' }
-      @locs = [@a, @b, @c, @d, @e, @f, @g]
-
-
-    end
-    describe 'basics' do
+    describe 'search_nearby' do
       before do
-        gps    = [['d', 'e']]
-        @group = Group.new(gps, @locs)
+        a         = {}
+        a[:query] = 'supermarket'
+        a[:radius]=3
+        a[:center]={ 'lat' => 37.8696154, 'lng' => -122.25849 }
+        @result   = FuzzySearch.search_nearby(a)
+      end
+      it 'returns a list of nearby matches' do
+        @result.should have_key('results')
+      end
+      it 'has geometry' do
+        @result['results'].each do |r|
+          r.should have_key('geometry')
+        end
       end
 
-      it 'has groups' do
-        @group.groups.should_not be_nil
-      end
-      it 'has ungrouped' do
-        @group.ungrouped.should_not be_nil
-      end
-      it 'groups contains locations' do
-        @group.groups[0][0].should have_key('searchtext')
+    end
+
+    describe 'assign_geocode' do
+      describe '1 fuzzy location' do
+        before do
+          @result = FuzzySearch.new([@supermarket], @nonfuzzy).assign_geocode
+        end
+        it 'return 3 closest place' do
+          @result.should have_at_most(3).items
+        end
+        it 'return a list of geocode' do
+          @result.each do |a|
+            a.each do |g|
+              g.should have_key('lat')
+              g.should have_key('lng')
+            end
+          end
+        end
       end
 
-      it 'one group' do
-        @group.get_groups.should have(2).items
-      end
 
-      it 'return list of lists of right length' do
-        @group.get_groups[0].should have(6).items
-      end
-      it 'return list of lists of right length' do
-        @group.get_groups[1].should have(6).items
+      describe '2 fuzzy location' do
+        before do
+          @result = FuzzySearch.new([@supermarket, @restaurant], @nonfuzzy).assign_geocode
+        end
+        it 'return 3 closest place' do
+          @result.should have_at_most(9).items
+        end
+        it 'return a list of geocode' do
+          @result.each do |a|
+            a.each do |g|
+              g.should have_key('lat')
+              g.should have_key('lng')
+            end
+          end
+        end
       end
 
 
     end
   end
 
-  describe "Solve" do
+
+end
+
+describe Group do
+  before do
+    @a    = { 'searchtext' => 'a' }
+    @b    = { 'searchtext' => 'b' }
+    @c    = { 'searchtext' => 'c' }
+    @d    = { 'searchtext' => 'd' }
+    @e    = { 'searchtext' => 'e' }
+    @f    = { 'searchtext' => 'f' }
+    @g    = { 'searchtext' => 'g' }
+    @locs = [@a, @b, @c, @d, @e, @f, @g]
+
+
+  end
+  describe 'basics' do
     before do
-      inp = {}
-      inp['groups'] = nil
-      one = {}
-      one['arriveafter']=''
-      one['arrivebefore']=''
-      one['departafter']='3:30pm'
-      one['departbefore']=''
-      one['geocode']={'lat'=>37.8644696, 'lng'=> -122.25670630000002}
-      one['maxduration']=''
-      one['minduration']=''
-      one['priority'] = 1
-      one['searchtext'] = "2050"
-      two = {}
-      two['arriveafter']=''
-      two['arrivebefore']=''
-      two['departafter']=''
-      two['departbefore']=''
-      two['geocode']={'lat'=>37.7749295, 'lng'=> -122.41941550000001}
-      two['maxduration']=''
-      two['minduration']=''
-      two['priority'] = 2
-      two['searchtext'] = "San Francisco"
-      three = {}
-      three['arriveafter']=''
-      three['arrivebefore']=''
-      three['departafter']='5:30pm'
-      three['departbefore']=''
-      three['geocode']={'lat'=>37.8757435, 'lng'=> -122.25873230000002}
-      three['maxduration']=''
-      three['minduration']=''
-      three['priority'] = 1
-      three['searchtext'] = "Soda Hall"
-
-      inp['locationList'] = [one, two, three]
-      inp['travelMethod'] = 'walking'
-
-
-      @result = solve(inp)
-      @routes = @result[:routes]
+      gps    = [['d', 'e']]
+      @group = Group.new(gps, @locs)
     end
 
-    describe @result do
-      it 'should success' do
-        @result[:errCode].should eql(1)
-      end
-      it 'should return routes' do
-        @result[:routes].should have_at_least(1).items
-      end
-      describe @routes do
-        it 'should have more than one steps' do
-          @routes[0][:steps].should have_at_least(2).items
-        end
-        it 'should have mode' do
-          @routes[0][:mode].should eql('walking')
-        end
-        it 'should have traveltime' do
-          @routes[0][:traveltime].should be_an(Float)
-        end
-      end
+    it 'has groups' do
+      @group.groups.should_not be_nil
     end
+    it 'has ungrouped' do
+      @group.ungrouped.should_not be_nil
+    end
+    it 'groups contains locations' do
+      @group.groups[0][0].should have_key('searchtext')
+    end
+
+    it 'one group' do
+      @group.get_groups.should have(2).items
+    end
+
+    it 'return list of lists of right length' do
+      @group.get_groups[0].should have(6).items
+    end
+    it 'return list of lists of right length' do
+      @group.get_groups[1].should have(6).items
+    end
+
 
   end
+end
+
+describe "Solve" do
+  before do
+    inp                  = {}
+    inp['groups']        = nil
+    one                  = {}
+    one['arriveafter']   =''
+    one['arrivebefore']  =''
+    one['departafter']   ='3:30pm'
+    one['departbefore']  =''
+    one['geocode']       ={ 'lat' => 37.8644696, 'lng' => -122.25670630000002 }
+    one['maxduration']   =''
+    one['minduration']   =''
+    one['priority']      = 1
+    one['searchtext']    = "2050"
+    two                  = {}
+    two['arriveafter']   =''
+    two['arrivebefore']  =''
+    two['departafter']   =''
+    two['departbefore']  =''
+    two['geocode']       ={ 'lat' => 37.7749295, 'lng' => -122.41941550000001 }
+    two['maxduration']   =''
+    two['minduration']   =''
+    two['priority']      = 2
+    two['searchtext']    = "San Francisco"
+    three                = {}
+    three['arriveafter'] =''
+    three['arrivebefore']=''
+    three['departafter'] ='5:30pm'
+    three['departbefore']=''
+    three['geocode']     ={ 'lat' => 37.8757435, 'lng' => -122.25873230000002 }
+    three['maxduration'] =''
+    three['minduration'] =''
+    three['priority']    = 1
+    three['searchtext']  = "Soda Hall"
+
+    inp['locationList'] = [one, two, three]
+    inp['travelMethod'] = 'walking'
+
+
+    @result = solve(inp)
+    @routes = @result[:routes]
+  end
+
+  describe @result do
+    it 'should success' do
+      @result[:errCode].should eql(1)
+    end
+    it 'should return routes' do
+      @result[:routes].should have_at_least(1).items
+    end
+    describe @routes do
+      it 'should have more than one steps' do
+        @routes[0][:steps].should have_at_least(2).items
+      end
+      it 'should have mode' do
+        @routes[0][:mode].should eql('walking')
+      end
+      it 'should have traveltime' do
+        @routes[0][:traveltime].should be_an(Float)
+      end
+    end
+  end
+
 end
 
 
