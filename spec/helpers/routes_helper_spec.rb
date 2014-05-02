@@ -116,115 +116,114 @@ describe RoutesHelper do
   end
 
 
-end
-
-describe Group do
-  before do
-    @a    = { 'searchtext' => 'a' }
-    @b    = { 'searchtext' => 'b' }
-    @c    = { 'searchtext' => 'c' }
-    @d    = { 'searchtext' => 'd' }
-    @e    = { 'searchtext' => 'e' }
-    @f    = { 'searchtext' => 'f' }
-    @g    = { 'searchtext' => 'g' }
-    @locs = [@a, @b, @c, @d, @e, @f, @g]
-
-
-  end
-  describe 'basics' do
+  describe Group do
     before do
-      gps    = [['d', 'e']]
-      @group = Group.new(gps, @locs)
+      @a    = { 'searchtext' => 'a' }
+      @b    = { 'searchtext' => 'b' }
+      @c    = { 'searchtext' => 'c' }
+      @d    = { 'searchtext' => 'd' }
+      @e    = { 'searchtext' => 'e' }
+      @f    = { 'searchtext' => 'f' }
+      @g    = { 'searchtext' => 'g' }
+      @locs = [@a, @b, @c, @d, @e, @f, @g]
+
+
     end
-
-    it 'has groups' do
-      @group.groups.should_not be_nil
-    end
-    it 'has ungrouped' do
-      @group.ungrouped.should_not be_nil
-    end
-    it 'groups contains locations' do
-      @group.groups[0][0].should have_key('searchtext')
-    end
-
-    it 'one group' do
-      @group.get_groups.should have(2).items
-    end
-
-    it 'return list of lists of right length' do
-      @group.get_groups[0].should have(6).items
-    end
-    it 'return list of lists of right length' do
-      @group.get_groups[1].should have(6).items
-    end
-
-
-  end
-end
-
-describe "Solve" do
-  before do
-    inp                  = {}
-    inp['groups']        = nil
-    one                  = {}
-    one['arriveafter']   =''
-    one['arrivebefore']  =''
-    one['departafter']   ='3:30pm'
-    one['departbefore']  =''
-    one['geocode']       ={ 'lat' => 37.8644696, 'lng' => -122.25670630000002 }
-    one['maxduration']   =''
-    one['minduration']   =''
-    one['priority']      = 1
-    one['searchtext']    = "2050"
-    two                  = {}
-    two['arriveafter']   =''
-    two['arrivebefore']  =''
-    two['departafter']   =''
-    two['departbefore']  =''
-    two['geocode']       ={ 'lat' => 37.7749295, 'lng' => -122.41941550000001 }
-    two['maxduration']   =''
-    two['minduration']   =''
-    two['priority']      = 2
-    two['searchtext']    = "San Francisco"
-    three                = {}
-    three['arriveafter'] =''
-    three['arrivebefore']=''
-    three['departafter'] ='5:30pm'
-    three['departbefore']=''
-    three['geocode']     ={ 'lat' => 37.8757435, 'lng' => -122.25873230000002 }
-    three['maxduration'] =''
-    three['minduration'] =''
-    three['priority']    = 1
-    three['searchtext']  = "Soda Hall"
-
-    inp['locationList'] = [one, two, three]
-    inp['travelMethod'] = 'walking'
-
-
-    @result = solve(inp)
-    @routes = @result[:routes]
-  end
-
-  describe @result do
-    it 'should success' do
-      @result[:errCode].should eql(1)
-    end
-    it 'should return routes' do
-      @result[:routes].should have_at_least(1).items
-    end
-    describe @routes do
-      it 'should have more than one steps' do
-        @routes[0][:steps].should have_at_least(2).items
+    describe 'basics' do
+      before do
+        gps    = [['d', 'e']]
+        @group = Group.new(gps, @locs)
       end
-      it 'should have mode' do
-        @routes[0][:mode].should eql('walking')
+
+      it 'has groups' do
+        @group.groups.should_not be_nil
       end
-      it 'should have traveltime' do
-        @routes[0][:traveltime].should be_an(Float)
+      it 'has ungrouped' do
+        @group.ungrouped.should_not be_nil
       end
+      it 'groups contains locations' do
+        @group.groups[0][0].should have_key('searchtext')
+      end
+
+      it 'one group' do
+        @group.get_groups.should have(2).items
+      end
+
+      it 'return list of lists of right length' do
+        @group.get_groups[0].should have(6).items
+      end
+      it 'return list of lists of right length' do
+        @group.get_groups[1].should have(6).items
+      end
+
+
     end
   end
 
+  describe "Solve" do
+    before do
+      inp                  = {}
+      inp['groups']        = nil
+      one                  = {}
+      one['arriveafter']   =''
+      one['arrivebefore']  =''
+      one['departafter']   ='3:30pm'
+      one['departbefore']  =''
+      one['geocode']       ={ 'lat' => 37.8644696, 'lng' => -122.25670630000002 }
+      one['maxduration']   =''
+      one['minduration']   =''
+      one['priority']      = 1
+      one['searchtext']    = "2050"
+      two                  = {}
+      two['arriveafter']   =''
+      two['arrivebefore']  =''
+      two['departafter']   =''
+      two['departbefore']  =''
+      two['geocode']       ={ 'lat' => 37.7749295, 'lng' => -122.41941550000001 }
+      two['maxduration']   =''
+      two['minduration']   =''
+      two['priority']      = 2
+      two['searchtext']    = "San Francisco"
+      three                = {}
+      three['arriveafter'] =''
+      three['arrivebefore']=''
+      three['departafter'] ='5:30pm'
+      three['departbefore']=''
+      three['geocode']     ={ 'lat' => 37.8757435, 'lng' => -122.25873230000002 }
+      three['maxduration'] =''
+      three['minduration'] =''
+      three['priority']    = 1
+      three['searchtext']  = "Soda Hall"
+
+      inp['locationList'] = [one, two, three]
+      inp['travelMethod'] = 'walking'
+
+
+      @result = solve(inp)
+      @routes = @result[:routes]
+    end
+
+    describe @result do
+      it 'should success' do
+        @result[:errCode].should eql(1)
+      end
+      it 'should return routes' do
+        @result[:routes].should have_at_least(1).items
+      end
+      describe @routes do
+        it 'should have more than one steps' do
+          @routes[0][:steps].should have_at_least(2).items
+        end
+        it 'should have mode' do
+          @routes[0][:mode].should eql('walking')
+        end
+        it 'should have traveltime' do
+          @routes[0][:traveltime].should be_an(Float)
+        end
+      end
+    end
+
+  end
 end
 
 
