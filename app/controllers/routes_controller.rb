@@ -45,7 +45,6 @@ class RoutesController < ApplicationController
   # return javascript to expand the accordion
   def draw
     @route = Route.find(params[:id])
-    @mode = @route.mode.as_json
     gon.route = @route
     gon.mode = @route.mode
     respond_to do |format|

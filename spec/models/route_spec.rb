@@ -78,7 +78,7 @@ describe Route do
 		end
 
 		it "should have the right steps in the right order" do
-			expect(@route.steps.to_a).to eq [newer_step, older_step]
+			expect(@route.steps.to_a).to eq [older_step, newer_step]
 		end
 
 		it "should destroy associated steps" do

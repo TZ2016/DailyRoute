@@ -1,34 +1,18 @@
-require 'ostruct'
+class Request < ActiveRecord::Base
 
-class Request
-  include ActiveModel::Model
+  before_validation { self.mode = mode.downcase }
 
-  attr_accessor :constraints
-  attr_accessor :mode, :total_groups
+  belongs_to :user
+  has_many :routes, dependent: :destroy
 
-  def initialize(attributes={})
-    super
-    @mode         ||= 'walking'
-    @total_groups ||= 0
-  end
+  has_many :constraints, inverse_of: :request, dependent: :destroy
+  accepts_nested_attributes_for :constraints
 
-  def constraints_attributes=(attributes)
-    @constraints ||= []
-    attributes.each do |i, constraints_params|
-      @constraints.push(Constraint.new(constraints_params))
-    end
-  end
+  default_scope -> { order('created_at') }
 
-  def self.association association, klass
-    @@attributes              ||= {}
-    @@attributes[association] = klass
-  end
-
-  association :constraints, Constraint
-
-  def self.reflect_on_association(association)
-    data = { klass: @@attributes[association] }
-    OpenStruct.new data
-  end
+  # validates_presence_of :constraints
+  validates :user_id, presence: true
+  validates_numericality_of :num_groups, greater_than_or_equal_to: 0, only_integer: true
+  validates :mode, inclusion: %w(driving transit bicycling walking)
 
 end

@@ -11,7 +11,6 @@ DailyRouteTest::Application.routes.draw do
     end
   end
 
-  resources :requests
   resources :sessions, only: [:new, :create, :destroy]
 
   root 'static_page#root'

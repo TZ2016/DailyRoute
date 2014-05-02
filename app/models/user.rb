@@ -1,8 +1,7 @@
 class User < ActiveRecord::Base
 
-  has_many :routes, dependent: :destroy
-
-  # attr_accessible :email, :password, :password_confirmation
+  has_many :routes, dependent: :destroy #FIXME
+  has_many :requests, dependent: :destroy
 
   before_validation { self.email = email.downcase unless guest? }
   before_create :create_remember_token
