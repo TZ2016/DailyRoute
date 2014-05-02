@@ -29,7 +29,7 @@ describe Step do
 
 	describe "name not exist" do
 		before {@step.name = nil}
-		it {should be_valid}
+		it {should_not be_valid}
 	end	
 
 	describe "geocode not exist" do

@@ -36,7 +36,7 @@ describe "Static pages" do
     it { should have_content('Daily Route') }
     it { should have_link('Daily Route') }
     it { should have_content('Main') }
-    it { should_not have_link('Main') }
+    it { should have_link('Main') }
 
     it { should have_content('About') }
     it { should have_link('About') }
@@ -76,14 +76,14 @@ describe "Static pages" do
     before { visit about_path }
 
     it { should have_content('About') }
-    it { should_not have_link('About') }
+    it { should have_link('About') }
   end
 
   describe "Tutorial page" do
     before { visit tutorial_path }
 
     it { should have_content('Tutorial') }
-    it { should_not have_link('Tutorial') }
+    it { should have_link('Tutorial') }
   end
 
 end
