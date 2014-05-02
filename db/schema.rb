@@ -1,4 +1,3 @@
-
 # encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
@@ -12,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140420063609) do
+ActiveRecord::Schema.define(version: 20140502025750) do
 
   create_table "blacklist", force: true do |t|
     t.integer  "route_id"
@@ -53,10 +52,10 @@ ActiveRecord::Schema.define(version: 20140420063609) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "guest",           default: false
+    t.string   "fb_token"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
   add_index "users", ["remember_token"], name: "index_users_on_remember_token"
 
 end
-
