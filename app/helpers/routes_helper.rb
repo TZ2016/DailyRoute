@@ -11,7 +11,9 @@ module RoutesHelper
   ERR_IN_SPECIFY_START_TIME_AND_ARRIVE_TIME = -4
   ERR_NO_ROUTE_FOUND_TO_FIT_SCHEDULE = -5
   ERR_IN_CHECK_INPUT = -6
-  APP_KEY = "AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM"
+  APP_KEY = "AIzaSyDIIUsYWs7hvODWPqRCaUpIcjn7dGsXSkg"
+  APP_KEY_OLD = "AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM"
+
 
   def solve(inp)
     unless check_input(inp)

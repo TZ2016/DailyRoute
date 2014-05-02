@@ -1,4 +1,5 @@
 class Group
+  attr_accessor :groups, :ungrouped
   def initialize(groups_text, location_list)
     @groups     = groups_text.map do |g|
       g.map do |t|

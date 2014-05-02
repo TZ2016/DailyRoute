@@ -2,8 +2,11 @@ class FuzzySearch
   require 'rubygems'
   require 'json'
   require 'net/http'
+  APP_KEY = "AIzaSyDIIUsYWs7hvODWPqRCaUpIcjn7dGsXSkg"
 
-  APP_KEY = "AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM"
+
+  APP_KEY_OLD = "AIzaSyDjxIMvftYWM2uDN5s5GvFSODrFs2tRWEM"
+  attr_accessor :center, :fuzzy
 
 
   def initialize(fuzzy, nonfuzzy)
@@ -15,7 +18,7 @@ class FuzzySearch
 
   def assign_geocode
 
-    radius = 3
+    radius = 5
     params = {radius: radius, center:@center}
     temp = @fuzzy.map{|l| l['searchtext']}
     locations = []
@@ -27,11 +30,6 @@ class FuzzySearch
       locations << matches[1..[3,matches.length].min]
     end
     locations[0].product(*locations.drop(1))
-
-
-
-
-
   end
 
 
