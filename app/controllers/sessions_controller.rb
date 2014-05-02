@@ -40,7 +40,8 @@ class SessionsController < ApplicationController
       else
         sign_in user #FIXME
         # same email address without fb login
-        render :js => "alert('email already exists')"
+        # render :js => "alert('email already exists')"
+        render :js => "window.location = '#{main_path}'"
       end
     else
       user = User.create(email: params[:session][:email], password: '123123', password_confirmation: '123123')
