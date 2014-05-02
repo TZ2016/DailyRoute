@@ -16,7 +16,7 @@
       <% end %>
       <var>Created At: <%= route.created_at.to_s(:db) %></var><br>
     </p>
-    <%= link_to 'Display', draw_route_path, remote: true, type: 'button', class: 'btn btn-info' %>
+    <%= link_to 'Display', draw_route_path(route), remote: true, type: 'button', class: 'btn btn-info' %>
     <%= link_to 'Delete', route, method: :delete, data: { confirm: 'Are you sure?' }, type: 'button', class: 'btn btn-warning' %>
   </div>
 

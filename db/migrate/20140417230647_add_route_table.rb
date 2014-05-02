@@ -3,7 +3,6 @@ class AddRouteTable < ActiveRecord::Migration
 		create_table :routes do |t|
 			t.integer  :user_id
 			t.string   :name, default: 'unnamed_route'
-			t.string   :location
 			t.string   :mode
 
 			t.timestamps

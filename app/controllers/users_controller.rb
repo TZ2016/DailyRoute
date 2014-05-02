@@ -3,12 +3,13 @@ class UsersController < ApplicationController
                 only: [:show, :edit, :update, :destroy, :remove_all_routes]
   before_action :correct_user, only: [:edit, :update, :remove_all_routes]
 
-  # def index
-  #   @users = User.paginate(page: params[:page])
-  # end
-
   def new
     @user = User.new
+  end
+
+  def new_fb
+    @user = User.new(user_params)
+    render 'new'
   end
 
   def show
@@ -69,7 +70,7 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:email, :password,
-                                 :password_confirmation)
+                                 :password_confirmation, :fb_token)
   end
 
   def correct_user

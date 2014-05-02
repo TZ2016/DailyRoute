@@ -70,3 +70,7 @@ gem 'sprockets', '2.11.0'
 
 #code coverage
 gem 'simplecov', '~> 0.7.1'
+
+#pass object to JavaScript
+gem 'gon'
+gem 'rabl-rails'

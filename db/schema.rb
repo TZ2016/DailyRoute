@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140420063609) do
+ActiveRecord::Schema.define(version: 20140502180142) do
 
   create_table "blacklist", force: true do |t|
     t.integer  "route_id"
@@ -21,10 +21,38 @@ ActiveRecord::Schema.define(version: 20140420063609) do
     t.datetime "updated_at"
   end
 
+  create_table "constraints", force: true do |t|
+    t.integer  "request_id"
+    t.string   "name"
+    t.string   "search_text"
+    t.string   "geocode"
+    t.datetime "arrive_after"
+    t.datetime "arrive_before"
+    t.datetime "depart_after"
+    t.datetime "depart_before"
+    t.integer  "min_duration"
+    t.integer  "max_duration"
+    t.integer  "group"
+    t.integer  "priority"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "constraints", ["request_id", "group"], name: "index_constraints_on_request_id_and_group"
+
+  create_table "requests", force: true do |t|
+    t.integer  "user_id"
+    t.string   "mode"
+    t.integer  "num_groups"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "requests", ["user_id", "created_at"], name: "index_requests_on_user_id_and_created_at"
+
   create_table "routes", force: true do |t|
     t.integer  "user_id"
     t.string   "name",       default: "unnamed_route"
-    t.string   "location"
     t.string   "mode"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -52,6 +80,7 @@ ActiveRecord::Schema.define(version: 20140420063609) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "guest",           default: false
+    t.string   "fb_token"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

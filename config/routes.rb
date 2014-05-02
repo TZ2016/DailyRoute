@@ -11,7 +11,6 @@ DailyRouteTest::Application.routes.draw do
     end
   end
 
-  resources :requests
   resources :sessions, only: [:new, :create, :destroy]
 
   root 'static_page#root'
@@ -24,6 +23,7 @@ DailyRouteTest::Application.routes.draw do
   # user management
   match 'signup_post', to: 'users#create', via: 'post'
   match 'signup', to: 'users#new', via: 'get'
+  match 'signin_fb', to: 'sessions#fb_login', via: 'post'
   match 'signin', to: 'sessions#new', via: 'get'
   match 'signin_post', to: 'sessions#create', via: 'post'
   match 'signout', to: 'sessions#destroy', via: 'delete'

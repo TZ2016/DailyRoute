@@ -9,6 +9,7 @@ var directionsService = new google.maps.DirectionsService();
 var markers = [];
 var _tempmarker;
 var infowindow = new google.maps.InfoWindow();
+var markerListener = null;
 
 function initialize() {
   geocoder = new google.maps.Geocoder();
@@ -20,12 +21,19 @@ function initialize() {
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
   directionsDisplay.setMap(map);
 
-  // listeners
-  google.maps.event.addListener(map, 'click', function(e) {
-    console.log(e);
-    revGeoAndMarker(e.latLng);
-  });
+}
 
+function dropMarkerSwitch(s) {
+  // listeners
+  if (s === true && markerListener === null) {
+      markerListener = google.maps.event.addListener(map, 'click', function(e) {
+        revGeoAndMarker(e.latLng);
+    });
+  }
+  if (s === false && markerListener !== null) {
+    google.maps.event.removeListener(markerListener);
+    markerListener = null;
+  }
 }
 
 function addMarker(loc, msg) {
