@@ -386,7 +386,7 @@ function handleResult(data, baseID, accID) {
     $("#" + accID).accordion("refresh");
   } else {
     _data = [];
-    $.alertMessage("Google server denied your request!(code=" + data['errCode'] + ")");
+    $.alertMessage("Oops! There was something wrong because "+data["messages"]);
   }
 }
 

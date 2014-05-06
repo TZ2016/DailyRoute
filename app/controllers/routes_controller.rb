@@ -7,7 +7,6 @@ class RoutesController < ApplicationController
   # create a list of routes from a single request
   def create
     @routes   = []
-    @messages = []
     result    = solve(route_params)
     @result   = result
     if result[:errCode] == 1
