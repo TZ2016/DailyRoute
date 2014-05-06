@@ -375,8 +375,19 @@ function handleResult(data, baseID, accID) {
       var $newpanel = $temppanel.clone().attr("id", newid);
       var notice = '';
 
+      if (route['deleted'] !== undefined && route['deleted'] != []) {
+        deleted = '<strong>Dropped Locations:</strong> ';
+        route['deleted'].forEach( function (d) {
+          deleted += d.toString() + " ";
+        });
+        deleted += "<br>";
+      } else {
+        deleted = "";
+      }
+
       notice += '';
       notice += '<strong>Travel Time</strong>: ' + formatTime(route['traveltime']) + "<br>";
+      notice += deleted;
       notice += '<strong>Route itinerary</strong>: <br>';
 
       $("#" + accID).append($newpanel);
