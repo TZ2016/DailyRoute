@@ -375,7 +375,7 @@ function handleResult(data, baseID, accID) {
       var $newpanel = $temppanel.clone().attr("id", newid);
       var notice = '';
 
-      if (route['deleted'] !== undefined && route['deleted'] != []) {
+      if (route['deleted'] !== null && route['deleted'] !== undefined && route['deleted'].length !== 0) {
         deleted = '<strong>Dropped Locations:</strong> ';
         route['deleted'].forEach( function (d) {
           deleted += d.toString() + " ";
