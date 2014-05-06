@@ -34,17 +34,17 @@ class SessionsController < ApplicationController
     # params[:fb_login] email, access_token
     user = User.find_by_email(params[:session][:email])
     if user
-      if user.fb_token
+      # if user.fb_token
         sign_in user
         render :js => "window.location = '#{main_path}'"
-      else
-        if user.password == '1qaz2wsx3edc4rfv' and user.password_confirmation == '123123'
-          sign_in user
-        else
+      # else
+        # if user.password == '1qaz2wsx3edc4rfv' and user.password_confirmation == '123123'
+          # sign_in user
+        # else
            # same email address without fb login
-          render :js => "alert('email already exists')"
-        end
-      end
+          # render :js => "alert('email already exists')"
+        # end
+      # end
     else
       user = User.create(email: params[:session][:email], password: '1qaz2wsx3edc4rfv', password_confirmation: '123123')
       sign_in user
@@ -52,4 +52,5 @@ class SessionsController < ApplicationController
       render :js => "window.location = '#{main_path}'"
     end
   end
+  
 end
