@@ -46,7 +46,7 @@ module RoutesHelper
       solution = solve_no_priority(inp)
       if solution[:errCode] == SUCCESS
         sort_route(solution[:routes])
-        solution[:routes].each { |r| r[:delated] = deleted }
+        solution[:routes].each { |r| r[:deleted] = deleted }
         return solution
       end
       inp['locationList'].first['priority']=-1.0/0.0
